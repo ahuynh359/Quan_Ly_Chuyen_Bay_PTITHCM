@@ -13,7 +13,8 @@ private:
 	int currentTextColor;
 	bool isSelected;
 public:
-	Button(int id, int left, int top, int right, int bottom, int backgroundColor, int onSelectedBackgroundColor, char text[20], int textColor, int textOnPointedColor) :UI(left, top, right, bottom, backgroundColor, onSelectedBackgroundColor) {
+	Button(int id, int left, int top, int right, int bottom, int backgroundColor, 
+		int onSelectedBackgroundColor , char text[20], int textColor, int textOnPointedColor = BLACK) :UI(left, top, right, bottom, backgroundColor, onSelectedBackgroundColor) {
 		strcpy_s(this->text, text);
 		animation = false;
 		this->id = id;
@@ -36,7 +37,7 @@ public:
 
 		if (isPointed(mousex(), mousey())) {
 
-			currenBackground = WHITE;
+			currenBackground = onSelectedBackgroundColor;
 			currentTextColor = textColor;
 
 		}
@@ -69,6 +70,8 @@ public:
 		drawUI();
 
 	}
+
+
 
 	
 
