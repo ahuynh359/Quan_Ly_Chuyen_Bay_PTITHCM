@@ -45,7 +45,12 @@ int TAB_RIGHT[MAX_TAB + 1] = {
 //---------------MANAGE PLANE TAB-------------
 #define PLANE_MAX_BUTTON 7
 #define PLANE_TEXT_COLOR COLOR(0, 133, 190)
-
+char PLANE_BUTTON_NAME[5][20]{
+	"STT",
+	"So hieu may bay",
+	"Loai may bay",
+	"So cho"
+};
 
 
 

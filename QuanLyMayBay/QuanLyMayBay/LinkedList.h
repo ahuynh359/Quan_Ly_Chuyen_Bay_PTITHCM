@@ -1,3 +1,4 @@
+#pragma
 struct node 
 {  
     ChuyenBay info;
