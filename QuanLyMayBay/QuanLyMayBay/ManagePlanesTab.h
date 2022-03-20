@@ -126,6 +126,7 @@ public:
 		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
 		setcolor(BLACK);
 		settextstyle(0, 0, 0);
+		setusercharsize(1, 2, 1, 2);
 		int preX = leftBorder;
 		for (int i = 1; i <= 4; i++) {
 			int width = textwidth(PLANE_BUTTON_NAME[i - 1]);

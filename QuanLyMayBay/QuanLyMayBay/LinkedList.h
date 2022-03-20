@@ -1,4 +1,6 @@
 #pragma
+#include"ChuyenBay.h"
+#include<iostream>
 struct node 
 {  
     ChuyenBay info;
