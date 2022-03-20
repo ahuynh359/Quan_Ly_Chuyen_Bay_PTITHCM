@@ -1,37 +1,57 @@
 #include "UI.h"
+#ifndef TAB_H
+#define TAB_H
 class Tab :public UI {
-private:
+protected:
+	
 	char text[20];
 	int textColor;
 	bool isSelected;
-public:Tab(int x, int y,int width, int height, int backgroundColor, int onSelectedBackgroundColor, char text[20], int textColor) :UI(x, y, width, height, backgroundColor, onSelectedBackgroundColor) {
+
+public:Tab( int left, int top, int right, int bottom, int backgroundColor, int onSelectedBackgroundColor, char text[20], int textColor) :UI(left, top, right, bottom, backgroundColor, onSelectedBackgroundColor) {
 	strcpy_s(this->text, text);
 	this->textColor = textColor;
 	this->isSelected = false;
 }
-	  void drawUI() {
-		  if (isSelected) {
-			  currenBackground = onSelectedBackgroundColor;
-
-		  } else
-		  currenBackground = backgroundColor;
-		  UI::drawUI();
+	  Tab() :UI() {
+		  strcpy_s(text, "");
+		  textColor = -1;
+		  isSelected = false;
 	  }
-	  void drawText() {
-		  
-		  
-		  drawUI();
-		  settextstyle(10, HORIZ_DIR, 1);
+	
+	  void drawUI() {
+		  UI::drawUI();
+		  settextstyle(DEFAULT_FONT, HORIZ_DIR, 0);
 		  setcolor(textColor);
 		  int textWidth = textwidth(text);
 		  int textHeight = textheight(text);
-		  outtextxy((width+x-textWidth)/2 , (height+y-textHeight)/2, text);
-		  
+		  outtextxy((left + right - textWidth) / 2, (top + bottom - textHeight) / 2, text);
 
 	  }
 
-	  void setIsSelected(bool s) {
-		  this->isSelected = s;
+	  void virtual onClick(Tab*& tab) {
+		  if ((isPointed(mousex(), mousey()) && GetAsyncKeyState(VK_LBUTTON)) || tab == this) {
+			  tab = this;
+			  isSelected = true;
+			  currenBackground = onSelectedBackgroundColor;
+		  }
+		  else if (tab != this) {
+			  isSelected = false;
+			  currenBackground = backgroundColor;
+		  }
+	  
+		  drawUI();
+
+
+	  } 
+
+	  
+
+	  bool getIsSelected() {
+		  return isSelected;
 	  }
+
+	 
 };
 
+#endif 

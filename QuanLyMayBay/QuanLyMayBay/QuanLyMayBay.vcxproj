@@ -142,7 +142,10 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Button.h" />
     <ClInclude Include="define.h" />
+    <ClInclude Include="ManageFlightsTab.h" />
+    <ClInclude Include="ManagePlanesTab.h" />
     <ClInclude Include="Tab.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="UIController.h" />
