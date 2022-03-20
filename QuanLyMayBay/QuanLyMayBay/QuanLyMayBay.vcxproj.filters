@@ -41,5 +41,14 @@
     <ClInclude Include="UIController.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="ManagePlanesTab.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ManageFlightsTab.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
