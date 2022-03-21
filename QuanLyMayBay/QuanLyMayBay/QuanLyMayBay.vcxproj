@@ -144,7 +144,9 @@
   <ItemGroup>
     <ClInclude Include="Button.h" />
     <ClInclude Include="ChuyenBay.h" />
+    <ClInclude Include="define.h" />
     <ClInclude Include="EditText.h" />
+    <ClInclude Include="Header.h" />
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="ManageFlightsTab.h" />
     <ClInclude Include="ManagePlanesTab.h" />
