@@ -5,6 +5,7 @@ int main()
 {
 	init();
 	//DT comment
+	//DT COMMETN TIEP
 	
 	while (true) {
 		setactivepage(1 - getactivepage());
