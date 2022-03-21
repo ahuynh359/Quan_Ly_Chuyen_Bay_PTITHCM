@@ -4,7 +4,7 @@ using namespace std;
 int main()
 {
 	init();
-	
+	//DT comment
 	
 	while (true) {
 		setactivepage(1 - getactivepage());
