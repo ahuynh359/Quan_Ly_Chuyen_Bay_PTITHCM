@@ -148,5 +148,9 @@ public:
 
 	}
 
+	void veKhungXacNhanXoa() {
+
+	}
+
 
 };

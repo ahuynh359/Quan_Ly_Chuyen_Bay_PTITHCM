@@ -53,5 +53,11 @@
     <ClInclude Include="ChuyenBay.h">
       <Filter>Data</Filter>
     </ClInclude>
+    <ClInclude Include="EditText.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="CDT.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

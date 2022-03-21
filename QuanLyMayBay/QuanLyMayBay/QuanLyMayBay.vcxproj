@@ -143,7 +143,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Button.h" />
+    <ClInclude Include="CDT.h" />
     <ClInclude Include="ChuyenBay.h" />
+    <ClInclude Include="EditText.h" />
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="ManageFlightsTab.h" />
     <ClInclude Include="ManagePlanesTab.h" />
