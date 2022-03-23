@@ -1,11 +1,13 @@
 ﻿#pragma once
 #include "Button.h"
 #include "Tab.h"
-
+#include<fstream>
+using namespace std;
 class ManagePlanesTab {
 private:
 	Button* button[PLANE_MAX_BUTTON];
 	char soTrang[5];
+	char planeData[50][50];
 public:
 
 	ManagePlanesTab() {
@@ -13,6 +15,8 @@ public:
 		for (int i = 0; i < PLANE_MAX_BUTTON; i++) {
 			button[i] = NULL;
 		}
+		readFile();
+
 	}
 
 	~ManagePlanesTab() {
@@ -30,123 +34,180 @@ public:
 
 	}
 
-	
+	void readFile() {
+		ifstream inp("DSMB.txt");
+		if (inp.fail()) {
+			printf("Khong mo duoc file\n");
+			exit(1);
+
+		}
+
+		int n;
+		inp >> n;
+		for (int i = 0; i < n; i++) {
+
+			for (int j = 0; j < 4; j++) {
+				inp >> planeData[i][j];
+
+			}
+		}
+
+		inp.close();
+
+	}
 	void initManagePlaneTab() {
 
 		// Ve nen
 		drawBackground();
-		//-------- DANH SACH MAY BAY TEXT
-		setcolor(BLACK);
-		setbkcolor(SUBWINDOW_BACKGROUND);
-		settextstyle(0, 0, 4);
-		char DANHSACH[30] = "QUAN LI MAY BAY";
-		int width = textwidth(DANHSACH);
-		int height = textheight(DANHSACH);
-		const int PLANE_TITLE_TEXT_X =
-			((SUBWINDOW_LEFT + SUBWINDOW_RIGHT - width) / 2);
-		const int PLANE_TITLE_TEXT_Y = (SUBWINDOW_TOP + 20);
-		outtextxy(PLANE_TITLE_TEXT_X, PLANE_TITLE_TEXT_Y, DANHSACH);
+		
 
 		//-------------BUTTON THEM CHUYEN BAY
-		int left = PLANE_TITLE_TEXT_X + width + 300;
-		int top = height + PLANE_TITLE_TEXT_Y + 10;
-		int right = left + 70;
-		int bottom = top + 70;
+		int left = SUBWINDOW_RIGHT - 70;
+		int top = SUBWINDOW_TOP + 50;
+		int right = left + 50;
+		int bottom = top + 50;
 		settextstyle(0, 0, 3);
 		char s[14] = "+";
 		button[0] = new Button(0, left, top, right, bottom, TAB_ON_SELECTED_BACKGROUND, WHITE, s,
 			PLANE_TEXT_COLOR);
-		button[0]->onClick(button[0]);
+		button[0]->drawUI();
 
 
-		//------------BUTTON THEM DS CHUYEN BAY
-		left = right + 10;
-		right = left + 70;
-		bottom = top + 70;
+		//------------BUTTON XEM DS CHUYEN BAY
+		top = bottom + 10;
+		right = left + 50;
+		bottom = top + 50;
 		char a[14] = "XEM";
 		button[1] = new Button(1, left, top, right, bottom, TAB_ON_SELECTED_BACKGROUND, WHITE, a,
 			PLANE_TEXT_COLOR);
-		button[1]->onClick(button[1]);
+		button[1]->drawUI();
+
 
 		//-------------------VE BORDER
-		int leftBorder = SUBWINDOW_LEFT + 100;
-		int topBorder = bottom + 10;
-		int rightBorder = SUBWINDOW_RIGHT - 100;
-		int bottomBorder = SUBWINDOW_BOTTOM - 100;
-		rectangle(leftBorder, topBorder, rightBorder, bottomBorder);
+		rectangle(LEFT_BORDER, TOP_BORDER, RIGHT_BORDER, BOTTOM_BORDER);
 
 		//-----------------VE HUONG DAN TEXT
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(GREEN);
 		settextstyle(0, 0, 0);
-		char b[50] = "*Click chuot phai de chinh sua thong tin";
-		outtextxy(leftBorder + 10, bottomBorder + 20, b);
+		char b[2][50] = { "*Chuot phai de xoa thong tin" ,
+						"Chuot trai de sua thong tin"};
+		outtextxy(LEFT_BORDER - 10, BOTTOM_BORDER + 20, b[0]);
+		outtextxy(LEFT_BORDER - 10, BOTTOM_BORDER + 40, b[1]);
 
 
 		//------------VE BUTTON  TRAI , PHAI 
-		left = width + PLANE_TITLE_TEXT_X / 2 - 50;
-		top = bottomBorder + 40;
+		left = SCREEN_WIDTH / 2 - 100;
+		top = BOTTOM_BORDER + 30;
 		right = left + 50;
 		bottom = top + 30;
 		char c[14] = "<";
-		 button[2] = new Button(2, left, top, right, bottom, COLOR(190, 193, 196), WHITE, c, PLANE_TEXT_COLOR);
-		 button[2]->onClick(button[2]);
+		button[2] = new Button(2, left, top, right, bottom, COLOR(190, 193, 196), WHITE, c, PLANE_TEXT_COLOR);
+		button[2]->onClick(button[2]);
 
 
 
-		 left = right + 100;
-		 right = left + 50;
-		 char d[14] = ">";
-		 button[3] = new Button(3, left, top, right, bottom, COLOR(190, 193, 196), WHITE, d, PLANE_TEXT_COLOR);
-		 button[3]->onClick(button[3]);
+		left = right + 100;
+		right = left + 50;
+		char d[14] = ">";
+		button[3] = new Button(3, left, top, right, bottom, COLOR(190, 193, 196), WHITE, d, PLANE_TEXT_COLOR);
+		button[3]->onClick(button[3]);
 
 
 
-		 //------------ VE SO TRANG
-		 setbkcolor(SUBWINDOW_BACKGROUND);
-		 setcolor(COLOR(142, 154, 185));
-		 settextstyle(0, 0, 0);
-		 outtextxy(left - 65, top+ 5 , soTrang);
+		//------------ VE SO TRANG
+		setbkcolor(SUBWINDOW_BACKGROUND);
+		setcolor(COLOR(142, 154, 185));
+		settextstyle(0, 0, 0);
+		outtextxy(left - 65, top + 5, soTrang);
 
-		 //----------VE LINE
+		//----------VE LINE CHO KHUNG
 		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
 		setfillstyle(0, TAB_ON_SELECTED_BACKGROUND);
-		bar(leftBorder + 2, topBorder + 2, rightBorder - 2, topBorder + 48);
+		bar(LEFT_BORDER + 2, TOP_BORDER + 2, RIGHT_BORDER - 2, TOP_BORDER + 48);
 		setcolor(BLACK);
 		setlinestyle(0, 0, 3);
+		int space = (RIGHT_BORDER + LEFT_BORDER) / 5;
 		for (int i = 1; i <= 3; i++) {
-			line((leftBorder + 100) * i * 2, topBorder, (leftBorder + 100) * i * 2, bottomBorder);
+			line(LEFT_BORDER + space * i, TOP_BORDER, LEFT_BORDER + space * i, BOTTOM_BORDER);
 
 
 		}
 
-		line(leftBorder, topBorder + 50, rightBorder, topBorder + 50);
+		line(LEFT_BORDER, TOP_BORDER + 50, RIGHT_BORDER, TOP_BORDER + 50);
 
 
 		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
 		setcolor(BLACK);
 		settextstyle(0, 0, 0);
 		setusercharsize(1, 2, 1, 2);
-		int preX = leftBorder;
+		int preX = LEFT_BORDER;
 		for (int i = 1; i <= 4; i++) {
 			int width = textwidth(PLANE_BUTTON_NAME[i - 1]);
 			int height = textheight(PLANE_BUTTON_NAME[i - 1]);
-			int x = (leftBorder + 100) * i * 2;
+			int x = LEFT_BORDER + space * i;
 
-			outtextxy((x + preX - width) / 2, topBorder + 15, PLANE_BUTTON_NAME[i - 1]);
+			outtextxy((x + preX - width) / 2, TOP_BORDER + 15, PLANE_BUTTON_NAME[i - 1]);
 			preX = x;
 		}
 
-
-
+		onItemClicked();
 
 		
 	}
 
+	void onItemClicked() {
+		int preY = TOP_BORDER + 25;
 
-	void readFile() {
+		int preX = LEFT_BORDER;
+		setbkcolor(SUBWINDOW_BACKGROUND);
+		setcolor(COLOR(50, 45, 188));
+		settextstyle(0, 0, 0);
+		setusercharsize(1, 2, 1, 1);
+		int space = (RIGHT_BORDER + LEFT_BORDER) / 5;
+		for (int i = 1; i <= 10; i++) {
 
+			preX = LEFT_BORDER;
+			int y = preY + 30;
+			if (mousex() <= RIGHT_BORDER && mousex() >= LEFT_BORDER && mousey() <= (y + 30) && mousey() >= (preY + 30)) {
+				setbkcolor(SUBWINDOW_BACKGROUND);
+				setcolor(COLOR(205,92,92));
+				for (int j = 1; j <= 4; j++) {
+					int width = textwidth(planeData[j - 1]);
+					int height = textheight(planeData[j - 1]);
+					int x = preX + space;
+				
+					
+					outtextxy((x + preX - width) / 2, y, planeData[j - 1]);
+
+					preX = x;
+
+				}
+			}
+			else {
+				for (int j = 1; j <= 4; j++) {
+					int width = textwidth(planeData[j - 1]);
+					int height = textheight(planeData[j - 1]);
+					int x = preX + space;
+
+
+					setbkcolor(SUBWINDOW_BACKGROUND);
+					setcolor(BLACK);
+					outtextxy((x + preX - width) / 2, y, planeData[j - 1]);
+
+					preX = x;
+
+				}
+			}
+				preY += 30;
+
+				
+
+		}
 	}
+
+
+
 
 	void veKhungXacNhanXoa() {
 
