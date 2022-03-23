@@ -19,8 +19,8 @@
     <Filter Include="MyLib">
       <UniqueIdentifier>{d0eb94af-95d4-44b6-9743-3f83acb390ba}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Data">
-      <UniqueIdentifier>{1db51657-dd8a-4606-b495-5b2c515e4f6c}</UniqueIdentifier>
+    <Filter Include="FileData">
+      <UniqueIdentifier>{e0a06f6b-a8ca-45d9-b428-b84a43c3ae6c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -47,17 +47,25 @@
     <ClInclude Include="ManageFlightsTab.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="LinkedList.h">
+    <ClInclude Include="Flights.h">
       <Filter>MyLib</Filter>
-    </ClInclude>
-    <ClInclude Include="ChuyenBay.h">
-      <Filter>Data</Filter>
     </ClInclude>
     <ClInclude Include="EditText.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="define.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Planes.h">
+      <Filter>MyLib</Filter>
     </ClInclude>
+    <ClInclude Include="Passengers.h">
+      <Filter>MyLib</Filter>
+    </ClInclude>
+    <ClInclude Include="define.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="DSMB.txt">
+      <Filter>FileData</Filter>
+    </Text>
   </ItemGroup>
 </Project>

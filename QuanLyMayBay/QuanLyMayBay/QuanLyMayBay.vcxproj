@@ -142,16 +142,20 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Planes.h" />
     <ClInclude Include="Button.h" />
-    <ClInclude Include="ChuyenBay.h" />
     <ClInclude Include="define.h" />
     <ClInclude Include="EditText.h" />
-    <ClInclude Include="LinkedList.h" />
+    <ClInclude Include="Flights.h" />
     <ClInclude Include="ManageFlightsTab.h" />
     <ClInclude Include="ManagePlanesTab.h" />
     <ClInclude Include="Tab.h" />
+    <ClInclude Include="Passengers.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="UIController.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="DSMB.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
