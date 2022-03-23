@@ -56,5 +56,8 @@
     <ClInclude Include="EditText.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="define.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
