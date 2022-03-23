@@ -4,6 +4,7 @@ int main()
 {
 	init();
 	//DTTT comment
+	// dslk
 	while (true) {
 		setactivepage(1 - getactivepage());
 		onUpdate();
