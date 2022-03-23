@@ -3,7 +3,7 @@
 int main()
 {
 	init();
-
+	//DTTT comment
 	while (true) {
 		setactivepage(1 - getactivepage());
 		onUpdate();
