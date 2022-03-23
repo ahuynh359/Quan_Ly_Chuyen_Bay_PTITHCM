@@ -1,51 +1,60 @@
-#pragma
+#pragma once;
+#define MAX_ID 15
 #include<iostream>
 
-struct Flights {
+struct Tickets {
 
 };
-struct node
+struct Flights {
+	char idFlight[MAX_ID];
+	char day[2];
+	char hour[2];
+	char des[100];
+	char status[1]; // 0 huy chuyen - 1 con ve - 2 het ve - 3 hoan tat 
+	char idPlane[MAX_ID];
+};
+struct Node
 {
 	Flights info;
-	struct node* next;
+	struct Node* next;
 };
-typedef node* PTR;
+typedef Node* PTR;
 
-void Initialize(PTR& First)
+void initialize(PTR& First)
 {
 	First = NULL;
 }
 
-PTR NewNode(void)
+PTR newNode(void)
 {
-	PTR p = new node;
+	PTR p = new Node;
 	return p;
 }
 
-void InsertFirst(PTR& First, Flights x)
+void insertFirst(PTR& First, Flights x)
 {
 	PTR p;
-	p = new node;
+	p = new Node;
 	p->info = x;
 	p->next = First;
 	First = p;
 }
 
-void InsertAfter(PTR p, Flights x)
+void insertAfter(PTR p, Flights x)
 {
 	PTR q;
 	if (p == NULL)
 		printf("Khong them chuyen bay vao danh sach duoc.");
 	else
 	{
-		q = new node;
+		q = new Node;
 		q->info = x;
 		q->next = p->next;
 		p->next = q;
 	}
 }
 
-PTR SearchInfo(PTR First, Flights x)
+PTR searchInfo(PTR First, Flights x)
 {
 	PTR p;
 	for (p = First; p != NULL; p = p->next)
@@ -53,22 +62,22 @@ PTR SearchInfo(PTR First, Flights x)
 	return NULL;
 }
 
-int Empty(PTR First)
+int empty(PTR First)
 {
 	return(First == NULL ? 1 : 0);
 }
 
-void DeleteFirst(PTR& First)
+void deleteFirst(PTR& First)
 {
 	PTR p;
-	if (Empty(First))
+	if (empty(First))
 		printf("Khong co chuyen bay trong danh sach");
 	p = First;
 	First = p->next;
 	delete p;
 }
 
-void  DeleteAfter(PTR p)
+void  deleteAfter(PTR p)
 {
 	PTR q;
 	if ((p == NULL) || (p->next == NULL))
@@ -79,22 +88,22 @@ void  DeleteAfter(PTR p)
 }
 
 //incomplete
-int DeleteInfo(PTR& First, Flights x)
+int deleteInfo(PTR& First, Flights x)
 {
 	PTR p = First;
 	if (First == NULL) return 0;
 	if (First->info == x) {
-		DeleteFirst(First); return 1;
+		deleteFirst(First); return 1;
 	}
 
 	for (p = First; p->next != NULL && p->next->info != x; p = p->next);
 	if (p->next != NULL) {
-		DeleteAfter(p);  return 1;
+		deleteAfter(p);  return 1;
 	}
 	return 0;
 }
 
-void DeleteAllInfo(PTR& First, Flights x)
+void deleteAllInfo(PTR& First, Flights x)
 {
 	PTR q, p = First;
 	if (First == NULL) { return 0; }
@@ -115,7 +124,7 @@ void DeleteAllInfo(PTR& First, Flights x)
 	}
 }
 
-void ClearList(PTR& First)
+void clearList(PTR& First)
 {
 	PTR p;
 	while (First != NULL)
@@ -126,7 +135,7 @@ void ClearList(PTR& First)
 	}
 }
 
-void Traverse(PTR First)
+void traverse(PTR First)
 {
 	PTR p;
 	int stt = 0;
@@ -140,7 +149,7 @@ void Traverse(PTR First)
 	}
 }
 
-void SelectionSort(PTR& First)
+void selectionSort(PTR& First)
 {
 	PTR p, q, pmin;
 	Flights min;
@@ -162,10 +171,10 @@ void SelectionSort(PTR& First)
 	}
 }
 
-void Insert_Order(PTR& First, Flights x)
+void insert_Order(PTR& First, Flights x)
 {
 	PTR p, t, s;  // t la nut truoc, s la nut sau
-	p = new node;
+	p = new Node;
 	p->info = x;
 	for (s = First; s != NULL && s->info < x; t = s, s = s->next);
 	if (s == First)  // them nut vao dau danh sach lien ket
@@ -180,22 +189,22 @@ void Insert_Order(PTR& First, Flights x)
 	}
 }
 
-void InsertOrder(PTR& First, Flights x)
+void insertOrder(PTR& First, Flights x)
 {
 	PTR q, p;  // q la nut truoc, p la nut sau
 	q = NULL;
 	for (p = First; p != NULL && p->info < x; p = p->next)
 		q = p;
 	if (q == NULL)  // them nut vao dau danh sach lien ket
-		InsertFirst(First, x);
+		insertFirst(First, x);
 	else           // them nut vao sau nut q
-		InsertAfter(q, x);
+		insertAfter(q, x);
 }
 
 PTR Merge_Order(PTR& First1, PTR& First2)
 {
 	PTR p1, p2, p3;
-	PTR First3 = new node; // tạo vùng nhớ tạm 
+	PTR First3 = new Node; // tạo vùng nhớ tạm 
 	p1 = First1; p2 = First2; p3 = First3;
 	while (p1 != NULL && p2 != NULL)
 		if (p1->info < p2->info)
@@ -214,6 +223,7 @@ PTR Merge_Order(PTR& First1, PTR& First2)
 	First1 = First2 = NULL;
 	return First3;
 }
+
 
 
 
