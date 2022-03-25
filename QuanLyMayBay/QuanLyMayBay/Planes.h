@@ -11,32 +11,13 @@ struct Plane {
 	int seats;
 };
 
-<<<<<<< Updated upstream
-public:
-	PlaneList() {
-		for (int i = 0; i < MAX_PLANE; i++) {
-			data[i] = new Plane();
-		}
-	}
 
-	~PlaneList() {
-		for (int i = 0; i < MAX_PLANE; i++) {
-			delete data[i];
-		}
-	}
-
-	void addPlane() {
-
-	}
-
-	void deletePlane() {
-=======
 struct PlaneList {
 	int size = 0;
 	Plane* data[MAX_PLANE]; 
 
 };
->>>>>>> Stashed changes
+
 
 void add(PlaneList &list) {
 	Plane* plane = new Plane();
