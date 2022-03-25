@@ -19,9 +19,9 @@ public:Tab( int left, int top, int right, int bottom, int backgroundColor, int o
 		  isSelected = false;
 	  }
 	
-	  void drawUI() {
+	  void  drawUI() {
 		  UI::drawUI();
-		  settextstyle(DEFAULT_FONT, HORIZ_DIR, 0);
+		  //settextstyle(DEFAULT_FONT, HORIZ_DIR, 0);
 		  setcolor(textColor);
 		  int textWidth = textwidth(text);
 		  int textHeight = textheight(text);
@@ -29,7 +29,7 @@ public:Tab( int left, int top, int right, int bottom, int backgroundColor, int o
 
 	  }
 
-	  void virtual onClick(Tab*& tab) {
+	  void  onClick(Tab*& tab) {
 		  if ((isPointed(mousex(), mousey()) && GetAsyncKeyState(VK_LBUTTON)) || tab == this) {
 			  tab = this;
 			  isSelected = true;

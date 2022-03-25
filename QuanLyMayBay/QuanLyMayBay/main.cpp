@@ -3,19 +3,21 @@
 int main()
 {
 	init();
-	//DTTT comment
-	// dslk
-	while (true) {
+	bool isActive = true;
+	while (isActive) {
 		setactivepage(1 - getactivepage());
 		onUpdate();
-
-
-		//clearmouseclick(WM_LBUTTONDOWN);
 		setvisualpage(getactivepage());
+		drawSubMenu();
+		if (kbhit()) {
+			char s = getch();
+			if (s == 'a')
+				break;
+		}
 		delay(20);
-
 	}
-	getch();
+
+	//getch();
 	closegraph();
 
 	return 0;

@@ -66,7 +66,7 @@ public:
 		int top = SUBWINDOW_TOP + 50;
 		int right = left + 50;
 		int bottom = top + 50;
-		settextstyle(0, 0, 3);
+		//settextstyle(0, 0, 3);
 		char s[14] = "+";
 		button[0] = new Button(0, left, top, right, bottom, TAB_ON_SELECTED_BACKGROUND, WHITE, s,
 			PLANE_TEXT_COLOR);
@@ -89,7 +89,7 @@ public:
 		//-----------------VE HUONG DAN TEXT
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(GREEN);
-		settextstyle(0, 0, 0);
+		//settextstyle(0, 0, 0);
 		char b[2][50] = { "*Chuot phai de xoa thong tin" ,
 						"Chuot trai de sua thong tin"};
 		outtextxy(LEFT_BORDER - 10, BOTTOM_BORDER + 20, b[0]);
@@ -118,7 +118,7 @@ public:
 		//------------ VE SO TRANG
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(COLOR(142, 154, 185));
-		settextstyle(0, 0, 0);
+		//settextstyle(0, 0, 0);
 		outtextxy(left - 65, top + 5, soTrang);
 
 		//----------VE LINE CHO KHUNG
@@ -139,7 +139,7 @@ public:
 
 		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
 		setcolor(BLACK);
-		settextstyle(0, 0, 0);
+		//settextstyle(0, 0, 0);
 		setusercharsize(1, 2, 1, 2);
 		int preX = LEFT_BORDER;
 		for (int i = 1; i <= 4; i++) {
@@ -162,7 +162,7 @@ public:
 		int preX = LEFT_BORDER;
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(COLOR(50, 45, 188));
-		settextstyle(0, 0, 0);
+		//settextstyle(0, 0, 0);
 		setusercharsize(1, 2, 1, 1);
 		int space = (RIGHT_BORDER + LEFT_BORDER) / 5;
 		for (int i = 1; i <= 10; i++) {

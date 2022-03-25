@@ -1,10 +1,8 @@
 #pragma once;
 #define MAX_ID 15
 #include<iostream>
+using namespace std;
 
-struct Tickets {
-
-};
 struct Flights {
 	char idFlight[MAX_ID];
 	char day[2];
@@ -22,6 +20,7 @@ typedef Node* PTR;
 
 void initialize(PTR& First)
 {
+	//nullptr
 	First = NULL;
 }
 
@@ -201,7 +200,7 @@ void insertOrder(PTR& First, Flights x)
 		insertAfter(q, x);
 }
 
-PTR Merge_Order(PTR& First1, PTR& First2)
+PTR mergeOrder(PTR& First1, PTR& First2)
 {
 	PTR p1, p2, p3;
 	PTR First3 = new Node; // tạo vùng nhớ tạm 

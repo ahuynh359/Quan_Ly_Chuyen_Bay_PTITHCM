@@ -4,10 +4,9 @@
 #include"ManagePlanesTab.h"
 
 int currentTab = -1;
-Tab* t[MAX_TAB+1];
-Tab* temp;
+Tab* t = new Tab[MAX_TAB+1];
 ManagePlanesTab managePlaneTab;
-
+Tab* temp;
 void drawSubMenu() {
 	setbkcolor(TAB_ON_SELECTED_BACKGROUND);
 	setfillstyle(SOLID_FILL, SUBWINDOW_BACKGROUND);
@@ -20,43 +19,50 @@ void drawBackground() {
 	setfillstyle(SOLID_FILL, BACKGROUND_COLOR);
 	bar(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 }
+
+
 void init() {
-	initwindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Quan Ly May Bay");
+	initwindow(SCREEN_WIDTH, SCREEN_HEIGHT);
 	//Khoi tao tab
+	int x = 25;
+	int w = 250;
 	for (int i = 0; i < MAX_TAB; i++) {
 
-		t[i] = new Tab(TAB_LEFT[i], TAB_TOP, TAB_RIGHT[i], TAB_HEIGHT, TAB_DEFAULT_BACKGROUND, TAB_ON_SELECTED_BACKGROUND, TAB_TEXT[i], TAB_TEXT_COLOR);
-		TAB_LEFT[i + 1] = TAB_LEFT[i] + TAB_SPACE;
-		TAB_RIGHT[i + 1] = TAB_RIGHT[i] + TAB_WIDTH;
+		t[i] = Tab(x, TAB_TOP, w, TAB_HEIGHT, TAB_DEFAULT_BACKGROUND, TAB_ON_SELECTED_BACKGROUND, TAB_TEXT[i], TAB_TEXT_COLOR);
+		
+			x+= TAB_SPACE;
+			w+= TAB_WIDTH;
+		
+		
 
 
 	}
+	managePlaneTab = ManagePlanesTab();
 	
-	temp = t[0];
+	temp = &t[0];
 	for (int i = 0; i < MAX_TAB; i++) {
-		t[i]->drawUI();
+		t[i].drawUI();
 	}
-	drawBackground();
 	
-	drawSubMenu();
-
+	
 	
 }
 
 
 void onUpdate() {
-
 	drawBackground();
-	for (int i = 0; i < MAX_TAB; i++) {
-		t[i]->onClick(temp);
-	}
 
+	drawSubMenu();
+	for (int i = 0; i < MAX_TAB; i++) {
+		
+		t[i].onClick(temp);
+	}
+	if (t[0].getIsSelected()) {
+		managePlaneTab.initManagePlaneTab();
+	}
 	//Cap nhat tab khi chon
 
-	/*for (int i = 0; i < MAX_TAB; i++) {
-		t[i]->onClick(temp);
-
-	}*/
+	
 
 	//Ve subscreen
 	/*setcolor(TAB_ON_SELECTED_BACKGROUND);
@@ -71,12 +77,12 @@ void onUpdate() {
 	}
 	else if (t[1]->getIsSelected()) {
 
-	}
+	}*/
 
 	
 
 
-	*/
+	
 
 }
 

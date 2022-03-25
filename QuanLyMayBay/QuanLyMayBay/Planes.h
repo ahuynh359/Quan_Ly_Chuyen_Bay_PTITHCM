@@ -14,7 +14,9 @@ private:
 
 public:
 	PlaneList() {
-
+		for (int i = 0; i < MAX_PLANE; i++) {
+			data[i] = new Plane();
+		}
 	}
 
 	~PlaneList() {
