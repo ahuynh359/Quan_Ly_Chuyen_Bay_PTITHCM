@@ -1,59 +1,69 @@
-#pragma once;
+#pragma once
 #define MAX_ID 15
 #include<iostream>
+#include"Tickets.h"
 using namespace std;
 
-struct Flights {
+struct Date {
+	int day = 0;
+	int month = 0;
+	int year = 0;
+	int hour = 0;
+	int minute = 0;
+};
+
+struct Flight {
 	char idFlight[MAX_ID];
-	char day[2];
-	char hour[2];
-	char des[100];
-	char status[1]; // 0 huy chuyen - 1 con ve - 2 het ve - 3 hoan tat 
+	Date departure;
+	char arrive[100];
+	int status; // 0 huy chuyen - 1 con ve - 2 het ve - 3 hoan tat 
 	char idPlane[MAX_ID];
+	char** data; 
+	Ticket* data;
 };
-struct Node
+
+struct FlightList
 {
-	Flights info;
-	struct Node* next;
+	Flight info;
+	FlightList* next;
 };
-typedef Node* PTR;
+typedef FlightList* PTR;
 
 void initialize(PTR& First)
 {
-	//nullptr
 	First = NULL;
 }
 
 PTR newNode(void)
 {
-	PTR p = new Node;
+	PTR p = new FlightList;
 	return p;
 }
 
-void insertFirst(PTR& First, Flights x)
+void insertFirst(PTR& First, Flight x)
 {
 	PTR p;
-	p = new Node;
+	p = new FlightList;
 	p->info = x;
 	p->next = First;
 	First = p;
 }
 
-void insertAfter(PTR p, Flights x)
+void insertAfter(PTR p, Flight x)
 {
 	PTR q;
 	if (p == NULL)
 		printf("Khong them chuyen bay vao danh sach duoc.");
 	else
 	{
-		q = new Node;
+		q = new FlightList;
 		q->info = x;
 		q->next = p->next;
 		p->next = q;
 	}
 }
 
-PTR searchInfo(PTR First, Flights x)
+PTR searchInfo(PTR First, Flight x)
 {
 	PTR p;
 	for (p = First; p != NULL; p = p->next)
@@ -87,7 +97,7 @@ void  deleteAfter(PTR p)
 }
 
 //incomplete
-int deleteInfo(PTR& First, Flights x)
+int deleteInfo(PTR& First, Flight x)
 {
 	PTR p = First;
 	if (First == NULL) return 0;
@@ -102,7 +112,7 @@ int deleteInfo(PTR& First, Flights x)
 	return 0;
 }
 
-void deleteAllInfo(PTR& First, Flights x)
+void deleteAllInfo(PTR& First, Flight x)
 {
 	PTR q, p = First;
 	if (First == NULL) { return 0; }
@@ -151,7 +161,7 @@ void traverse(PTR First)
 void selectionSort(PTR& First)
 {
 	PTR p, q, pmin;
-	Flights min;
+	Flight min;
 
 	for (p = First; p->next != NULL; p = p->next)
 	{
@@ -170,10 +180,10 @@ void selectionSort(PTR& First)
 	}
 }
 
-void insert_Order(PTR& First, Flights x)
+void insert_Order(PTR& First, Flight x)
 {
 	PTR p, t, s;  // t la nut truoc, s la nut sau
-	p = new Node;
+	p = new FlightList;
 	p->info = x;
 	for (s = First; s != NULL && s->info < x; t = s, s = s->next);
 	if (s == First)  // them nut vao dau danh sach lien ket
@@ -188,7 +198,7 @@ void insert_Order(PTR& First, Flights x)
 	}
 }
 
-void insertOrder(PTR& First, Flights x)
+void insertOrder(PTR& First, Flight x)
 {
 	PTR q, p;  // q la nut truoc, p la nut sau
 	q = NULL;
@@ -203,7 +213,7 @@ void insertOrder(PTR& First, Flights x)
 PTR mergeOrder(PTR& First1, PTR& First2)
 {
 	PTR p1, p2, p3;
-	PTR First3 = new Node; // tạo vùng nhớ tạm 
+	PTR First3 = new FlightList; // tạo vùng nhớ tạm 
 	p1 = First1; p2 = First2; p3 = First3;
 	while (p1 != NULL && p2 != NULL)
 		if (p1->info < p2->info)

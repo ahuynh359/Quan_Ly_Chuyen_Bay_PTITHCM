@@ -13,11 +13,12 @@ struct Passenger {
 	* 1 NU
 	*/
 	char idPass[15];
-
+};
+struct NodePass {
+	Passenger data;
 	//2. pointer
-	Passenger* pleft;
-	Passenger* pright;
-
+	NodePass* pleft;
+	NodePass* pright;
 };
 
 typedef struct Passenger* tree;
