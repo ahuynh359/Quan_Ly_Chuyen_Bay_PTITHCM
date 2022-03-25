@@ -153,6 +153,7 @@
     <ClInclude Include="ManagePlanesTab.h" />
     <ClInclude Include="Tab.h" />
     <ClInclude Include="Passengers.h" />
+    <ClInclude Include="Tickets.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="UIController.h" />
   </ItemGroup>

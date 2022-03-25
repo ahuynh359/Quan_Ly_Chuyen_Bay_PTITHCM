@@ -62,6 +62,9 @@
     <ClInclude Include="define.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="Tickets.h">
+      <Filter>MyLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DSMB.txt">
