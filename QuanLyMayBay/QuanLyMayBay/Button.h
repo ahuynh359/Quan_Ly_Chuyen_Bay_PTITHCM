@@ -49,10 +49,11 @@
 			}
 
 			UI::drawUI();
-			settextstyle(DEFAULT_FONT, HORIZ_DIR, 0);
+			
 			setcolor(currentTextColor);
 			int textWidth = textwidth(text);
 			int textHeight = textheight(text);
+			settextstyle(DEFAULT_FONT, HORIZ_DIR, 0);
 			outtextxy((left + right - textWidth) / 2, (top + bottom - textHeight) / 2, text);
 		}
 
