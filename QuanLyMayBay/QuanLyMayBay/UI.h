@@ -1,10 +1,10 @@
-
-
 #include"define.h"
 #include"graphics.h"
 #pragma comment(lib,"graphics.lib")
+
 #ifndef UI_H
 #define UI_H
+
 class UI {
 protected:
 	int left, top;
@@ -28,6 +28,7 @@ public:
 		onSelectedBackgroundColor = -1; 
 		currenBackground = -1;
 	}
+protected:
 	void virtual drawUI() {
 		setbkcolor(currenBackground);
 		setfillstyle(SOLID_FILL, currenBackground);
@@ -41,5 +42,21 @@ public:
 		}
 		return false;
 	}
+public:
+	bool virtual isLeftMouseClicked(int xMouse,int yMouse) {
+		if (isPointed( xMouse,  yMouse) && GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
+			return true;
+		}
+		return false;
+	}
+
+	bool virtual isRightMouseClicked(int xMouse, int yMouse) {
+		if (isPointed(xMouse, yMouse) && GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
+			return true;
+		}
+		return false;
+	}
+	
 };
+
 #endif 

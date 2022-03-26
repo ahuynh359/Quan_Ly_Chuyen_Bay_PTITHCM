@@ -3,21 +3,16 @@
 int main()
 {
 	init();
-	bool isActive = true;
-	while (isActive) {
+	while (true) {
 		setactivepage(1 - getactivepage());
 		onUpdate();
 		setvisualpage(getactivepage());
-		drawSubMenu();
-		if (kbhit()) {
-			char s = getch();
-			if (s == 'a')
-				break;
-		}
+		//clearmouseclick(WM_LBUTTONDOWN);
+		
 		delay(20);
 	}
 
-	//getch();
+	getch();
 	closegraph();
 
 	return 0;

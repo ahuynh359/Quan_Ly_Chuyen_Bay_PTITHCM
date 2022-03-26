@@ -4,6 +4,7 @@ class EditText :public UI {
 private:
 	char hint[30],title[30],content[30];
 	int id;
+	const int SPACE = 20;
 	
 
 public:
@@ -18,6 +19,44 @@ public:
 }
 
 	void drawUI() {
+		//Ve title
+		setbkcolor(SUBWINDOW_BACKGROUND);
+		setcolor(PLANE_TEXT_COLOR);
+		//settextstyle(10, 0, 2);
+		int h = textheight(title);
+		outtextxy(left - 90,( top+bottom-h)/2, title);
+
+		//Ve edittext
+		UI::drawUI();
+		if (strlen(content) == 0) {
+			//Ve hint
+			setbkcolor(backgroundColor);
+			setcolor(EDITEXT_HINT_COLOR);
+			h = textheight(hint);
+			outtextxy(left + 5, (top + bottom - h) / 2, hint);
+
+		}
+		else {
+			//Ve noi dung nguoi dung nhap
+			setbkcolor(backgroundColor);
+			setcolor(YELLOW);
+			outtextxy(left + 10, (top - bottom - h) / 2, content);
+			
+		}
+		
+
+
 
 	}
+
+	//Ham lay du lieu duoc nhap
+	char* getData() {
+		int n = strcpy(content);
+		if (content[n - 1] == ' ' || content[n - 1] == '\0')
+			return content;
+		return NULL;
+	}
+
+
+	
 };
