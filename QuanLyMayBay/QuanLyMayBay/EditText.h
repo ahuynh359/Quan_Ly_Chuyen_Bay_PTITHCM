@@ -75,26 +75,7 @@ public:
 			strcpy_s(content, "_");
 			
 			
-				while (kbhit()) {
-					int n = strlen(content);
-					char a = getch();
-					if (a == BACK_SPACE) {
-						if (n > 1) {
-							content[n--] = ' ';
-							content[n] = '-';
-
-						}
-					}
-					if (a == KEY_UP)
-						return;
-					if (a <= '9' && a >= '0') {
-						content[n++] = a;
-					}
-					drawUI();
-
-
-			
-			}
+				
 
 		}
 		else if (editext != this && strlen(content) == 1) {
