@@ -11,6 +11,10 @@ struct Plane {
 	char type[MAX_TYPE];
 	int seats; //So cho >= 20
 
+	// CHI SO PHU
+	int flyTimes = 0; // so luot thuc hien
+
+
 };
 
 

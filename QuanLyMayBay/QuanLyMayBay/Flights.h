@@ -19,7 +19,7 @@ struct Flight {
 	int status; // 0 huy chuyen - 1 con ve - 2 het ve - 3 hoan tat 
 	char idPlane[MAX_ID];
 	char** data; 
-	Ticket* data;
+	TicketList data;
 };
 
 struct FlightList
