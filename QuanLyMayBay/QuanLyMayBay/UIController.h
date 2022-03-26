@@ -3,7 +3,7 @@
 #include"Button.h"
 #include"ManagePlanesTab.h"
 
-int currentTab = -1;
+
 Tab t[MAX_TAB];
 ManagePlanesTab managePlaneTab;
 Tab* temp;
@@ -56,6 +56,10 @@ void onUpdate() {
 		//managePlaneTab = ManagePlanesTab();
 		managePlaneTab.drawUI();
 
+
+	}
+	else if(t[1].getIsSelected()) {
+		managePlaneTab.reset();
 
 	}
 

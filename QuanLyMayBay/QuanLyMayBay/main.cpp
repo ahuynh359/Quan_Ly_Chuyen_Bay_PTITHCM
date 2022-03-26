@@ -7,7 +7,7 @@ int main()
 		setactivepage(1 - getactivepage());
 		onUpdate();
 		setvisualpage(getactivepage());
-		//clearmouseclick(WM_LBUTTONDOWN);
+		clearmouseclick(WM_LBUTTONDOWN);
 		
 		delay(20);
 	}

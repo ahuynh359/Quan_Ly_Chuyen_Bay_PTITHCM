@@ -24,8 +24,7 @@ public:Tab(int left, int top, int right, int bottom, char text[20], int textColo
 	  void  drawUI() {
 		  UI::drawUI();
 		  setcolor(textColor);
-		 // settextstyle(10, 0, 2);
-		  //setusercharsize(2, 1, 3, 2);
+		 // settextstyle(BOLD_FONT, HORIZ_DIR, 2);
 		  outtextxy((left + right - textwidth(text)) / 2, (top + bottom - textheight(text)) / 2, text);
 
 
@@ -36,11 +35,11 @@ public:Tab(int left, int top, int right, int bottom, char text[20], int textColo
 		  if (isLeftMouseClicked(mousex(), mousey()) || tab == this) {
 			  tab = this;
 			  isSelected = true;
-			  currenBackground = onSelectedBackgroundColor;
+			  currentBackground = onSelectedBackgroundColor;
 		  }
 		  else if (tab != this) {
 			  isSelected = false;
-			  currenBackground = backgroundColor;
+			  currentBackground = backgroundColor;
 		  }
 
 		  drawUI();

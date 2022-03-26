@@ -1,8 +1,8 @@
-#pragma once;
+
 
 #include"DataConst.h"
-
-
+#ifndef PLANE_H
+#define PLANE_H
 #include<iostream>
 using namespace std;
 
@@ -52,17 +52,11 @@ int removePlane(PlaneList& list, int index) {
 }
 
 
-void add(PlaneList& list) {
-	Plane* plane = new Plane();
-	cout << "Nhap so hieu MB:";
-	cin >> plane->idPlane;
-	cout << "Nhap loai may bay:";
-	cin >> plane->type;
-	while (plane->seats < 20) {
-		cout << "Nhap so cho:";
-		cin >> plane->seats;
-	}
-	list.data[(++list.size)] = plane;
+void addPlane(PlaneList& list, Plane* plane) {
+		list.data[list.size] = plane;
+		list.size++;
+	
 }
 
+#endif
 

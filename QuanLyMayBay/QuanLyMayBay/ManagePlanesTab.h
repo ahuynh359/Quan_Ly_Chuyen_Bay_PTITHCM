@@ -2,18 +2,24 @@
 
 #include "Button.h"
 #include"Tab.h"
-
+#include"EditText.h"
+#include"Planes.h"
 #include<fstream>
 using namespace std;
 class ManagePlanesTab {
 private:
 	Button button[PLANE_MAX_BUTTON];
+	EditText edittext[3];
+
+
 	char soTrang[5];
-	char planeData[50][50];
+	PlaneList planeList;
+	enum EIDT_NAME { ID, BRAND, SEATS };
 	enum BUTTON_NAME { them, hthi, trai, phai, lui, luu };
 	int n; //Tong so phan tu
 	int currentMenu = 0;
 	enum MENU { MENU_CHINH, MENU_THEM };
+	EditText* temp = &edittext[0];
 public:
 
 	ManagePlanesTab() {
@@ -26,7 +32,7 @@ public:
 		int right = left + 50;
 		int bottom = top + 50;
 		char a[15] = "+";
-		button[them] = Button(them, left, top, right, bottom, TAB_ON_SELECTED_BACKGROUND, WHITE, a,
+		button[them] = Button(left, top, right, bottom, TAB_ON_SELECTED_BACKGROUND, WHITE, a,
 			PLANE_TEXT_COLOR);
 
 		//------------BUTTON XEM DS CHUYEN BAY
@@ -34,7 +40,7 @@ public:
 		right = left + 50;
 		bottom = top + 50;
 		strcpy_s(a, "LIST");
-		button[hthi] = Button(hthi, left, top, right, bottom, TAB_ON_SELECTED_BACKGROUND, WHITE, a,
+		button[hthi] = Button(left, top, right, bottom, TAB_ON_SELECTED_BACKGROUND, WHITE, a,
 			PLANE_TEXT_COLOR);
 
 
@@ -45,23 +51,48 @@ public:
 		right = left + 50;
 		bottom = top + 30;
 		strcpy_s(a, "<");
-		button[trai] = Button(trai, left, top, right, bottom, textButton, WHITE, a, PLANE_TEXT_COLOR);
-
+		button[trai] = Button(left, top, right, bottom, textButton, WHITE, a, PLANE_TEXT_COLOR);
 		//--------------BUTTON PHAI
 		left = right + 100;
 		right = left + 50;
 		strcpy_s(a, ">");
-		button[phai] = Button(phai, left, top, right, bottom, textButton, WHITE, a, PLANE_TEXT_COLOR);
+		button[phai] = Button(left, top, right, bottom, textButton, WHITE, a, PLANE_TEXT_COLOR);
 
 
 		//-----------BUTTON QUAY LUI
 		strcpy_s(a, "<");
-		button[lui] = Button(lui, SUBWINDOW_LEFT + 10, SUBWINDOW_TOP + 10, SUBWINDOW_LEFT + 60, SUBWINDOW_TOP + 60, textButton, WHITE, a, PLANE_TEXT_COLOR);
+		button[lui] = Button(SUBWINDOW_LEFT + 10, SUBWINDOW_TOP + 10, SUBWINDOW_LEFT + 60, SUBWINDOW_TOP + 60, textButton, WHITE, a, PLANE_TEXT_COLOR);
 
 		//-----------BUTTON LUU
 		strcpy_s(a, "SAVE");
-		button[luu] = Button(luu, SUBWINDOW_RIGHT - 100, SUBWINDOW_BOTTOM - 100, SUBWINDOW_RIGHT - 30, SUBWINDOW_BOTTOM - 50, TAB_ON_SELECTED_BACKGROUND, WHITE, a,
+		button[luu] = Button(SUBWINDOW_RIGHT - 100, SUBWINDOW_BOTTOM - 100, SUBWINDOW_RIGHT - 30, SUBWINDOW_BOTTOM - 50, TAB_ON_SELECTED_BACKGROUND, WHITE, a,
 			PLANE_TEXT_COLOR);
+
+		//---------EDITTEXT ID
+		int spaceEdit = 80;
+		char hint[30] = "Data must be entered!";
+		char title[30] = "ID";
+		char content[30] = "";
+		left = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - EDITEXT_WIDTH + 90) / 2;
+		top = SUBWINDOW_TOP + 130;
+		right = left + EDITEXT_WIDTH;
+		bottom = top + EDITTEXT_HEIGHT;
+		edittext[ID] = EditText(hint, title, content, left, top, right, bottom);
+
+
+		//------------EDITTEXT BRAND
+		strcpy_s(title, "BRAND");
+		top = bottom + spaceEdit;
+		bottom = top + EDITTEXT_HEIGHT;
+		edittext[BRAND] = EditText(hint, title, content, left, top, right, bottom);
+
+		//-------------EDITTEXT SEATS
+		strcpy_s(hint, ">= 20");
+		strcpy_s(title, "SEATS");
+		top = bottom + spaceEdit;
+		bottom = top + EDITTEXT_HEIGHT;
+		edittext[SEATS] = EditText(hint, title, content, left, top, right, bottom);
+
 		readFile();
 		//drawBackground();
 		//initManagePlaneTab();
@@ -73,6 +104,7 @@ public:
 
 	void drawUI() {
 		//cleardevice();
+		//settextstyle(10, 0, 2);
 		drawBackground();
 
 		switch (currentMenu) {
@@ -99,48 +131,60 @@ public:
 			SUBWINDOW_BOTTOM - 1);
 
 	}
+	void reset() {
+		currentMenu = 0;
+	}
 
 	void readFile() {
 		ifstream inp("DSMB.txt");
-		if (inp.fail()) {
-			printf("Khong mo duoc file\n");
-			exit(1);
-
-		}
-
+		string line;
+		
+		int n;
 		inp >> n;
+		inp.ignore();
 		for (int i = 0; i < n; i++) {
+			Plane* plane = new Plane();
+			getline(inp, line);    strcpy_s(plane->idPlane, line.c_str());
+			getline(inp, line);		strcpy_s(plane->type, line.c_str());
+			getline(inp, line);		plane->seats = atoi(line.c_str());
 
-			for (int j = 0; j < 4; j++) {
-				inp >> planeData[i][j];
-			}
+			addPlane(planeList,plane);
+			
+
+
 		}
-
 		inp.close();
 
 	}
 	void drawAddPlaneBorder() {
 		//while (!button[lui].isLeftMouseClicked(mousex(), mousey())) {
+		for (int i = 0; i < 3; i++)
+			edittext[i].drawUI();
+		settextstyle(BOLD_FONT, HORIZ_DIR, 2);
 		char a[20] = "ADD PLANE";
 		button[lui].drawUI();
 		button[luu].drawUI();
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(BLACK);
-		//settextstyle(10, 0, 5);
-		int w = textwidth(a);
-		outtextxy((SUBWINDOW_LEFT + SUBWINDOW_RIGHT - w) / 2, SUBWINDOW_TOP + 10, a);
+
+		outtextxy((SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(a)) / 2, SUBWINDOW_TOP + 10, a);
+
+		for (int i = 0; i < 3; i++) {
+
+			edittext[i].onAction(temp);
+		}
+
+
 		if (button[lui].isLeftMouseClicked(mousex(), mousey())) {
 			currentMenu = MENU_CHINH;
 			drawUI();
 		}
-		//}
 
 
 	}
-
 	void drawManagePlaneTab() {
 
-
+		settextstyle(BOLD_FONT, HORIZ_DIR, 2);
 		//-------------------VE BORDER
 		setcolor(BLACK);
 		rectangle(LEFT_BORDER, TOP_BORDER, RIGHT_BORDER, BOTTOM_BORDER);
@@ -191,7 +235,8 @@ public:
 			int width = textwidth(PLANE_BUTTON_NAME[i - 1]);
 			int height = textheight(PLANE_BUTTON_NAME[i - 1]);
 			int x = LEFT_BORDER + space * i;
-			//settextstyle(0, 0, 0);
+			//settextjustify(CENTER_TEXT, TOP_TEXT);
+			//settextstyle(BOLD_FONT, HORIZ_DIR, 2);
 			outtextxy((x + preX - width) / 2, TOP_BORDER + 15, PLANE_BUTTON_NAME[i - 1]);
 			preX = x;
 		}
@@ -206,73 +251,68 @@ public:
 
 	}
 
-	
-
 	//Do du lieu ra bang va xu li su kien
 	void onItemClicked() {
-		int preY = TOP_BORDER + 35;
-		int preX = LEFT_BORDER;
+
+
 
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(COLOR(50, 45, 188));
 
 		int space = (RIGHT_BORDER + LEFT_BORDER) / 5;
-
-		for (int i = 1; i <= n; i++) {
-			preX = LEFT_BORDER;
+		int preY = TOP_BORDER + 35;
+	
+		for (int i = 1; i <= planeList.size; i++) {
+			int preX = LEFT_BORDER;
 			int y = preY + 35;
-			if (mousex() <= RIGHT_BORDER && mousex() >= LEFT_BORDER && mousey() <= (y + 35) && mousey() >= (preY + 35)) {
+			if (mousex() <= RIGHT_BORDER && mousex() >= LEFT_BORDER && mousey() <= (y + 35) &&
+				mousey() >= (preY + 35)) {
 				setbkcolor(SUBWINDOW_BACKGROUND);
 				setcolor(COLOR(205, 92, 92));
-				for (int j = 1; j <= 4; j++) {
-					int width = textwidth(planeData[j - 1]);
-					int height = textheight(planeData[j - 1]);
-					int x = preX + space;
-
-
-					outtextxy((x + preX - width) / 2, y, planeData[j - 1]);
-
-					preX = x;
-
-				}
 			}
 			else {
-				for (int j = 1; j <= 4; j++) {
-					int width = textwidth(planeData[j - 1]);
-					int height = textheight(planeData[j - 1]);
-					int x = preX + space;
-
-
-					setbkcolor(SUBWINDOW_BACKGROUND);
-					setcolor(BLACK);
-					outtextxy((x + preX - width) / 2, y, planeData[j - 1]);
-
-					preX = x;
-
-				}
+				setbkcolor(SUBWINDOW_BACKGROUND);
+				setcolor(BLACK);
 			}
+			//STT
+			char charValue[50];
+			sprintf_s(charValue, sizeof(charValue), "%d", i);
+			int width = textwidth(charValue);
+			int height = textheight(charValue);
+			int x = preX + space ;
+			outtextxy((x + preX - width) / 2, y, charValue);
+			preX = x;
+			//ID
+			width = textwidth(planeList.data[i-1]->idPlane);
+			height = textheight(planeList.data[i-1]->idPlane);
+			x = preX + space;
+			outtextxy((x + preX - width) / 2, y, planeList.data[i-1]->idPlane);
+			preX = x;
+			//BRAND
+			width = textwidth(planeList.data[i-1]->type);
+			height = textheight(planeList.data[i-1]->type);
+			x = preX + space;
+			outtextxy((x + preX - width) / 2, y, planeList.data[i-1]->type);
+			preX = x;
+			//SEATS
+			sprintf_s(charValue,sizeof(charValue), "%d", planeList.data[i-1]->seats);
+			width = textwidth(charValue);
+			height = textheight(charValue);
+			x = preX + space;
+			outtextxy((x + preX - width) / 2, y, charValue);
+			preX = x;
+
 			preY += 35;
 
-
-
 		}
-	}
-
-
-	void action() {
-
-	}
-
-
-
-	void veKhungXacNhanXoa() {
-		drawBackground();
-		setbkcolor(COLOR_BACKGROUND);
-		setcolor(BLACK);
+	
 
 
 
 	}
+
+
+
 
 
 };

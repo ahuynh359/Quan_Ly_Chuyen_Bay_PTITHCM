@@ -65,6 +65,9 @@
     <ClInclude Include="Tickets.h">
       <Filter>MyLib</Filter>
     </ClInclude>
+    <ClInclude Include="DataConst.h">
+      <Filter>MyLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="DSMB.txt">
