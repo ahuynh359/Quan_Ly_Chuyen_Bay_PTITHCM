@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include"graphics.h"
 #pragma comment(lib,"graphics.lib")
+
 //----------------SCREEN----------
 int SCREEN_WIDTH = GetSystemMetrics(SM_CXSCREEN);
 int SCREEN_HEIGHT = GetSystemMetrics(SM_CYSCREEN);

@@ -1,6 +1,9 @@
 #pragma once
 #include"UI.h"
-
+#include<iostream>
+#include<Windows.h>
+#include <cstdlib>
+using namespace std;
 #ifndef EDITTEXT_H
 #define EDITTEXT_H
 class EditText :public UI {
@@ -15,7 +18,7 @@ private:
 
 
 public:
-	EditText(char hint[30], char title[30], char content[30], int left, int top, int right, int bottom,int maxChar) :UI
+	EditText(char hint[30], char title[30], char content[30], int left, int top, int right, int bottom, int maxChar) :UI
 	(left, top, right, bottom, backgroundColor, onSelectedBackgroundColor) {
 
 		strcpy_s(this->hint, hint);
@@ -23,9 +26,9 @@ public:
 		strcpy_s(this->content, "");
 		strcpy_s(this->anounce, "");
 		this->backgroundColor = EDITEXT_BACKGROUND_COLOR;
-		this->onSelectedBackgroundColor = COLOR(191,207,255);
+		this->onSelectedBackgroundColor = COLOR(191, 207, 255);
 		this->isSelected = false;
-		this->maxChar = maxChar;
+		this->maxChar = maxChar + 1;
 		this->curAnounceColor = vaildAnounceColor;
 		this->index = 0;
 
@@ -40,11 +43,11 @@ public:
 		this->maxChar = 0;
 		this->curAnounceColor = vaildAnounceColor;
 		index = 0;
-		
+
 
 	}
 
-	
+
 
 	void drawUI() {
 
@@ -66,7 +69,7 @@ public:
 			outtextxy(left + 5, (top + bottom - h) / 2, hint);
 
 		}
-		else if(strlen(content) > 0)  {
+		else if (strlen(content) > 0) {
 			setbkcolor(currentBackground);
 
 			//Ve noi dung nguoi dung nhap
@@ -75,25 +78,29 @@ public:
 			outtextxy(left + 5, (top + bottom - h) / 2, content);
 
 		}
-
+		setbkcolor(SUBWINDOW_BACKGROUND);
+		setcolor(curAnounceColor);
+		outtextxy(left + 5, bottom + 10, anounce);
+		int startTime = 0;
 		
-
+		
 
 
 
 	}
 
-	void drawAnoune(char anounce[30],bool isVaild) {
+	void drawAnoune(char anounce[30], bool isVaild) {
 		strcpy_s(this->anounce, anounce);
 		if (isVaild) {
 			curAnounceColor = vaildAnounceColor;
 		}
 		else
 			curAnounceColor = invalidAnounceColor;
+
 	}
 
 	void onAction(EditText*& editext) {
-		if (isLeftMouseClicked(mousex(), mousey()) || editext == this) {
+		if (isLeftMouseClicked(mousex(), mousey()) || editext == this && checkParseString()) {
 			isSelected = true;
 			editext = this;
 			currentBackground = onSelectedBackgroundColor;
@@ -101,42 +108,50 @@ public:
 				content[index++] = '_';
 				content[index] = '\0';
 			}*/
-				
-			if (strlen(content) == 0) {
+
+			if (strlen(content) == 0 || !isExistDash(content) && strlen(content) < maxChar) {
 				content[index++] = '_';
 				content[index] = '\0';
+
 			}
-			
+			checkParseString();
 
 		}
-		
+
 		else if (editext != this ) {
 			isSelected = false;
-			currentBackground = backgroundColor; 
-			
-			
+			currentBackground = backgroundColor;
+			if (isExistDash(content)) {
+				content[--index] = '\0';
+
+			}
+
+
+
 		}
 
 		drawUI();
 
 	}
-
-	//Ham lay du lieu duoc nhap
-	char* getData() {
-		int n = strlen(content);
-		if (content[n - 1] == ' ' || content[n - 1] == '\0')
-			return content;
-		return NULL;
+	bool isExistDash(char content[30]) {
+		for (int i = 0; i < strlen(content); i++) {
+			if (content[i] == '_')
+				return true;
+		}
+		return false;
+	}
+	bool isMaxChar() {
+		return strlen(content) == maxChar;
 	}
 
-	void clearText(EditText *&editText) {
-		index = 0;
-		content[index] = '\0';
-		anounce[index] = '\0';
+	int getIntData() {
+		int data = 0;
+		if(strlen(content) > 0)
+		data = stoi(content);
+		return data;
 
 	}
-
-	void customInitChar( char text[30]) {
+	void customInitChar(char text[30]) {
 		strcpy_s(content, text);
 		index = strlen(content);
 		anounce[0] = '\0';
@@ -152,54 +167,72 @@ public:
 	void addChar(char c) {
 		if (index == maxChar)
 			return;
-		content[index-1] = c;
-		content[index++] = '_';
-		content[index] = '\0';
+		content[index - 1] = c;
+		content[index] = '_';
+		content[++index] = '\0';
 		//drawUI();
 
 	}
 
 	bool checkParseInt() {
-	
-		for (size_t i = 0; i < strlen(content); i++) {
-			if (!(content[i]<='9' && content[i]>='0')) {
-				
-				return false;
 
-			}
-
+		char s[30] = "20 <= seats <= 50";
+		
+		if (getIntData() < 20 || getIntData() > 50) {
+			drawAnoune(s, true);
+			return false;
 		}
 		return true;
 
 	}
 
-	bool checkParseString() {
-		for (size_t i = 0; i < strlen(content); i++) {
-			if (!(content[i] <= 'z' && content[i] >= 'a' || content[i] <= 'Z' && content[i] >= 'A' || content[i] == ' ')) {
-
-
+	bool isEmpty() {
+		return strlen(content) == 0;
+	}
+	bool checkInt() {
+		if (getIntData() < 20 || getIntData() > 50) {
+			return false;
 		}
 		return true;
-				return false;
+	}
 
-			}
+	bool checkParseString() {
+		char s[30] = "Can't leave empty";
+		if (strlen(content) == 0 ) {
+			drawAnoune(s, true);
+			return false;
+		}
+		
+		return true;
 	}
 
 
 	void deleteChar() {
-		if (strlen(content) == 0)
+		if (strlen(content) == 1)
 			return;
-		content[--index] = '_';
-		content[index] = '\0';
+		index -= 2;
+		content[index] = '_';
+		content[++index] = '\0';
 
-		
+
 	}
 
 	void clearCursor() {
 		if (content[--index] == '_')
 			content[index] = '\0';
+		strcpy_s(anounce, "");
+	}
+	 char* getContent() {
+		
+		return content;
 	}
 
+	 void clearText() {
+		 index = 0;
+		 content[index] = '\0';
+		 anounce[index] = '\0';
+		 
+	 }
 
 
 };
