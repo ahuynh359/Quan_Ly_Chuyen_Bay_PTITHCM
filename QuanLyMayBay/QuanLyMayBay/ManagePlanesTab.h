@@ -162,7 +162,7 @@ public:
 	}
 
 	void readFile() {
-		ifstream inp("DSMB.txt");
+		ifstream inp("PlaneData.txt");
 		string line;
 
 		int n;

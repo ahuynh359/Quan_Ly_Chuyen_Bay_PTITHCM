@@ -159,8 +159,7 @@
     <ClInclude Include="UIController.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="DSCB.txt" />
-    <Text Include="DSMB.txt" />
+    <Text Include="PlaneData.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

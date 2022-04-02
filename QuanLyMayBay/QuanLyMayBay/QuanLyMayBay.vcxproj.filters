@@ -70,10 +70,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="DSMB.txt">
-      <Filter>FileData</Filter>
-    </Text>
-    <Text Include="DSCB.txt">
+    <Text Include="PlaneData.txt">
       <Filter>FileData</Filter>
     </Text>
   </ItemGroup>
