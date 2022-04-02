@@ -9,9 +9,9 @@ class UI {
 protected:
 	int left, top;
 	int right, bottom;
-	int backgroundColor, onSelectedBackgroundColor,currentBackground;
+	int backgroundColor, onSelectedBackgroundColor, currentBackground;
 public:
-	UI(int left, int top,int right,int bottom,int backgroundColor,int onSelectedBackgroundColor) {
+	UI(int left, int top, int right, int bottom, int backgroundColor, int onSelectedBackgroundColor) {
 		this->left = left;
 		this->top = top;
 		this->right = right;
@@ -25,12 +25,10 @@ public:
 		left = 0; top = 0;
 		right = 0; bottom = 0;
 		backgroundColor = -1;
-		onSelectedBackgroundColor = -1; 
+		onSelectedBackgroundColor = -1;
 		currentBackground = -1;
-
-		
 	}
-	
+
 	bool virtual isLeftMouseClicked(int xMouse, int yMouse) {
 		if (isPointed(xMouse, yMouse) && GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
 			return true;
@@ -44,24 +42,27 @@ public:
 		}
 		return false;
 	}
+
 protected:
 	void virtual drawUI() {
 		setbkcolor(currentBackground);
 		setfillstyle(SOLID_FILL, currentBackground);
-		bar(left , top , right , bottom );
+		bar(left, top, right, bottom);
 
 	}
 
-	bool virtual isPointed(int xMouse,int yMouse) {
-		if (xMouse <= right  && xMouse >= left  && yMouse <= bottom   && yMouse >=  top ) {
+	bool virtual isPointed(int xMouse, int yMouse) {
+		if (xMouse <= right && xMouse >= left && yMouse <= bottom && yMouse >= top) {
 			return true;
 		}
 		return false;
 	}
-	
 
-	
-	
+
+
+
+
+
 };
 
 #endif 

@@ -10,7 +10,6 @@ class EditText :public UI {
 private:
 	char hint[30], title[30], content[30], anounce[30];
 	int maxChar;
-	bool isSelected;
 	int index;
 	int vaildAnounceColor = RED;
 	int invalidAnounceColor = GREEN;
@@ -27,7 +26,6 @@ public:
 		strcpy_s(this->anounce, "");
 		this->backgroundColor = EDITEXT_BACKGROUND_COLOR;
 		this->onSelectedBackgroundColor = COLOR(191, 207, 255);
-		this->isSelected = false;
 		this->maxChar = maxChar + 1;
 		this->curAnounceColor = vaildAnounceColor;
 		this->index = 0;
@@ -39,7 +37,6 @@ public:
 		strcpy_s(this->title, "");
 		strcpy_s(this->content, "");
 		strcpy_s(this->anounce, "");
-		this->isSelected = false;
 		this->maxChar = 0;
 		this->curAnounceColor = vaildAnounceColor;
 		index = 0;
@@ -80,7 +77,11 @@ public:
 		}
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(curAnounceColor);
-		outtextxy(left + 5, bottom + 10, anounce);
+		if (strlen(anounce) > 0) {
+			outtextxy(left + 5, bottom + 10, anounce);
+			delay(1000);
+			//strcpy_s(anounce, "");
+		}
 		int startTime = 0;
 		
 		
@@ -100,8 +101,7 @@ public:
 	}
 
 	void onAction(EditText*& editext) {
-		if (isLeftMouseClicked(mousex(), mousey()) || editext == this && checkParseString()) {
-			isSelected = true;
+		if ( editext == this) {
 			editext = this;
 			currentBackground = onSelectedBackgroundColor;
 			/*if (content[index] == '\0' && content[index-1] != '_') {
@@ -119,7 +119,6 @@ public:
 		}
 
 		else if (editext != this ) {
-			isSelected = false;
 			currentBackground = backgroundColor;
 			if (isExistDash(content)) {
 				content[--index] = '\0';

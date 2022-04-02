@@ -2,10 +2,10 @@
 #include"UIController.h"
 int main()
 {
-	init();
+	UIController ui;
 	while (true) {
 		setactivepage(1 - getactivepage());
-		onUpdate();
+		ui.onUpdate();
 		setvisualpage(getactivepage());
 		clearmouseclick(WM_LBUTTONDOWN);
 		

@@ -1,17 +1,18 @@
 #pragma once;
 #include <iostream>
+#include"DataConst.h"
 using namespace std;
 
 struct Passenger {
 	//1. data
-	char lastName[10];
-	char firstName[50];
+	char lastName[MAX_LAST_NAME];
+	char firstName[MAX_FIRST_NAME];
 	int sex;
 	/*
 	* 0 NAM
 	* 1 NU
 	*/
-	char idPass[15];
+	char idPass[MAX_ID_PASS];
 };
 
 

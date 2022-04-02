@@ -4,6 +4,7 @@
 #ifndef PLANE_H
 #define PLANE_H
 #include<iostream>
+#include<fstream>
 using namespace std;
 
 struct Plane {
@@ -60,6 +61,42 @@ void addPlane(PlaneList& list, Plane* plane) {
 		list.data[list.size] = plane;
 		list.size++;
 	
+}
+
+
+void readFilePlane(PlaneList &planeList) {
+	ifstream inp("PlaneData.txt");
+	string line;
+
+	int n;
+	inp >> n;
+	inp.ignore();
+	for (int i = 0; i < n; i++) {
+		Plane* plane = new Plane();
+		getline(inp, line);    strcpy_s(plane->idPlane, line.c_str());
+		getline(inp, line);		strcpy_s(plane->type, line.c_str());
+		getline(inp, line);		plane->seats = atoi(line.c_str());
+
+		addPlane(planeList, plane);
+
+
+
+	}
+	inp.close();
+
+}
+
+void writeFilePlane(PlaneList& planeList) {
+	ofstream out("PlaneData.txt", ios::trunc);
+	out << planeList.size << '\n';
+	for (int i = 0; i < planeList.size; i++) {
+		out << planeList.data[i]->idPlane << '\n';
+		out << planeList.data[i]->type << '\n';
+		out << planeList.data[i]->seats << '\n';
+
+
+	}
+	out.close();
 }
 
 #endif
