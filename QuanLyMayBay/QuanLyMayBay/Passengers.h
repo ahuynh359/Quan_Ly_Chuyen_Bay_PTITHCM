@@ -72,8 +72,8 @@ AVLTree rotateRight(AVLTree y) {
 	x->pleft = T2;
 
 	// Cap nhat chieu cao
-	y->height = findMax(height(y->pleft), height(y->pright)) + 1;
-	x->height = findMax(height(x->pleft), height(x->pright)) + 1;
+	y->height = findMax(findHeight(y->pleft), findHeight(y->pright)) + 1;
+	x->height = findMax(findHeight(x->pleft), findHeight(x->pright)) + 1;
 
 	// Tra ve node moi
 	return x;
@@ -90,8 +90,8 @@ AVLTree rotateLeft(AVLTree x) {
 	x->pright = T2;
 
 	// Cap nhat chieu cao
-	y->height = findMax(height(y->pleft), height(y->pright)) + 1;
-	x->height = findMax(height(x->pleft), height(x->pright)) + 1;
+	y->height = findMax(findHeight(y->pleft), findHeight(y->pright)) + 1;
+	x->height = findMax(findHeight(x->pleft), findHeight(x->pright)) + 1;
 
 	// Tra ve node moi
 	return x;
@@ -102,7 +102,7 @@ AVLTree rotateLeft(AVLTree x) {
 int getBalanceFactor(AVLTree root) {
 	if (root == NULL)
 		return 0;
-	return height(root->pleft) - height(root->pright);
+	return findHeight(root->pleft) - findHeight(root->pright);
 
 }
 
@@ -110,7 +110,7 @@ int getBalanceFactor(AVLTree root) {
 // CAP NHAT HE SO CAN BANG
 AVLTree updateBalanceFactor(AVLTree root, Passenger data) {
 	// Cap nhat lai chieu cao cho cay
-	root->height = 1 + findMax(height(root->pleft), height(root->pright);
+	root->height = 1 + findMax(findHeight(root->pleft), findHeight(root->pright);
 
 	// Cap nhat lai he so can bang
 	int balance = getBalanceFactor(root);
@@ -157,7 +157,7 @@ AVLTree addPassenger(AVLTree& root, Passenger data) {
 	/*updateBalanceFactor(root, data);*/
 
 	// Cap nhat lai chieu cao cho cay
-	root->height = 1 + findMax(height(root->pleft), height(root->pright);
+	root->height = 1 + findMax(findHeight(root->pleft), findHeight(root->pright));
 
 	// Cap nhat lai he so can bang
 	int balance = getBalanceFactor(root);
@@ -253,7 +253,7 @@ AVLTree deletePassenger(AVLTree& root, Passenger data) {
 
 
 	// Cap nhat lai chieu cao cho cay
-	root->height = 1 + findMax(height(root->pleft), height(root->pright));
+	root->height = 1 + findMax(findHeight(root->pleft), findHeight(root->pright));
 
 	// Cap nhat lai he so can bang
 	int balance = getBalanceFactor(root);
