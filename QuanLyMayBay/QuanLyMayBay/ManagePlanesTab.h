@@ -19,9 +19,10 @@ private:
 	int n; //Tong so phan tu
 	int currentMenu = 0;
 	enum MENU { MENU_CHINH, MENU_THEM };
-	EditText* temp = &edittext[0];
+	EditText* fieldPointer = &edittext[0];
 public:
 
+	//Khoi tao cac tham
 	ManagePlanesTab() {
 		int textButton = COLOR(190, 193, 196);
 		strcpy_s(this->soTrang, "1/2");
@@ -77,21 +78,21 @@ public:
 		top = SUBWINDOW_TOP + 130;
 		right = left + EDITEXT_WIDTH;
 		bottom = top + EDITTEXT_HEIGHT;
-		edittext[ID] = EditText(hint, title, content, left, top, right, bottom);
+		edittext[ID] = EditText(hint, title, content, left, top, right, bottom, 15);
 
 
 		//------------EDITTEXT BRAND
 		strcpy_s(title, "BRAND");
 		top = bottom + spaceEdit;
 		bottom = top + EDITTEXT_HEIGHT;
-		edittext[BRAND] = EditText(hint, title, content, left, top, right, bottom);
+		edittext[BRAND] = EditText(hint, title, content, left, top, right, bottom, 40);
 
 		//-------------EDITTEXT SEATS
 		strcpy_s(hint, ">= 20");
 		strcpy_s(title, "SEATS");
 		top = bottom + spaceEdit;
 		bottom = top + EDITTEXT_HEIGHT;
-		edittext[SEATS] = EditText(hint, title, content, left, top, right, bottom);
+		edittext[SEATS] = EditText(hint, title, content, left, top, right, bottom, 50);
 
 		readFile();
 		//drawBackground();
@@ -101,6 +102,31 @@ public:
 
 
 	}
+
+	//Minh dang bam phim nao
+	int getInput() {
+		//
+		int re = 0;
+		for (int i = 65; i <= 90; i++) {
+			if (GetAsyncKeyState((char)(i)) & 1) {
+				if (GetKeyState(VK_CAPITAL) & 1)
+					return i;
+				else return i + 32;
+			}
+		}
+		for (int i = 48; i <= 57; i++) {
+			if (GetAsyncKeyState((char)i) & 1) {
+				return i;
+			}
+		}
+		if (GetAsyncKeyState(VK_BACK) & 1) return -1;
+		if (GetAsyncKeyState(VK_SPACE) & 1) return ' ';
+		if (GetAsyncKeyState(VK_TAB) & 1) return  (int)'\t';
+		if (GetAsyncKeyState(VK_UP) & 1) return 1;
+		if (GetAsyncKeyState(VK_DOWN) & 1) return 2;
+		return re;
+	}
+
 
 	void drawUI() {
 		//cleardevice();
@@ -138,7 +164,7 @@ public:
 	void readFile() {
 		ifstream inp("DSMB.txt");
 		string line;
-		
+
 		int n;
 		inp >> n;
 		inp.ignore();
@@ -148,8 +174,8 @@ public:
 			getline(inp, line);		strcpy_s(plane->type, line.c_str());
 			getline(inp, line);		plane->seats = atoi(line.c_str());
 
-			addPlane(planeList,plane);
-			
+			addPlane(planeList, plane);
+
 
 
 		}
@@ -171,8 +197,37 @@ public:
 
 		for (int i = 0; i < 3; i++) {
 
-			edittext[i].onAction(temp);
+			edittext[i].onAction(fieldPointer);
 		}
+		int c = getInput();
+		if (fieldPointer != NULL) {
+			
+			if (c == -1) fieldPointer->deleteChar();
+			else
+				if (c == 1 ){
+					fieldPointer->clearCursor();
+					if (fieldPointer==&edittext[BRAND]) 
+						fieldPointer = &edittext[ID];
+					
+					else if (fieldPointer == &edittext[SEATS]) 
+						fieldPointer = &edittext[BRAND];
+					
+
+
+				}
+				else if (c == 2) {
+					fieldPointer->clearCursor();
+
+					if (fieldPointer == &edittext[ID])
+						fieldPointer = &edittext[BRAND];
+
+					else if (fieldPointer == &edittext[BRAND])
+						fieldPointer = &edittext[SEATS];
+				}
+				else if (c != 0)
+					fieldPointer->addChar((char)c);
+		}
+
 
 
 		if (button[lui].isLeftMouseClicked(mousex(), mousey())) {
@@ -261,7 +316,7 @@ public:
 
 		int space = (RIGHT_BORDER + LEFT_BORDER) / 5;
 		int preY = TOP_BORDER + 35;
-	
+
 		for (int i = 1; i <= planeList.size; i++) {
 			int preX = LEFT_BORDER;
 			int y = preY + 35;
@@ -279,23 +334,23 @@ public:
 			sprintf_s(charValue, sizeof(charValue), "%d", i);
 			int width = textwidth(charValue);
 			int height = textheight(charValue);
-			int x = preX + space ;
+			int x = preX + space;
 			outtextxy((x + preX - width) / 2, y, charValue);
 			preX = x;
 			//ID
-			width = textwidth(planeList.data[i-1]->idPlane);
-			height = textheight(planeList.data[i-1]->idPlane);
+			width = textwidth(planeList.data[i - 1]->idPlane);
+			height = textheight(planeList.data[i - 1]->idPlane);
 			x = preX + space;
-			outtextxy((x + preX - width) / 2, y, planeList.data[i-1]->idPlane);
+			outtextxy((x + preX - width) / 2, y, planeList.data[i - 1]->idPlane);
 			preX = x;
 			//BRAND
-			width = textwidth(planeList.data[i-1]->type);
-			height = textheight(planeList.data[i-1]->type);
+			width = textwidth(planeList.data[i - 1]->type);
+			height = textheight(planeList.data[i - 1]->type);
 			x = preX + space;
-			outtextxy((x + preX - width) / 2, y, planeList.data[i-1]->type);
+			outtextxy((x + preX - width) / 2, y, planeList.data[i - 1]->type);
 			preX = x;
 			//SEATS
-			sprintf_s(charValue,sizeof(charValue), "%d", planeList.data[i-1]->seats);
+			sprintf_s(charValue, sizeof(charValue), "%d", planeList.data[i - 1]->seats);
 			width = textwidth(charValue);
 			height = textheight(charValue);
 			x = preX + space;
@@ -305,7 +360,7 @@ public:
 			preY += 35;
 
 		}
-	
+
 
 
 

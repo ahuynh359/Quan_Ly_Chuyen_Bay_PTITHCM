@@ -73,5 +73,8 @@
     <Text Include="DSMB.txt">
       <Filter>FileData</Filter>
     </Text>
+    <Text Include="DSCB.txt">
+      <Filter>FileData</Filter>
+    </Text>
   </ItemGroup>
 </Project>
