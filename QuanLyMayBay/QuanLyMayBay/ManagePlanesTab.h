@@ -9,22 +9,25 @@ class ManagePlanesTab {
 private:
 	Button button[PLANE_MAX_BUTTON];
 	EditText addPlaneEdittext[3];
+	EditText adjustPlaneEdittext[3];
 	int index = -1;
 
-	char soTrang[5];
+	int pageLimit;
+	int page;
 	PlaneList planeList;
+	Plane* temp;
 	enum EIDT_NAME { ID, BRAND, SEATS };
 	enum BUTTON_NAME { them, hthi, trai, phai, lui, luu };
 	int n; //Tong so phan tu
 	int currentMenu = 0;
-	enum MENU { MENU_CHINH, MENU_THEM, MENU_CHINHSUA };
-	EditText* fieldPointer;
+	enum MENU { MENU_CHINH, MENU_THEM, MENU_CHINHSUA, MENU_HIEN_THI };
+	EditText* fieldPointer, * adjustPointer;
 public:
 
 	//Khoi tao cac tham
 	ManagePlanesTab() {
 		int textButton = COLOR(190, 193, 196);
-		strcpy_s(this->soTrang, "1/2");
+		page = 1;
 		n = 0;
 		//-------------BUTTON THEM
 		int left = SUBWINDOW_RIGHT - 70;
@@ -65,7 +68,7 @@ public:
 
 		//-----------BUTTON LUU
 		strcpy_s(a, "SAVE");
-		button[luu] = Button(SUBWINDOW_RIGHT - 100, SUBWINDOW_BOTTOM - 100, SUBWINDOW_RIGHT - 30, SUBWINDOW_BOTTOM - 50, TAB_ON_SELECTED_BACKGROUND, WHITE, a,
+		button[luu]  = Button(SUBWINDOW_RIGHT - 100, SUBWINDOW_BOTTOM - 100, SUBWINDOW_RIGHT - 30, SUBWINDOW_BOTTOM - 50, TAB_ON_SELECTED_BACKGROUND, WHITE, a,
 			PLANE_TEXT_COLOR);
 
 		//---------EDITTEXT ID
@@ -74,31 +77,73 @@ public:
 		char title[30] = "ID";
 		char content[30] = "";
 		left = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - EDITEXT_WIDTH + 90) / 2;
-		top = SUBWINDOW_TOP + 130;
+		top = SUBWINDOW_TOP + 100;
 		right = left + EDITEXT_WIDTH;
 		bottom = top + EDITTEXT_HEIGHT;
-		addPlaneEdittext[ID] = EditText(hint, title, content, left, top, right, bottom, 15);
+		addPlaneEdittext[ID] = adjustPlaneEdittext[ID] = EditText(hint, title, content, left, top, right, bottom, 15);
 
 
 		//------------EDITTEXT BRAND
 		strcpy_s(title, "BRAND");
 		top = bottom + spaceEdit;
 		bottom = top + EDITTEXT_HEIGHT;
-		addPlaneEdittext[BRAND] = EditText(hint, title, content, left, top, right, bottom, 40);
+		addPlaneEdittext[BRAND] = adjustPlaneEdittext[BRAND] = EditText(hint, title, content, left, top, right, bottom, 40);
 
 		//-------------EDITTEXT SEATS
 		strcpy_s(hint, "20 <= seats <= 50");
 		strcpy_s(title, "SEATS");
 		top = bottom + spaceEdit;
 		bottom = top + EDITTEXT_HEIGHT;
-		addPlaneEdittext[SEATS] = EditText(hint, title, content, left, top, right, bottom, 2);
+		addPlaneEdittext[SEATS] = adjustPlaneEdittext[SEATS] = EditText(hint, title, content, left, top, right, bottom, 2);
 
 		readFilePlane(planeList);
 		fieldPointer = &addPlaneEdittext[ID];
+		adjustPointer = &adjustPlaneEdittext[ID];
 
 
 
 
+	}
+	void onButtonPage(int page, bool isMinus, int limit) {
+		switch (isMinus) {
+		case true: {
+			if (page <= 1)
+				break;
+
+			(this->page) -= 1;
+			delay(100);
+			break;
+		}
+				 //Is Plus
+		case false: {
+			if (page >= limit + 1)
+				return;
+
+
+			(this->page) += 1;
+			delay(100);
+			break;
+		}
+
+
+		default:
+			break;
+		}
+	}
+	void showPage(int x, int y, int page, int limit)
+	{
+		//  Page: page / limit
+		setcolor(PAGE_COLOR);
+		setbkcolor(SUBWINDOW_BACKGROUND);
+		char s[5] = "";
+		sprintf_s(s, "%d", page);
+		outtextxy(x, y, s);
+		x += textwidth(s);
+		strcpy_s(s, " / ");
+		outtextxy(x, y, s);
+		x += textwidth(s);
+		sprintf_s(s, "%d", limit);
+		outtextxy(x, y, s);
 	}
 	int getInput() {
 		//
@@ -144,16 +189,80 @@ public:
 			break;
 		}
 		case MENU_CHINHSUA: {
-			resetInline();
+
 			drawAjustScreen();
 
 			break;
 		}
-		default: {
+		case MENU_HIEN_THI: {
+			drawShowTab();
 			break;
 		}
+		default:
+			break;
+
+
 
 		}
+
+	}
+
+	void drawShowTab() {
+		char a[20] = "STATISTIC PLANE";
+		//button[save].onAction();
+		button[lui].onAction();
+		button[trai].onAction();
+		button[phai].onAction();
+		setbkcolor(SUBWINDOW_BACKGROUND);
+		setcolor(BLACK);
+
+		outtextxy((SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(a)) / 2, SUBWINDOW_TOP + 10, a);
+
+	
+		pageLimit = planeList.size / 10;
+		sprintf_s(a, "%d", page);
+		showPage((LEFT_BORDER + RIGHT_BORDER - textwidth(a)) / 2 - 25, BOTTOM_BORDER + 35, page, pageLimit + 1);
+
+		//----------VE LINE CHO KHUNG
+		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
+		setfillstyle(0, TAB_ON_SELECTED_BACKGROUND);
+		bar(LEFT_BORDER + 2, TOP_BORDER + 2, RIGHT_BORDER - 2, TOP_BORDER + 48);
+		setcolor(BLACK);
+		setlinestyle(0, 0, 3);
+		int space = (RIGHT_BORDER + LEFT_BORDER) / 3;
+		for (int i = 1; i <= 1; i++) {
+			line(LEFT_BORDER + space * i, TOP_BORDER, LEFT_BORDER + space * i, BOTTOM_BORDER);
+
+
+		}
+
+		line(LEFT_BORDER, TOP_BORDER + 50, RIGHT_BORDER, TOP_BORDER + 50);
+
+
+		//-----------VE TIEU DE CHO KHUNG
+		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
+		setcolor(BLACK);
+		int preX = LEFT_BORDER;
+		for (int i = 1; i <= 2; i++) {
+			int width = textwidth(PLANE_BUTTON_NAME[i - 1]);
+			int height = textheight(PLANE_BUTTON_NAME[i - 1]);
+			int x = LEFT_BORDER + space * i;
+			outtextxy((x + preX - width) / 2, TOP_BORDER + 15, PLANE_BUTTON_NAME[i - 1]);
+			preX = x;
+		}
+
+
+
+		if (button[lui].isClicked()) {
+			currentMenu = MENU_CHINH;
+
+			drawUI();
+		}
+
+	
+
+
+	
 	}
 
 	void resetInline() {
@@ -176,15 +285,19 @@ public:
 	}
 
 	void drawAddPlaneBorder() {
-
-		settextstyle(BOLD_FONT, HORIZ_DIR, 2);
-		char a[20] = "ADD PLANE";
-		button[lui].onAction();
-		button[luu].onAction();
+		//-----------------VE HUONG DAN TEXT
+		char a[30] = "ADD PLANE";
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(BLACK);
-
 		outtextxy((SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(a)) / 2, SUBWINDOW_TOP + 10, a);
+		strcpy_s(a, "*Use keyboard to navigate");
+		setcolor(GREEN);
+
+		outtextxy(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
+
+
+		button[lui].onAction();
+		button[luu].onAction();
 
 		for (int i = 0; i < 3; i++) {
 
@@ -253,13 +366,13 @@ public:
 
 
 
-		if (button[lui].isLeftMouseClicked(mousex(), mousey())) {
+		if (button[lui].isClicked()) {
 			currentMenu = MENU_CHINH;
 			writeFilePlane(planeList);
 			drawUI();
 		}
 
-		if (button[luu].isLeftMouseClicked(mousex(), mousey())) {
+		if (button[luu].isClicked()) {
 			if (checkSaveData()) {
 				Plane* p = new Plane;
 				strcpy_s(p->idPlane, addPlaneEdittext[ID].getContent());
@@ -285,15 +398,19 @@ public:
 	}
 	void drawManagePlaneTab() {
 
-		settextstyle(BOLD_FONT, HORIZ_DIR, 2);
-		//-------------------VE BORDER
+		//	settextstyle(BOLD_FONT, HORIZ_DIR, 2);
+			//-------------------VE BORDER
 		setcolor(BLACK);
 		rectangle(LEFT_BORDER, TOP_BORDER, RIGHT_BORDER, BOTTOM_BORDER);
 
 		//-----------VE BUTTON
-		for (int i = 0; i < 4; i++) {
-			button[i].onAction();
-		}
+		button[them].onAction();
+		button[hthi].onAction();
+		button[trai].onAction();
+		button[phai].onAction();
+
+
+
 
 
 		//-----------------VE HUONG DAN TEXT
@@ -306,11 +423,9 @@ public:
 
 
 		//------------ VE SO TRANG
-		setbkcolor(SUBWINDOW_BACKGROUND);
-		setcolor(COLOR(142, 154, 185));
-		int w = textwidth(soTrang);
-		int h = textheight(soTrang);
-		outtextxy((LEFT_BORDER + RIGHT_BORDER - w) / 2, BOTTOM_BORDER + 35, soTrang);
+		pageLimit = planeList.size / 10;
+		sprintf_s(a, "%d", page);
+		showPage((LEFT_BORDER + RIGHT_BORDER - textwidth(a)) / 2 - 25, BOTTOM_BORDER + 35, page, pageLimit + 1);
 
 		//----------VE LINE CHO KHUNG
 		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
@@ -336,24 +451,34 @@ public:
 			int width = textwidth(PLANE_BUTTON_NAME[i - 1]);
 			int height = textheight(PLANE_BUTTON_NAME[i - 1]);
 			int x = LEFT_BORDER + space * i;
-			//settextjustify(CENTER_TEXT, TOP_TEXT);
-			//settextstyle(BOLD_FONT, HORIZ_DIR, 2);
 			outtextxy((x + preX - width) / 2, TOP_BORDER + 15, PLANE_BUTTON_NAME[i - 1]);
 			preX = x;
 		}
 
-		onItemClicked();
-		if (button[them].isLeftMouseClicked(mousex(), mousey())) {
+		onItemClicked(page);
+		if (button[them].isClicked()) {
 
 
 			currentMenu = MENU_THEM;
+			drawUI();
+		}
+		if (button[trai].isClicked()) {
+			onButtonPage(page, true, pageLimit);
+		}
+		if (button[phai].isClicked()) {
+			onButtonPage(page, false, pageLimit);
+
+
+		}
+		if (button[hthi].isClicked()) {
+			currentMenu = MENU_HIEN_THI;
 			drawUI();
 		}
 
 	}
 
 	//Do du lieu ra bang va xu li su kien
-	void onItemClicked() {
+	void onItemClicked(int page) {
 
 
 
@@ -362,18 +487,40 @@ public:
 
 		int space = (RIGHT_BORDER + LEFT_BORDER) / 5;
 		int preY = TOP_BORDER + 35;
+		int i = 10;
+		int maxSize = 1;
+		if (page == 1)
+			i = 1;
+		else {
+			i = page - 1;
+			i = i * 10 + 1;
+		}
 
-		for (int i = 1; i <= planeList.size; i++) {
+		maxSize = min(i + 9, planeList.size);
+		/*if (planeList.data[i-1] == NULL) {
+			(this->pageLimit) = planeList.size / 10;
+			if ((this->page) > 1)
+				(this->page)--;
+			char a[30] = "";
+			sprintf_s(a, "%d", page);
+			showPage((LEFT_BORDER + RIGHT_BORDER - textwidth(a)) / 2 - 25, BOTTOM_BORDER + 35, this->page, pageLimit + 1);
+		}
+			*/
+		for (; i <= maxSize; i++) {
+
 			int preX = LEFT_BORDER;
 			int y = preY + 35;
 			if (mousex() <= RIGHT_BORDER && mousex() >= LEFT_BORDER && mousey() <= (y + 35) &&
 				mousey() >= (preY + 35)) {
 				if (GetAsyncKeyState(VK_RBUTTON) && 0x8000) {
 					index = i - 1;
-					DisplayResourceNAMessageBox();
+					displayMessageBox();
+
+
 				}
 				else if (GetAsyncKeyState(VK_LBUTTON) && 0x8000) {
 					index = i - 1;
+					temp = planeList.data[i - 1];
 					currentMenu = MENU_CHINHSUA;
 				}
 				setbkcolor(SUBWINDOW_BACKGROUND);
@@ -424,15 +571,14 @@ public:
 			if (addPlaneEdittext[i].isEmpty()) {
 				return false;
 			}
-			if (i == 2 && !addPlaneEdittext[i].checkInt())
-				return false;
+
 		}
 		return true;
 	}
 
 
 
-	int DisplayResourceNAMessageBox()
+	int displayMessageBox()
 	{
 		//hiện MessageBox
 		int msgboxID = MessageBox(
@@ -450,15 +596,26 @@ public:
 		case IDOK: {
 			if (index >= 0)
 				removePlane(planeList, index);
+			pageLimit = planeList.size / 10;
+
 		}
-				 break;
+				 return 1;
 		}
 
-		return msgboxID;
+		return 0;
 	}
 
+	void ThongBao(int x, int y, char noti[50], int mauChu, int mauNen)
+	{
+		setbkcolor(mauNen);
+		setcolor(mauChu);
+		outtextxy(x, y, noti);
+		Sleep(1000);
+		setfillstyle(SOLID_FILL, mauNen);
+		bar(x, y, x + textwidth(noti), y + textheight(noti));
+	}
 	void drawAjustScreen() {
-		settextstyle(BOLD_FONT, HORIZ_DIR, 2);
+
 		char a[20] = "ADJUST PLANE";
 		button[lui].onAction();
 		button[luu].onAction();
@@ -468,10 +625,10 @@ public:
 		outtextxy((SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(a)) / 2, SUBWINDOW_TOP + 10, a);
 
 		for (int i = 0; i < 3; i++) {
-			
-			addPlaneEdittext[i].onAction(fieldPointer);
+
+			adjustPlaneEdittext[i].onAction(adjustPointer);
 		}
-		int c = getInput();
+		/*int c = getInput();
 		if (fieldPointer != NULL) {
 
 			if (c == -1) fieldPointer->deleteChar();
@@ -530,37 +687,22 @@ public:
 
 				}
 
-		}
+		}*/
 
 
 
-		if (button[lui].isLeftMouseClicked(mousex(), mousey())) {
+
+		if (button[lui].isClicked()) {
 			currentMenu = MENU_CHINH;
-			writeFilePlane(planeList);
+
 			drawUI();
 		}
 
-		if (button[luu].isLeftMouseClicked(mousex(), mousey())) {
-			if (checkSaveData()) {
-				Plane* p = new Plane;
-				strcpy_s(p->idPlane, addPlaneEdittext[ID].getContent());
-				strcpy_s(p->type, addPlaneEdittext[BRAND].getContent());
-				p->seats = addPlaneEdittext[SEATS].getIntData();
-				for (int i = 0; i < 3; i++) {
-					addPlaneEdittext[i].clearText();
-				}
-				setbkcolor(SUBWINDOW_BACKGROUND);
-
-				char s[30] = "Succesfully";
-				addPlaneEdittext[SEATS].drawAnoune(s, false);
-
-				addPlane(planeList, p);
-
-				resetInline();
-			}
-
+		if (button[luu].isClicked()) {
 
 		}
+
+
 	}
 
 

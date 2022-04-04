@@ -9,6 +9,7 @@ private:
 	int textColor;
 	int textOnPointedColor;
 	int currentTextColor;
+	bool cliked;
 
 public:
 	Button(int left, int top, int right, int bottom, int backgroundColor,
@@ -17,6 +18,7 @@ public:
 		this->textColor = textColor;
 		this->textOnPointedColor = textOnPointedColor;
 		this->currentTextColor = textColor;
+		this->cliked = false;
 
 	}
 	Button() :UI() {
@@ -24,7 +26,7 @@ public:
 		this->textColor = -1;
 		this->textOnPointedColor = -1;
 		this->currentTextColor = -1;
-
+		this->cliked = false;
 	}
 
 	void drawUI() {
@@ -40,16 +42,29 @@ public:
 	}
 
 	void onAction() {
-		if (isPointed(mousex(), mousey())) {
+		if (isLeftMouseClicked(mousex(), mousey())) {
 			currentBackground = onSelectedBackgroundColor;
 			currentTextColor = textColor;
+			cliked = true;
+		}
+		else if (isPointed(mousex(), mousey())) {
+			currentBackground = onSelectedBackgroundColor;
+			currentTextColor = textColor;
+			cliked = false;
+
+
 		}
 		else {
 			currentBackground = backgroundColor;
 			currentTextColor = textOnPointedColor;
+			cliked = false;
 
 		}
 		drawUI();
+	}
+
+	bool isClicked() {
+		return cliked;
 	}
 
 

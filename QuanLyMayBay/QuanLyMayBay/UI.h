@@ -28,6 +28,7 @@ public:
 		onSelectedBackgroundColor = -1;
 		currentBackground = -1;
 	}
+protected:
 
 	bool virtual isLeftMouseClicked(int xMouse, int yMouse) {
 		if (isPointed(xMouse, yMouse) && GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
@@ -43,7 +44,7 @@ public:
 		return false;
 	}
 
-protected:
+
 	void virtual drawUI() {
 		setbkcolor(currentBackground);
 		setfillstyle(SOLID_FILL, currentBackground);
