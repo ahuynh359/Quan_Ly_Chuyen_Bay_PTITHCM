@@ -1,8 +1,9 @@
 #pragma once
 #include"UI.h"
 #include<iostream>
-#include<Windows.h>
-#include <cstdlib>
+
+
+
 using namespace std;
 #ifndef EDITTEXT_H
 #define EDITTEXT_H
@@ -52,7 +53,6 @@ public:
 		//Ve title
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(PLANE_TEXT_COLOR);
-		//settextstyle(10, 0, 2);
 		int h = textheight(title);
 		outtextxy(left - 90, (top + bottom - h) / 2, title);
 
@@ -75,21 +75,35 @@ public:
 			outtextxy(left + 5, (top + bottom - h) / 2, content);
 
 		}
-		setbkcolor(SUBWINDOW_BACKGROUND);
-		setcolor(curAnounceColor);
 		if (strlen(anounce) > 0) {
+			setbkcolor(SUBWINDOW_BACKGROUND);
+			setcolor(curAnounceColor);
+
 			outtextxy(left + 5, bottom + 10, anounce);
-			delay(1000);
-			//strcpy_s(anounce, "");
-		}
-		int startTime = 0;
+			
+
 		
 		
+			
+		} 
+		
+
+
+
+
+
+
 
 
 
 	}
-
+	void sleep(float seconds) {
+		clock_t startClock = clock();
+		float secondsAhead = seconds * CLOCKS_PER_SEC;
+		// do nothing until the elapsed time has passed.
+		while (clock() < startClock + secondsAhead);
+		return;
+	}
 	void drawAnoune(char anounce[30], bool isVaild) {
 		strcpy_s(this->anounce, anounce);
 		if (isVaild) {
@@ -97,11 +111,10 @@ public:
 		}
 		else
 			curAnounceColor = invalidAnounceColor;
-
 	}
 
 	void onAction(EditText*& editext) {
-		if ( editext == this) {
+		if (editext == this) {
 			editext = this;
 			currentBackground = onSelectedBackgroundColor;
 			/*if (content[index] == '\0' && content[index-1] != '_') {
@@ -114,11 +127,11 @@ public:
 				content[index] = '\0';
 
 			}
-			checkParseString();
+			
 
 		}
 
-		else if (editext != this ) {
+		else if (editext != this) {
 			currentBackground = backgroundColor;
 			if (isExistDash(content)) {
 				content[--index] = '\0';
@@ -130,6 +143,7 @@ public:
 		}
 
 		drawUI();
+
 
 	}
 	bool isExistDash(char content[30]) {
@@ -145,8 +159,8 @@ public:
 
 	int getIntData() {
 		int data = 0;
-		if(strlen(content) > 0)
-		data = stoi(content);
+		if (strlen(content) > 0 && content != NULL)
+			data = stoi(content);
 		return data;
 
 	}
@@ -176,7 +190,7 @@ public:
 	bool checkParseInt() {
 
 		char s[30] = "20 <= seats <= 50";
-		
+
 		if (getIntData() < 20 || getIntData() > 50) {
 			drawAnoune(s, true);
 			return false;
@@ -189,20 +203,30 @@ public:
 		return strlen(content) == 0;
 	}
 	bool checkInt() {
-		if (getIntData() < 20 || getIntData() > 50) {
-			return false;
+		if (getIntData() >= 20 && getIntData() <= 50) {
+			return true;
 		}
-		return true;
+		return false;
 	}
 
-	bool checkParseString() {
+	bool checkEmpty() {
 		char s[30] = "Can't leave empty";
-		if (strlen(content) == 0 ) {
+		if (strlen(content) == 0) {
 			drawAnoune(s, true);
-			return false;
+			return true;
 		}
 		
-		return true;
+
+		return false;
+	}
+
+	bool checkDup(bool isDup) {
+		char s[30] = "Duplicated";
+		if (isDup) {
+			drawAnoune(s, true);
+			return true;
+		}
+		return false;
 	}
 
 
@@ -221,17 +245,17 @@ public:
 			content[index] = '\0';
 		strcpy_s(anounce, "");
 	}
-	 char* getContent() {
-		
+	char* getContent() {
+
 		return content;
 	}
 
-	 void clearText() {
-		 index = 0;
-		 content[index] = '\0';
-		 anounce[index] = '\0';
-		 
-	 }
+	void clearText() {
+		index = 0;
+		content[index] = '\0';
+		anounce[index] = '\0';
+
+	}
 
 
 };

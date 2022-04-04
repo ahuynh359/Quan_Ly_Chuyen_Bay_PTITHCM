@@ -14,6 +14,7 @@ struct Plane {
 
 	// CHI SO PHU
 	int flyTimes = 0; // so luot thuc hien
+	bool active = true;
 
 
 };
@@ -61,6 +62,15 @@ void addPlane(PlaneList& list, Plane* plane) {
 		list.data[list.size] = plane;
 		list.size++;
 	
+}
+
+bool checkDupID(PlaneList& list, char id[30]) {
+	for (int i = 0; i < list.size; i++) {
+		if (strcmp(list.data[i]->idPlane, id) == 0) {
+			return true;
+		}
+	}
+	return false;
 }
 
 

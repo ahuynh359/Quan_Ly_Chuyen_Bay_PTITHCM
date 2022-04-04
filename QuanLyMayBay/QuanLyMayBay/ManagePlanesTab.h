@@ -11,7 +11,7 @@ private:
 	EditText addPlaneEdittext[3];
 	EditText adjustPlaneEdittext[3];
 	int index = -1;
-
+	int indexID = -1;
 	int pageLimit;
 	int page;
 	PlaneList planeList;
@@ -56,7 +56,7 @@ public:
 		strcpy_s(a, "<");
 		button[trai] = Button(left, top, right, bottom, textButton, WHITE, a, PLANE_TEXT_COLOR);
 		//--------------BUTTON PHAI
-		left = right + 100;
+		left = right + 70;
 		right = left + 50;
 		strcpy_s(a, ">");
 		button[phai] = Button(left, top, right, bottom, textButton, WHITE, a, PLANE_TEXT_COLOR);
@@ -68,7 +68,7 @@ public:
 
 		//-----------BUTTON LUU
 		strcpy_s(a, "SAVE");
-		button[luu]  = Button(SUBWINDOW_RIGHT - 100, SUBWINDOW_BOTTOM - 100, SUBWINDOW_RIGHT - 30, SUBWINDOW_BOTTOM - 50, TAB_ON_SELECTED_BACKGROUND, WHITE, a,
+		button[luu] = Button(SUBWINDOW_RIGHT - 100, SUBWINDOW_BOTTOM - 100, SUBWINDOW_RIGHT - 30, SUBWINDOW_BOTTOM - 50, TAB_ON_SELECTED_BACKGROUND, WHITE, a,
 			PLANE_TEXT_COLOR);
 
 		//---------EDITTEXT ID
@@ -97,13 +97,15 @@ public:
 		addPlaneEdittext[SEATS] = adjustPlaneEdittext[SEATS] = EditText(hint, title, content, left, top, right, bottom, 2);
 
 		readFilePlane(planeList);
-		fieldPointer = &addPlaneEdittext[ID];
+		index = 0;
+		fieldPointer = &addPlaneEdittext[index];
 		adjustPointer = &adjustPlaneEdittext[ID];
 
 
 
 
 	}
+
 	void onButtonPage(int page, bool isMinus, int limit) {
 		switch (isMinus) {
 		case true: {
@@ -132,7 +134,6 @@ public:
 	}
 	void showPage(int x, int y, int page, int limit)
 	{
-		//  Page: page / limit
 		setcolor(PAGE_COLOR);
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		char s[5] = "";
@@ -146,8 +147,6 @@ public:
 		outtextxy(x, y, s);
 	}
 	int getInput() {
-		//
-		int re = 0;
 		for (int i = 65; i <= 90; i++) {
 			if (GetAsyncKeyState((char)(i)) & 1) {
 				return i;
@@ -170,7 +169,7 @@ public:
 		if (GetAsyncKeyState(VK_UP) & 1) return 1;
 		if (GetAsyncKeyState(VK_DOWN) & 1) return 2;
 		if (GetAsyncKeyState(VK_RETURN) & 1) return 3;
-		return re;
+		return 0;
 	}
 	void drawUI() {
 
@@ -218,7 +217,7 @@ public:
 
 		outtextxy((SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(a)) / 2, SUBWINDOW_TOP + 10, a);
 
-	
+
 		pageLimit = planeList.size / 10;
 		sprintf_s(a, "%d", page);
 		showPage((LEFT_BORDER + RIGHT_BORDER - textwidth(a)) / 2 - 25, BOTTOM_BORDER + 35, page, pageLimit + 1);
@@ -259,10 +258,10 @@ public:
 			drawUI();
 		}
 
-	
 
 
-	
+
+
 	}
 
 	void resetInline() {
@@ -310,59 +309,74 @@ public:
 			else
 				if (c == 1) {
 					fieldPointer->clearCursor();
-					fieldPointer->checkParseString();
-					if (fieldPointer->checkParseString()) {
-						if (fieldPointer == &addPlaneEdittext[BRAND])
-							fieldPointer = &addPlaneEdittext[ID];
-
-						else if (fieldPointer == &addPlaneEdittext[SEATS] && fieldPointer->checkParseInt())
-
-							fieldPointer = &addPlaneEdittext[BRAND];
-
-
+					fieldPointer->checkEmpty();
+					bool s = true;
+					if (!fieldPointer->checkEmpty()) {
+						if (fieldPointer == &addPlaneEdittext[SEATS]) {
+							fieldPointer->checkParseInt();
+							if (!fieldPointer->checkParseInt()) {
+								s = false;
+							}
+						}
+						if (s) {
+							index--;
+							index = max(index, 0);
+							fieldPointer = &addPlaneEdittext[index];
+						}
 					}
 
 
 				}
-				else if (c == 2 || c == 3) {
+				else if (c == 2) {
 					fieldPointer->clearCursor();
-					fieldPointer->checkParseString();
-					if (fieldPointer->checkParseString()) {
-						if (fieldPointer == &addPlaneEdittext[ID])
-							fieldPointer = &addPlaneEdittext[BRAND];
+					fieldPointer->checkEmpty();
+					bool s = true;
+					if (!fieldPointer->checkEmpty()) {
+						if (fieldPointer == &addPlaneEdittext[ID]) {
+							fieldPointer->checkDup(checkDupID(planeList, fieldPointer->getContent()));
+							if (fieldPointer->checkDup(checkDupID(planeList, fieldPointer->getContent()))) {
+								s = false;
+							}
+						}
+						if (s) {
+							index++;
+							index = min(index, 2);
+							fieldPointer = &addPlaneEdittext[index];
+						}
 
-						else if (fieldPointer == &addPlaneEdittext[BRAND])
-							fieldPointer = &addPlaneEdittext[SEATS];
+
 					}
+
+
+
+
 
 				}
 				else if (c != 0) {
 
 					if (fieldPointer == &addPlaneEdittext[ID]) {
-						if (c <= 90 && c >= 65) {
+						if (c <= 90 && c >= 65)
 							fieldPointer->addChar((char)c);
 
-
-
-
-						}
 					}
 					else if (fieldPointer == &addPlaneEdittext[BRAND]) {
-						if (c <= 90 && c >= 65 || c == ' ') {
+						if (c <= 90 && c >= 65 || c == ' ')
 							fieldPointer->addChar((char)c);
 
-						}
 					}
 					else if (fieldPointer == &addPlaneEdittext[SEATS]) {
-						if (c <= 57 && c >= 48) {
+						if (c <= 57 && c >= 48)
 							fieldPointer->addChar((char)c);
 
-						}
 					}
+
 
 				}
 
+
 		}
+
+
 
 
 
@@ -513,13 +527,13 @@ public:
 			if (mousex() <= RIGHT_BORDER && mousex() >= LEFT_BORDER && mousey() <= (y + 35) &&
 				mousey() >= (preY + 35)) {
 				if (GetAsyncKeyState(VK_RBUTTON) && 0x8000) {
-					index = i - 1;
-					displayMessageBox();
+					indexID = i - 1;
+					displayMessageBox(indexID);
 
 
 				}
 				else if (GetAsyncKeyState(VK_LBUTTON) && 0x8000) {
-					index = i - 1;
+					indexID = i - 1;
 					temp = planeList.data[i - 1];
 					currentMenu = MENU_CHINHSUA;
 				}
@@ -578,16 +592,27 @@ public:
 
 
 
-	int displayMessageBox()
+	int displayMessageBox(int index)
 	{
-		//hiện MessageBox
-		int msgboxID = MessageBox(
-			GetForegroundWindow(),
-			(LPCWSTR)L"Are you sure want to delete?",
-			(LPCWSTR)L"Confirm",
-			MB_ICONQUESTION | MB_OKCANCEL
-		);
-
+		int msgboxID;
+		if (!planeList.data[index]->active) {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"This plane can't be deleted",
+				(LPCWSTR)L"Warning",
+				MB_ICONWARNING | MB_OK
+			);
+			return 1;
+		}
+		else {
+			//hiện MessageBox
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"Are you sure want to delete?",
+				(LPCWSTR)L"Confirm",
+				MB_ICONQUESTION | MB_OKCANCEL
+			);
+		}
 		switch (msgboxID)
 		{
 		case IDCANCEL:
