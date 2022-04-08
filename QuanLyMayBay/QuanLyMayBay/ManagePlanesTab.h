@@ -80,12 +80,10 @@ public:
 		button[luu] = Button(SUBWINDOW_RIGHT - 100, SUBWINDOW_BOTTOM - 100, SUBWINDOW_RIGHT - 30, SUBWINDOW_BOTTOM - 50, TAB_ON_SELECTED_BACKGROUND, WHITE, a,
 			PLANE_TEXT_COLOR);
 
-<<<<<<< Updated upstream
+
 	}
 	void initEditText() {
-=======
 
->>>>>>> Stashed changes
 		//---------EDITTEXT ID
 		int spaceEdit = 80;
 		char hint[30] = "Data must be entered!";
@@ -546,15 +544,13 @@ public:
 		button[lui].onAction();
 		button[trai].onAction();
 		button[phai].onAction();
-<<<<<<< Updated upstream
-=======
 
 
 		
 
 
 		//-----------------VE HUONG DAN TEXT
->>>>>>> Stashed changes
+
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(BLACK);
 
