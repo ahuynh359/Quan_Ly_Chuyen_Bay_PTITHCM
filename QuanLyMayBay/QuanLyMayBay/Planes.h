@@ -59,14 +59,14 @@ int removePlane(PlaneList& list, int index) {
 
 
 void addPlane(PlaneList& list, Plane* plane) {
-		list.data[list.size] = plane;
-		list.size++;
-	
+	list.data[list.size] = plane;
+	list.size++;
+
 }
 
 //Check trung ID dua tren ma
 bool checkDupID(PlaneList& list, char id[30]) {
-	for (int i = 0; i < list.size; i++) { 
+	for (int i = 0; i < list.size; i++) {
 		if (strcmp(list.data[i]->idPlane, id) == 0) {
 			return true;
 		}
@@ -75,8 +75,8 @@ bool checkDupID(PlaneList& list, char id[30]) {
 }
 
 //Ham kt xem ID co trung tru thang dang duoc xet
-bool checkDupIDExcept(PlaneList& list,int index) {
-	
+bool checkDupIDExcept(PlaneList& list, int index) {
+
 	for (int i = 0; i < index; i++) {
 		if (list.data[i]->idPlane == list.data[index]->idPlane)
 			return true;
@@ -90,7 +90,7 @@ bool checkDupIDExcept(PlaneList& list,int index) {
 }
 
 
-void readFilePlane(PlaneList &planeList) {
+void readFilePlane(PlaneList& planeList) {
 	ifstream inp("PlaneData.txt");
 	string line;
 

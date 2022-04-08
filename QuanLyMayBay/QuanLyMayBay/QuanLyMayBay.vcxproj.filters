@@ -68,7 +68,11 @@
     <ClInclude Include="DataConst.h">
       <Filter>MyLib</Filter>
     </ClInclude>
+
+    <ClInclude Include="BookTicketTab.h">
+
     <ClInclude Include="ManagePassengersTab.h">
+
       <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>

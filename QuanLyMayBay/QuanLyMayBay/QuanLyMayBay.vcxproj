@@ -144,6 +144,7 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BookTicketTab.h" />
     <ClInclude Include="DataConst.h" />
     <ClInclude Include="ManagePassengersTab.h" />
     <ClInclude Include="Planes.h" />
