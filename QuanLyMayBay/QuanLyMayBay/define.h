@@ -93,6 +93,23 @@ char PASSENGER_BUTTON_NAME[6][20]{
 #define BACK_SPACE 8
 #define SPACE 32
 
+//---------------MANAGE FLIGHT TAB-------------
+#define FLIGHT_MAX_BUTTON 8
+#define FLIGHT_TEXT_COLOR COLOR(0, 133, 190)
+char FLIGHT_BUTTON_NAME[5][20]{
+	"Number",
+	"Flight Number",
+	"Brand",
+	"Seats"
+};
+char FLIGHT_ADDPLANE_EDITTEXT_NAME[7][10]{
+	"ID",
+	"Date",
+	"Time",
+	"IdPlane",
+	"Arrive",
+	"Status"
+};
 
 
 
