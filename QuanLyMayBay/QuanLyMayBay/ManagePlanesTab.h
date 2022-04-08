@@ -23,14 +23,12 @@ private:
 	bool edittexTwo = false;
 public:
 
-	//Khoi tao cac tham
+	//Khoi tao cac tham so
 	ManagePlanesTab() {
 		page = 1;
 		initButton();
 		initEditText();
 		readFilePlane(planeList);
-
-
 
 	}
 

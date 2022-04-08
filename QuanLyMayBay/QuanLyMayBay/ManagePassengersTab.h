@@ -6,7 +6,7 @@
 #include"Passengers.h"
 #include"UIController.h"
 using namespace std;
-
+// Anh dien
 class ManagePassengersTab {
 private:
 	Button button[PASSENGER_MAX_BUTTON];
@@ -26,40 +26,49 @@ private:
 public:
 	//Khoi tao cac tham so
 	ManagePassengersTab() {
-		int textButton = COLOR(190, 193, 196);
+
 		page = 1;
-		n = 0;
+		initButton();
+		initEditText();
+		readFilePassenger(passengerList);
+	}
 
 
+	// ------------INIT--------------
+
+	void initButton() {
 		//------------BUTTON  TRAI  
 		int left = SCREEN_WIDTH / 2 - 100;
 		int top = BOTTOM_BORDER + 30;
 		int right = left + 50;
 		int bottom = top + 30;
 		char a[15] = "<";
-		button[trai] = Button(left, top, right, bottom, textButton, WHITE, a, PASSENGER_TEXT_COLOR);
+		//button[trai] = Button(left, top, right, bottom, textButton, WHITE, a, PASSENGER_TEXT_COLOR);
 
 		//--------------BUTTON PHAI
 		left = right + 70;
 		right = left + 50;
 		strcpy_s(a, ">");
-		button[phai] = Button(left, top, right, bottom, textButton, WHITE, a, PASSENGER_TEXT_COLOR);
+		//button[phai] = Button(left, top, right, bottom, textButton, WHITE, a, PASSENGER_TEXT_COLOR);
 
 
 		//-----------BUTTON QUAY LUI
 		strcpy_s(a, "<");
-		button[lui] = Button(SUBWINDOW_LEFT + 10, SUBWINDOW_TOP + 10, SUBWINDOW_LEFT + 60, SUBWINDOW_TOP + 60, textButton, WHITE, a, PLANE_TEXT_COLOR);
+	//	button[lui] = Button(SUBWINDOW_LEFT + 10, SUBWINDOW_TOP + 10, SUBWINDOW_LEFT + 60, SUBWINDOW_TOP + 60, textButton, WHITE, a, PLANE_TEXT_COLOR);
+	}
 
+
+	void initEditText(){
 
 		//---------EDITTEXT ID FLIGHT
 		int spaceEdit = 80;
 		char hint[30] = "Enter here...";
 		char title[30] = "ID Flight";
 		char content[30] = "";
-		left = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - EDITEXT_WIDTH + 90) / 2;
-		top = SUBWINDOW_TOP + 100;
-		right = left + EDITEXT_WIDTH;
-		bottom = top + EDITTEXT_HEIGHT;
+		int left = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - EDITEXT_WIDTH + 90) / 2;
+		int top = SUBWINDOW_TOP + 100;
+		int right = left + EDITEXT_WIDTH;
+		int bottom = top + EDITTEXT_HEIGHT;
 		editTextLoc = EditText(hint, title, content, left, top, right, bottom, 10);
 	}
 
@@ -174,14 +183,11 @@ public:
 		}
 
 
-
 		if (button[trai].isClicked()) {
 			onButtonPage(page, true, pageLimit);
 		}
 		if (button[phai].isClicked()) {
 			onButtonPage(page, false, pageLimit);
-
-
 		}
 		editTextLoc.onAction(fieldPointer);
 
