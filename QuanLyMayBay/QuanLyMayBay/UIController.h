@@ -2,28 +2,31 @@
 #include"Tab.h"
 #include"Button.h"
 #include"ManagePlanesTab.h"
+#include"BookTicketTab.h"
 
 class UIController {
 private:
 	Tab t[MAX_TAB];
 	ManagePlanesTab managePlaneTab;
+	BookTicket bookTicketTab;
 	Tab* temp;
 public:
 	UIController() {
 		initwindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Manage Flights");
 		//Khoi tao tab
 		int x = TAB_LEFT;
-		int w = TAB_RIGHT;
+		int w = x + TAB_WIDTH;
 		for (int i = 0; i < MAX_TAB; i++) {
+			
 			t[i] = Tab(x, TAB_TOP, w, TAB_HEIGHT, TAB_TEXT[i], TAB_TEXT_COLOR);
-			x += TAB_SPACE;
-			w += TAB_WIDTH;
 
+			x = w + TAB_SPACE;
+			w += TAB_WIDTH + TAB_SPACE;
 		}
 		//managePlaneTab = ManagePlanesTab();
 
 		temp = &t[0];
-	
+
 
 	}
 	~UIController() {
@@ -59,6 +62,10 @@ public:
 		else if (temp == &t[1]) {
 			managePlaneTab.reset();
 
+		}
+		else if (temp == &t[2]) {
+			managePlaneTab.reset();
+			bookTicketTab.drawUI();
 		}
 
 	}
