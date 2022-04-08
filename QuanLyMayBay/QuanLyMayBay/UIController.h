@@ -11,7 +11,7 @@ private:
 	ManagePlanesTab managePlaneTab;
 	BookTicket bookTicketTab;
 	Tab* temp;
-	ManagePassengersTab managePassenger;
+	//ManagePassengersTab managePassenger;
 public:
 	UIController() {
 		initwindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Manage Flights");
