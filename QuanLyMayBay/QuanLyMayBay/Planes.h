@@ -52,7 +52,7 @@ int removePlane(PlaneList& list, int index) {
 	for (int i = index; i < list.size - 1; i++) {
 		list.data[i] = list.data[i + 1];
 	}
-	list.size--;
+	(list.size)--;
 	return 1;
 
 }
@@ -64,13 +64,29 @@ void addPlane(PlaneList& list, Plane* plane) {
 	
 }
 
+//Check trung ID dua tren ma
 bool checkDupID(PlaneList& list, char id[30]) {
-	for (int i = 0; i < list.size; i++) {
+	for (int i = 0; i < list.size; i++) { 
 		if (strcmp(list.data[i]->idPlane, id) == 0) {
 			return true;
 		}
 	}
 	return false;
+}
+
+//Ham kt xem ID co trung tru thang dang duoc xet
+bool checkDupIDExcept(PlaneList& list,int index) {
+	
+	for (int i = 0; i < index; i++) {
+		if (list.data[i]->idPlane == list.data[index]->idPlane)
+			return true;
+	}
+	for (int i = index + 1; i < list.size; i++) {
+		if (list.data[i]->idPlane == list.data[index]->idPlane)
+			return true;
+	}
+	return false;
+
 }
 
 

@@ -46,7 +46,9 @@ public:
 	}
 
 
-
+	void setBackground(int background) {
+		this->backgroundColor = background;
+	}
 	void drawUI() {
 
 
@@ -80,13 +82,13 @@ public:
 			setcolor(curAnounceColor);
 
 			outtextxy(left + 5, bottom + 10, anounce);
-			
 
-		
-		
-			
-		} 
-		
+
+
+
+
+		}
+
 
 
 
@@ -127,7 +129,7 @@ public:
 				content[index] = '\0';
 
 			}
-			
+
 
 		}
 
@@ -200,7 +202,7 @@ public:
 	}
 
 	bool isEmpty() {
-		return strlen(content) == 0;
+		return strlen(content) == 0 ;
 	}
 	bool checkInt() {
 		if (getIntData() >= 20 && getIntData() <= 50) {
@@ -215,7 +217,7 @@ public:
 			drawAnoune(s, true);
 			return true;
 		}
-		
+
 
 		return false;
 	}
@@ -252,8 +254,8 @@ public:
 
 	void clearText() {
 		index = 0;
-		content[index] = '\0';
-		anounce[index] = '\0';
+		strcpy_s(this->content, "");
+		strcpy_s(this->anounce, "");
 
 	}
 
