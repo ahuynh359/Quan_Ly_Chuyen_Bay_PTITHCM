@@ -145,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DataConst.h" />
+    <ClInclude Include="ManagePassengersTab.h" />
     <ClInclude Include="Planes.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="define.h" />

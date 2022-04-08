@@ -2,12 +2,14 @@
 #include"Tab.h"
 #include"Button.h"
 #include"ManagePlanesTab.h"
+#include"ManagePassengersTab.h"
 
 class UIController {
 private:
 	Tab t[MAX_TAB];
 	ManagePlanesTab managePlaneTab;
 	Tab* temp;
+	ManagePassengersTab managePassenger;
 public:
 	UIController() {
 		initwindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Manage Flights");
@@ -59,6 +61,9 @@ public:
 		else if (temp == &t[1]) {
 			managePlaneTab.reset();
 
+		}
+		else if (temp == &t[2]) {
+			
 		}
 
 	}
