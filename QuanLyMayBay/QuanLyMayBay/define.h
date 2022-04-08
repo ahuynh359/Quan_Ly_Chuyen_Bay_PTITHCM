@@ -44,6 +44,7 @@ int BOTTOM_BORDER = SUBWINDOW_BOTTOM - 120;
 //-----------------BACKGROUND COLOR
 #define BACKGROUND_COLOR COLOR(255, 246, 245)
 
+
 //---------------MANAGE PLANE TAB-------------
 #define PLANE_MAX_BUTTON 8
 #define PLANE_TEXT_COLOR COLOR(0, 133, 190)
@@ -60,6 +61,22 @@ char PLANE_ADDPLANE_EDITTEXT_NAME[4][10]{
 };
 #define PAGE_COLOR COLOR(142, 154, 185)
 #define LIMIT_PAGE 5
+
+
+//---------------MANAGE PASSENGER TAB-------------
+#define PASSENGER_MAX_BUTTON 5
+#define PASSENGER_TEXT_COLOR COLOR(0, 133, 190)
+char PASSENGER_BUTTON_NAME[6][20]{
+	"Number",
+	"ID Passenger",
+	"Full Name",
+	"Last Name",
+	"Gender"
+};
+#define PAGE_COLOR COLOR(142, 154, 185)
+#define LIMIT_PAGE 3
+
+
 
 
 //--------------EDIT TEXT

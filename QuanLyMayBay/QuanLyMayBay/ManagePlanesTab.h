@@ -8,7 +8,7 @@ using namespace std;
 class ManagePlanesTab {
 private:
 	Button button[PLANE_MAX_BUTTON];
-	EditText addPlaneEdittext[3];
+	EditText addPlaneEdittext[3]; 
 	EditText adjustPlaneEdittext[3];
 	int index = -1;
 	int indexID = -1;
@@ -80,8 +80,10 @@ public:
 		button[luu] = Button(SUBWINDOW_RIGHT - 100, SUBWINDOW_BOTTOM - 100, SUBWINDOW_RIGHT - 30, SUBWINDOW_BOTTOM - 50, TAB_ON_SELECTED_BACKGROUND, WHITE, a,
 			PLANE_TEXT_COLOR);
 
+
 	}
 	void initEditText() {
+
 		//---------EDITTEXT ID
 		int spaceEdit = 80;
 		char hint[30] = "Data must be entered!";
@@ -542,6 +544,13 @@ public:
 		button[lui].onAction();
 		button[trai].onAction();
 		button[phai].onAction();
+
+
+		
+
+
+		//-----------------VE HUONG DAN TEXT
+
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(BLACK);
 

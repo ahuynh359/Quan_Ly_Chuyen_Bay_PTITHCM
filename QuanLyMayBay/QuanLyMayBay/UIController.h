@@ -4,12 +4,14 @@
 #include"ManagePlanesTab.h"
 #include"BookTicketTab.h"
 
+
 class UIController {
 private:
 	Tab t[MAX_TAB];
 	ManagePlanesTab managePlaneTab;
 	BookTicket bookTicketTab;
 	Tab* temp;
+	ManagePassengersTab managePassenger;
 public:
 	UIController() {
 		initwindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Manage Flights");
@@ -64,8 +66,10 @@ public:
 
 		}
 		else if (temp == &t[2]) {
+
 			managePlaneTab.reset();
 			bookTicketTab.drawUI();
+
 		}
 
 	}
