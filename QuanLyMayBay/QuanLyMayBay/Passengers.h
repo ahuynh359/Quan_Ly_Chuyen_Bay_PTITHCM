@@ -33,6 +33,29 @@ struct PassengerList {
 };
 
 
+void readFilePassenger(PassengerList& passengerList) {
+	ifstream inp("PassengerData.txt");
+	string line;
+
+	int n;
+	inp >> n;
+	inp.ignore();
+	for (int i = 0; i < n; i++) {
+		AVLTree passenger = new NodePass();
+		getline(inp, line);    strcpy_s(passenger->data.lastName, line.c_str());
+		getline(inp, line);		strcpy_s(passenger->data.firstName, line.c_str());
+		getline(inp, line);		strcpy_s(passenger->data.idPass, line.c_str());
+		getline(inp, line);		passenger->data.sex = atoi(line.c_str());
+
+	}
+	inp.close();
+
+}
+
+
+
+
+
 // TIM GIA TRI LON NHAT GIUA a & b
 int findMax(int a, int b) {
 	if (a > b)

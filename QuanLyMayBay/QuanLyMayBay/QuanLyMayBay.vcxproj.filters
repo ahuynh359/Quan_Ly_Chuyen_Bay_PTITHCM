@@ -68,16 +68,15 @@
     <ClInclude Include="DataConst.h">
       <Filter>MyLib</Filter>
     </ClInclude>
-
-    <ClInclude Include="BookTicketTab.h">
-
     <ClInclude Include="ManagePassengersTab.h">
-
       <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="PlaneData.txt">
+      <Filter>FileData</Filter>
+    </Text>
+    <Text Include="PassengerData.txt">
       <Filter>FileData</Filter>
     </Text>
   </ItemGroup>
