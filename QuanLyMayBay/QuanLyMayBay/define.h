@@ -1,7 +1,8 @@
 ﻿#pragma once
 #include"graphics.h"
 #pragma comment(lib,"graphics.lib")
-
+#ifndef DEFINE_H
+#define DEFINE_H
 //----------------SCREEN----------
 int SCREEN_WIDTH = GetSystemMetrics(SM_CXSCREEN);
 int SCREEN_HEIGHT = GetSystemMetrics(SM_CYSCREEN);
@@ -74,7 +75,7 @@ char PASSENGER_BUTTON_NAME[6][20]{
 	"Gender"
 };
 #define PAGE_COLOR COLOR(142, 154, 185)
-#define LIMIT_PAGE 3
+#define LIMIT_PAGE_PASSENGER 3
 
 
 
@@ -115,7 +116,7 @@ char FLIGHT_ADDFLIGHT_EDITTEXT_NAME[7][10]{
 };
 
 
-
+#endif
 
 
 
