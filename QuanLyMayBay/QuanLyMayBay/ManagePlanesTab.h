@@ -4,11 +4,13 @@
 #include"Tab.h"
 #include"EditText.h"
 #include"Planes.h"
+
+
 using namespace std;
 class ManagePlanesTab {
 private:
 	Button button[PLANE_MAX_BUTTON];
-	EditText addPlaneEdittext[3]; 
+	EditText addPlaneEdittext[3];
 	EditText adjustPlaneEdittext[3];
 	int index = -1;
 	int indexID = -1;
@@ -183,14 +185,20 @@ public:
 		if (GetAsyncKeyState(VK_RETURN) & 1) return 3;
 		return 0;
 	}
+
 	void resetInline() {
 		fieldPointer = &addPlaneEdittext[ID];
 		for (int i = 0; i < 3; i++) {
 			addPlaneEdittext[i].clearText();
 		}
+		adjustPointer = &adjustPlaneEdittext[ID];
+		for (int i = 0; i < 3; i++) {
+			adjustPlaneEdittext[i].clearText();
+		}
 	}
 	void reset() {
 		currentMenu = 0;
+		writeFilePlane(planeList);
 
 	}
 	void onItemClicked(int page) {
@@ -544,7 +552,7 @@ public:
 		button[phai].onAction();
 
 
-		
+
 
 
 		//-----------------VE HUONG DAN TEXT
@@ -637,12 +645,11 @@ public:
 				strcpy_s(p->idPlane, addPlaneEdittext[ID].getContent());
 				strcpy_s(p->type, addPlaneEdittext[BRAND].getContent());
 				p->seats = addPlaneEdittext[SEATS].getIntData();
-				for (int i = 0; i < 3; i++) {
-					addPlaneEdittext[i].clearText();
-				}
-
+				
 
 				addPlane(planeList, p);
+				
+
 
 				resetInline();
 			}
@@ -666,7 +673,7 @@ public:
 			adjustPointer = &adjustPlaneEdittext[index];
 			edittexTwo = true;
 		}
-		
+
 		for (int i = 0; i < 3; i++) {
 
 			adjustPlaneEdittext[i].onAction(adjustPointer);
@@ -692,7 +699,7 @@ public:
 				strcpy_s(p->idPlane, adjustPlaneEdittext[ID].getContent());
 				strcpy_s(p->type, adjustPlaneEdittext[BRAND].getContent());
 				p->seats = adjustPlaneEdittext[SEATS].getIntData();
-			
+
 
 
 				planeList.data[indexID] = p;
