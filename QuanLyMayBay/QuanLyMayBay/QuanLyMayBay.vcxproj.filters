@@ -76,7 +76,11 @@
     <Text Include="PlaneData.txt">
       <Filter>FileData</Filter>
     </Text>
+
     <Text Include="PassengerData.txt">
+
+    <Text Include="FlightData.txt">
+
       <Filter>FileData</Filter>
     </Text>
   </ItemGroup>

@@ -13,3 +13,6 @@
 #define MAX_ID_PASS 15
 
 
+//--------------FLIGHT
+#define MAX_ID_FLIGHT 16
+#define MAX_ARRIVE 100

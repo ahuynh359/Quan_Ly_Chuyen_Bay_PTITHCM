@@ -1,7 +1,10 @@
 #pragma once
-#define MAX_ID 15
+
+#include"DataConst.h"
 #include<iostream>
 #include"Tickets.h"
+#include<fstream>
+#include<string>
 using namespace std;
 
 struct Date {
@@ -13,61 +16,128 @@ struct Date {
 };
 
 struct Flight {
-	char idFlight[MAX_ID];
+	char idFlight[MAX_ID_FLIGHT];
 	Date departure;
-	char arrive[100];
+	char arrive[MAX_ARRIVE];
 	int status; // 0 huy chuyen - 1 con ve - 2 het ve - 3 hoan tat 
 	char idPlane[MAX_ID];
+	
 	char** data; 
-	TicketList data;
+	TicketList ticket;
+	//CHI SO PHU
+	int size;
+	bool active = true;
 };
 
-struct FlightList
+struct FlightNode
 {
 	Flight info;
-	FlightList* next;
+	FlightNode* next;
 };
-typedef FlightList* PTR;
+typedef FlightNode* PTR;
+
 
 void initialize(PTR& First)
 {
 	First = NULL;
 }
 
-PTR newNode(void)
+PTR newNode()
 {
-	PTR p = new FlightList;
+	PTR p = new FlightNode;
+	p->next = NULL;
 	return p;
 }
 
 void insertFirst(PTR& First, Flight x)
 {
 	PTR p;
-	p = new FlightList;
+	p = new FlightNode;
 	p->info = x;
 	p->next = First;
 	First = p;
 }
 
-void insertAfter(PTR p, Flight x)
+void insertAfter(PTR& p, Flight x)
 {
 	PTR q;
 	if (p == NULL)
-		printf("Khong them chuyen bay vao danh sach duoc.");
+		return;
 	else
 	{
-		q = new FlightList;
+		PTR first = p;
+		while (first->next != NULL)
+			p = p->next;
+		q = newNode();
 		q->info = x;
-		q->next = p->next;
 		p->next = q;
+		
 	}
 }
 
-PTR searchInfo(PTR First, Flight x)
+void readFileFlight(PTR& flightNode) {
+	ifstream inp("FlightData.txt");
+	string line;
+	Flight x;
+	int n;
+	inp >> n;
+	inp.ignore();
+	for (int i = 0; i < n; i++) {
+		PTR flight = newNode();
+		getline(inp, line);    strcpy_s(flight->info.idFlight, line.c_str());
+		getline(inp, line);    strcpy_s(flight->info.arrive, line.c_str());
+		getline(inp, line);    flight->info.departure.day = atoi(line.c_str());
+		getline(inp, line);    flight->info.departure.month = atoi(line.c_str());
+		getline(inp, line);    flight->info.departure.year = atoi(line.c_str());
+		getline(inp, line);    flight->info.departure.hour = atoi(line.c_str());
+		getline(inp, line);    flight->info.departure.minute = atoi(line.c_str());
+		getline(inp, line);	   flight->info.status = atoi(line.c_str());
+		getline(inp, line);	   strcpy_s(flight->info.idPlane, line.c_str());
+
+		insertAfter(flightNode, x);
+		
+		flight->info.size++;
+
+
+	}
+	inp.close();
+
+}
+
+bool checkDupID(PTR& First, char id[30]) {
+	PTR p = First;
+	for (p = First; p->next != NULL; p = p->next) {
+		if (strcmp(p->info.idFlight, id) == 0) {
+			return true;
+		}
+	}
+	return false;
+}
+
+void writeFileFlight(PTR& flightNode) {
+	ofstream out("FlightData.txt", ios::trunc);
+	out << flightNode->info.size << '\n';
+	for (int i = 0; i < flightNode->info.size; i++) {
+		out << flightNode->info.idFlight << '\n';
+		out << flightNode->info.departure.day << '\n';
+		out << flightNode->info.departure.month << '\n';
+		out << flightNode->info.departure.year << '\n';
+		out << flightNode->info.departure.hour << '\n';
+		out << flightNode->info.departure.minute << '\n';
+		out << flightNode->info.arrive << '\n';
+		out << flightNode->info.status << '\n';
+		out << flightNode->info.idPlane << '\n';
+
+	}
+	out.close();
+}
+
+PTR searchInfo(PTR First, char  id[15])
 {
 	PTR p;
 	for (p = First; p != NULL; p = p->next)
-		if (p->info == x) return p;
+		if (strcmp(p->info.idFlight ,id) == 0)
+			return p;
 	return NULL;
 }
 
@@ -101,17 +171,17 @@ int deleteInfo(PTR& First, Flight x)
 {
 	PTR p = First;
 	if (First == NULL) return 0;
-	if (First->info == x) {
+	if (First->info.idFlight == x.idFlight) {
 		deleteFirst(First); return 1;
 	}
 
-	for (p = First; p->next != NULL && p->next->info != x; p = p->next);
+	for (p = First; p->next != NULL && p->next->info.idFlight != x.idFlight; p = p->next);
 	if (p->next != NULL) {
 		deleteAfter(p);  return 1;
 	}
 	return 0;
 }
-
+/*
 void deleteAllInfo(PTR& First, Flight x)
 {
 	PTR q, p = First;
@@ -132,7 +202,7 @@ void deleteAllInfo(PTR& First, Flight x)
 		delete p;
 	}
 }
-
+*/
 void clearList(PTR& First)
 {
 	PTR p;
@@ -157,7 +227,7 @@ void traverse(PTR First)
 		p = p->next;
 	}
 }
-
+/*
 void selectionSort(PTR& First)
 {
 	PTR p, q, pmin;
@@ -183,7 +253,7 @@ void selectionSort(PTR& First)
 void insert_Order(PTR& First, Flight x)
 {
 	PTR p, t, s;  // t la nut truoc, s la nut sau
-	p = new FlightList;
+	p = new FlightNode;
 	p->info = x;
 	for (s = First; s != NULL && s->info < x; t = s, s = s->next);
 	if (s == First)  // them nut vao dau danh sach lien ket
@@ -213,7 +283,7 @@ void insertOrder(PTR& First, Flight x)
 PTR mergeOrder(PTR& First1, PTR& First2)
 {
 	PTR p1, p2, p3;
-	PTR First3 = new FlightList; // tạo vùng nhớ tạm 
+	PTR First3 = new FlightNode; // tạo vùng nhớ tạm 
 	p1 = First1; p2 = First2; p3 = First3;
 	while (p1 != NULL && p2 != NULL)
 		if (p1->info < p2->info)
@@ -233,6 +303,6 @@ PTR mergeOrder(PTR& First1, PTR& First2)
 	return First3;
 }
 
-
+*/
 
 

@@ -160,7 +160,11 @@
     <ClInclude Include="UIController.h" />
   </ItemGroup>
   <ItemGroup>
+
     <Text Include="PassengerData.txt" />
+
+    <Text Include="FlightData.txt" />
+
     <Text Include="PlaneData.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
