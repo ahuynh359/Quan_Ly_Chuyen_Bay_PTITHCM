@@ -3,6 +3,7 @@
 #include"Button.h"
 #include"ManagePlanesTab.h"
 #include"BookTicketTab.h"
+#include"ManageFlightsTab.h"
 
 
 class UIController {
@@ -10,6 +11,7 @@ private:
 	Tab t[MAX_TAB];
 	ManagePlanesTab managePlaneTab;
 	BookTicket bookTicketTab;
+	ManageFlightsTab manageFlightTab;
 	Tab* temp;
 
 public:
@@ -63,6 +65,7 @@ public:
 		}
 		else if (temp == &t[1]) {
 			managePlaneTab.reset();
+			manageFlightTab.drawUI();
 
 		}
 		else if (temp == &t[2]) {

@@ -9,12 +9,13 @@ using namespace std;
 class ManageFlightsTab {
 private:
 	Button button[FLIGHT_MAX_BUTTON];
-	EditText addFlightEdittext[3];
-	EditText adjustFlightEdittext[3];
+	EditText addFlightEdittext[11];
+	EditText adjustFlightEdittext[11];
 	int index = -1;
 	int indexID = -1;
 	int pageLimit;
 	int page;
+	PTR First;
 	FlightNode* flightNode;
 	Flight temp;
 	enum EDIT_NAME { ID, DAY, MONTH, YEAR, HOUR, MINUTE, TIME, IDPLANE, ARRIVE, STATUS };
@@ -39,7 +40,7 @@ public:
 		button[them] = Button(left, top, right, bottom, TAB_ON_SELECTED_BACKGROUND, WHITE, a,
 			PLANE_TEXT_COLOR);
 
-		
+
 		//------------BUTTON  TRAI  
 		left = SCREEN_WIDTH / 2 - 100;
 		top = BOTTOM_BORDER + 30;
@@ -104,7 +105,7 @@ public:
 		top = top + bottom;
 		bottom = top + EDITTEXT_HEIGHT;
 		addFlightEdittext[HOUR] = adjustFlightEdittext[HOUR] = EditText(hint, title, content, left, top, right, bottom, 40);
-		
+
 		//------------EDITTEXT MINUTE
 		strcpy_s(title, "MINUTE");
 		left = left + right;
@@ -200,7 +201,7 @@ public:
 
 		switch (currentMenu) {
 		case MENU_CHINH: {
-			drawManagePlaneTab();
+			drawManageFlightTab();
 			resetInline();
 			break;
 		}
@@ -406,16 +407,16 @@ public:
 
 		if (button[luu].isClicked()) {
 			if (checkSaveData()) {
-				PTR p = newNode();
-				strcpy_s(p->info.idFlight, addFlightEdittext[ID].getContent());
-				strcpy_s(p->info.arrive, addFlightEdittext[ARRIVE].getContent());
-				strcpy_s(p->info.idPlane, addFlightEdittext[IDPLANE].getContent());
-				p->info.departure.day = addFlightEdittext[DAY].getIntData();
-				p->info.departure.month = addFlightEdittext[MONTH].getIntData();
-				p->info.departure.year = addFlightEdittext[YEAR].getIntData();
-				p->info.departure.hour = addFlightEdittext[HOUR].getIntData();
-				p->info.departure.minute = addFlightEdittext[MINUTE].getIntData();
-				p->info.status = addFlightEdittext[STATUS].getIntData();
+				Flight p;
+				strcpy_s(p.idFlight, addFlightEdittext[ID].getContent());
+				strcpy_s(p.arrive, addFlightEdittext[ARRIVE].getContent());
+				strcpy_s(p.idPlane, addFlightEdittext[IDPLANE].getContent());
+				p.departure.day = addFlightEdittext[DAY].getIntData();
+				p.departure.month = addFlightEdittext[MONTH].getIntData();
+				p.departure.year = addFlightEdittext[YEAR].getIntData();
+				p.departure.hour = addFlightEdittext[HOUR].getIntData();
+				p.departure.minute = addFlightEdittext[MINUTE].getIntData();
+				p.status = addFlightEdittext[STATUS].getIntData();
 				for (int i = 0; i < 3; i++) {
 					addFlightEdittext[i].clearText();
 				}
@@ -424,7 +425,7 @@ public:
 				char s[30] = "Succesfully";
 				addFlightEdittext[STATUS].drawAnoune(s, false);
 
-				//insertAfter(flightNode, temp);
+				insertAfter(flightNode, p);
 
 				resetInline();
 			}
@@ -434,7 +435,7 @@ public:
 
 
 	}
-	void drawManagePlaneTab() {
+	void drawManageFlightTab() {
 
 		//	settextstyle(BOLD_FONT, HORIZ_DIR, 2);
 			//-------------------VE BORDER
@@ -538,7 +539,7 @@ public:
 			maxSize = i + 9;
 		}
 		else maxSize = flightNode->info.size;
-		
+
 		/*if (planeList.data[i-1] == NULL) {
 			(this->pageLimit) = planeList.size / 10;
 			if ((this->page) > 1)
@@ -555,11 +556,12 @@ public:
 			if (mousex() <= RIGHT_BORDER && mousex() >= LEFT_BORDER && mousey() <= (y + 35) &&
 				mousey() >= (preY + 35)) {
 				if (GetAsyncKeyState(VK_RBUTTON) && 0x8000) {
-					indexID = i - 1;
 					displayMessageBox(indexID);
-
-
 				}
+
+
+
+
 				else if (GetAsyncKeyState(VK_LBUTTON) && 0x8000) {
 					indexID = i - 1;
 					temp = flightNode->info;
@@ -634,7 +636,7 @@ public:
 			outtextxy((x + preX - width) / 2, y, charValue);
 			preX = x;
 
-			
+
 			preY += 35;
 
 		}
@@ -680,8 +682,8 @@ public:
 			break;
 		case IDOK: {
 			if (index >= 0)
-				//deleteInfo(flightNode, x);
-			pageLimit = flightNode->info.size / 10;
+				//deleteInfo(flightNode, );
+				pageLimit = flightNode->info.size / 10;
 
 		}
 				 return 1;

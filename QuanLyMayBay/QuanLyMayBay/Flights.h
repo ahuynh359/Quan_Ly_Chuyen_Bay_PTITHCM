@@ -1,5 +1,6 @@
 #pragma once
-#define MAX_ID 15
+
+#include"DataConst.h"
 #include<iostream>
 #include"Tickets.h"
 #include<fstream>
@@ -15,14 +16,14 @@ struct Date {
 };
 
 struct Flight {
-	char idFlight[MAX_ID];
+	char idFlight[MAX_ID_FLIGHT];
 	Date departure;
-	char arrive[100];
+	char arrive[MAX_ARRIVE];
 	int status; // 0 huy chuyen - 1 con ve - 2 het ve - 3 hoan tat 
 	char idPlane[MAX_ID];
 	
 	char** data; 
-	TicketList data;
+	TicketList ticket;
 	//CHI SO PHU
 	int size;
 	bool active = true;
@@ -57,17 +58,20 @@ void insertFirst(PTR& First, Flight x)
 	First = p;
 }
 
-void insertAfter(PTR p, Flight x)
+void insertAfter(PTR& p, Flight x)
 {
 	PTR q;
 	if (p == NULL)
-		printf("Khong them chuyen bay vao danh sach duoc.");
+		return;
 	else
 	{
-		q = new FlightNode;
+		PTR first = p;
+		while (first->next != NULL)
+			p = p->next;
+		q = newNode();
 		q->info = x;
-		q->next = p->next;
 		p->next = q;
+		
 	}
 }
 
@@ -79,7 +83,7 @@ void readFileFlight(PTR& flightNode) {
 	inp >> n;
 	inp.ignore();
 	for (int i = 0; i < n; i++) {
-		PTR flight ;
+		PTR flight = newNode();
 		getline(inp, line);    strcpy_s(flight->info.idFlight, line.c_str());
 		getline(inp, line);    strcpy_s(flight->info.arrive, line.c_str());
 		getline(inp, line);    flight->info.departure.day = atoi(line.c_str());
@@ -128,11 +132,12 @@ void writeFileFlight(PTR& flightNode) {
 	out.close();
 }
 
-PTR searchInfo(PTR First, Flight x)
+PTR searchInfo(PTR First, char  id[15])
 {
 	PTR p;
 	for (p = First; p != NULL; p = p->next)
-		if (p->info == x) return p;
+		if (strcmp(p->info.idFlight ,id) == 0)
+			return p;
 	return NULL;
 }
 
@@ -176,7 +181,7 @@ int deleteInfo(PTR& First, Flight x)
 	}
 	return 0;
 }
-
+/*
 void deleteAllInfo(PTR& First, Flight x)
 {
 	PTR q, p = First;
@@ -197,7 +202,7 @@ void deleteAllInfo(PTR& First, Flight x)
 		delete p;
 	}
 }
-
+*/
 void clearList(PTR& First)
 {
 	PTR p;
@@ -222,7 +227,7 @@ void traverse(PTR First)
 		p = p->next;
 	}
 }
-
+/*
 void selectionSort(PTR& First)
 {
 	PTR p, q, pmin;
@@ -298,6 +303,6 @@ PTR mergeOrder(PTR& First1, PTR& First2)
 	return First3;
 }
 
-
+*/
 
 
