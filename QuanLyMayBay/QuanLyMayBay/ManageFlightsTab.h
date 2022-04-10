@@ -4,7 +4,7 @@
 #include"Tab.h"
 #include"EditText.h"
 #include"Flights.h"
-using namespace std;
+
 
 class ManageFlightsTab {
 private:

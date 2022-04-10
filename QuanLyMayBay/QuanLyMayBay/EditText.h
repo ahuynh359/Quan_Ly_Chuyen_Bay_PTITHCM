@@ -10,7 +10,7 @@ using namespace std;
 class EditText :public UI {
 private:
 	char hint[30], title[30], content[30], anounce[30];
-	int maxChar;
+	unsigned int maxChar;
 	int index;
 	int vaildAnounceColor = RED;
 	int invalidAnounceColor = GREEN;
@@ -18,7 +18,7 @@ private:
 
 
 public:
-	EditText(char hint[30], char title[30], char content[30], int left, int top, int right, int bottom, int maxChar) :UI
+	EditText(char hint[30], char title[30], char content[30], int left, int top, int right, int bottom, unsigned int maxChar) :UI
 	(left, top, right, bottom, backgroundColor, onSelectedBackgroundColor) {
 
 		strcpy_s(this->hint, hint);

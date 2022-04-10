@@ -5,7 +5,7 @@
 #include"Tickets.h"
 #include<fstream>
 #include<string>
-using namespace std;
+
 
 struct Date {
 	int day = 0;

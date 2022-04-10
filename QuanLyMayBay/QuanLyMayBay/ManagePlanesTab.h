@@ -6,7 +6,7 @@
 #include"Planes.h"
 
 
-using namespace std;
+
 class ManagePlanesTab {
 private:
 	Button button[PLANE_MAX_BUTTON];
@@ -140,10 +140,9 @@ public:
 		}
 
 
-		default:
-			break;
 		}
 	}
+
 	void showPage(int x, int y, int page, int limit)
 	{
 		setcolor(PAGE_COLOR);
@@ -238,7 +237,7 @@ public:
 				if (GetAsyncKeyState(VK_RBUTTON) && 0x8000) {
 					indexID = i - 1;
 					displayMessageBox(indexID);
-					
+
 
 				}
 				else if (GetAsyncKeyState(VK_LBUTTON) && 0x8000) {
@@ -692,7 +691,7 @@ public:
 
 		if (button[luu].isClicked()) {
 
-			if (checkSaveData(adjustPlaneEdittext,true)) {
+			if (checkSaveData(adjustPlaneEdittext, true)) {
 				Plane* p = new Plane;
 				for (int i = 0; i < 3; i++) {
 					adjustPlaneEdittext[i].clearCursor();
