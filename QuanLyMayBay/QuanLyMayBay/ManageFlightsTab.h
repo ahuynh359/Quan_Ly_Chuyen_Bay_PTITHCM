@@ -152,8 +152,7 @@ public:
 		}
 
 
-		default:
-			break;
+		
 		}
 	}
 	void showPage(int x, int y, int page, int limit)

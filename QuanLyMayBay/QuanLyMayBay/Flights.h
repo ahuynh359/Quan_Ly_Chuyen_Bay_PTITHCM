@@ -21,9 +21,8 @@ struct Flight {
 	char arrive[MAX_ARRIVE];
 	int status; // 0 huy chuyen - 1 con ve - 2 het ve - 3 hoan tat 
 	char idPlane[MAX_ID];
-	
-	char** data; 
-	TicketList ticket;
+
+	TicketList ticketList;
 	//CHI SO PHU
 	int size;
 	bool active = true;
@@ -71,8 +70,16 @@ void insertAfter(PTR& p, Flight x)
 		q = newNode();
 		q->info = x;
 		p->next = q;
-		
+
 	}
+}
+
+int size(PTR& p) {
+	int cnt = 0;
+	for (PTR k = p; k != NULL; k = k->next) {
+		cnt++;
+	}
+	return cnt;
 }
 
 void readFileFlight(PTR& flightNode) {
@@ -95,7 +102,7 @@ void readFileFlight(PTR& flightNode) {
 		getline(inp, line);	   strcpy_s(flight->info.idPlane, line.c_str());
 
 		insertAfter(flightNode, x);
-		
+
 		flight->info.size++;
 
 
@@ -136,7 +143,7 @@ PTR searchInfo(PTR First, char  id[15])
 {
 	PTR p;
 	for (p = First; p != NULL; p = p->next)
-		if (strcmp(p->info.idFlight ,id) == 0)
+		if (strcmp(p->info.idFlight, id) == 0)
 			return p;
 	return NULL;
 }
@@ -156,9 +163,9 @@ void deleteFirst(PTR& First)
 	delete p;
 }
 
-void  deleteAfter(PTR p)
+void  deleteAfter(PTR& p)
 {
-	PTR q;
+	PTR q = p;
 	if ((p == NULL) || (p->next == NULL))
 		printf("Khong xoa chuyen bay nay duoc");
 	q = p->next;
@@ -220,10 +227,10 @@ void traverse(PTR First)
 	int stt = 0;
 	p = First;
 	if (p == NULL)
-		printf("\nKhong co chuyen bay trong danh sach");
+		//printf("\nKhong co chuyen bay trong danh sach");
 	while (p != NULL)
 	{
-		printf("\n %5d %8d %-50s %-10s", ++stt, p->info);
+		//printf("\n %5d %8d %-50s %-10s", ++stt, p->info);
 		p = p->next;
 	}
 }
@@ -283,7 +290,7 @@ void insertOrder(PTR& First, Flight x)
 PTR mergeOrder(PTR& First1, PTR& First2)
 {
 	PTR p1, p2, p3;
-	PTR First3 = new FlightNode; // tạo vùng nhớ tạm 
+	PTR First3 = new FlightNode; // tạo vùng nhớ tạm
 	p1 = First1; p2 = First2; p3 = First3;
 	while (p1 != NULL && p2 != NULL)
 		if (p1->info < p2->info)
@@ -298,7 +305,7 @@ PTR mergeOrder(PTR& First1, PTR& First2)
 	if (p1 == NULL)      p3->next = p2;
 	else p3->next = p1;
 
-	p3 = First3;    First3 = p3->next;    delete p3; // xóa 
+	p3 = First3;    First3 = p3->next;    delete p3; // xóa
 	First1 = First2 = NULL;
 	return First3;
 }

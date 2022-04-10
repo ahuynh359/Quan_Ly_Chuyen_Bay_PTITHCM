@@ -11,7 +11,7 @@ class UIController {
 private:
 	Tab t[MAX_TAB];
 	ManagePlanesTab managePlaneTab;
-	BookTicket bookTicketTab;
+	BookTicketTab bookTicketTab;
 	ManageFlightsTab manageFlightTab;
 	Tab* temp;
 
@@ -71,9 +71,12 @@ public:
 		}
 		else if (temp == &t[2]) {
 
-			managePlaneTab.reset();
-			bookTicketTab.drawUI();
+		//	managePlaneTab.reset();
+			//	bookTicketTab.drawUI();
 
+		}
+		else if (temp == &t[3]) {
+			bookTicketTab.drawUI();
 		}
 
 	}

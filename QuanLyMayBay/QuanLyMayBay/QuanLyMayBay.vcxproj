@@ -144,7 +144,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BookTicketTab.h" />
     <ClInclude Include="DataConst.h" />
+    <ClInclude Include="FunctionTab.h" />
     <ClInclude Include="ManagePassengersTab.h" />
     <ClInclude Include="Planes.h" />
     <ClInclude Include="Button.h" />
@@ -160,12 +162,10 @@
     <ClInclude Include="UIController.h" />
   </ItemGroup>
   <ItemGroup>
-
     <Text Include="PassengerData.txt" />
-
     <Text Include="FlightData.txt" />
-
     <Text Include="PlaneData.txt" />
+    <Text Include="TicketData.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

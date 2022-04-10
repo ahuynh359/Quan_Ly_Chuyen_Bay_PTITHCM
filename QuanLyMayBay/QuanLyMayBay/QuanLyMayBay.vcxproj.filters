@@ -1,87 +1,81 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="UI">
-      <UniqueIdentifier>{71d3ada0-8097-4e89-82dc-73f9bda68277}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="MyLib">
-      <UniqueIdentifier>{d0eb94af-95d4-44b6-9743-3f83acb390ba}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="FileData">
-      <UniqueIdentifier>{e0a06f6b-a8ca-45d9-b428-b84a43c3ae6c}</UniqueIdentifier>
-    </Filter>
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="UI.h">
+    <ClInclude Include="Button.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="define.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="EditText.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="Tab.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>UI</Filter>
+    </ClInclude>
     <ClInclude Include="UIController.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Passengers.h">
+      <Filter>CTDL</Filter>
+    </ClInclude>
+    <ClInclude Include="Planes.h">
+      <Filter>CTDL</Filter>
+    </ClInclude>
+    <ClInclude Include="Tickets.h">
+      <Filter>CTDL</Filter>
+    </ClInclude>
+    <ClInclude Include="Flights.h">
+      <Filter>CTDL</Filter>
+    </ClInclude>
+    <ClInclude Include="DataConst.h">
+      <Filter>CTDL</Filter>
+    </ClInclude>
+    <ClInclude Include="ManageFlightsTab.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="ManagePassengersTab.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="ManagePlanesTab.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="Button.h">
+    <ClInclude Include="BookTicketTab.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="ManageFlightsTab.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Flights.h">
-      <Filter>MyLib</Filter>
-    </ClInclude>
-    <ClInclude Include="EditText.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Planes.h">
-      <Filter>MyLib</Filter>
-    </ClInclude>
-    <ClInclude Include="Passengers.h">
-      <Filter>MyLib</Filter>
-    </ClInclude>
-    <ClInclude Include="define.h">
-      <Filter>UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Tickets.h">
-      <Filter>MyLib</Filter>
-    </ClInclude>
-    <ClInclude Include="DataConst.h">
-      <Filter>MyLib</Filter>
-    </ClInclude>
-    <ClInclude Include="ManagePassengersTab.h">
+    <ClInclude Include="FunctionTab.h">
       <Filter>UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="PlaneData.txt">
-      <Filter>FileData</Filter>
-    </Text>
-
     <Text Include="PassengerData.txt">
-
-    <Text Include="FlightData.txt">
-
-      <Filter>FileData</Filter>
+      <Filter>Data</Filter>
     </Text>
+    <Text Include="PlaneData.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="FlightData.txt">
+      <Filter>Data</Filter>
+    </Text>
+    <Text Include="TicketData.txt">
+      <Filter>Data</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Data">
+      <UniqueIdentifier>{180e1926-2e12-4091-9cd3-9e5df704b7ec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{02465fb0-985b-432e-90c7-524db22ae214}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CTDL">
+      <UniqueIdentifier>{1f9fa25a-6030-41b8-8663-79b754ffb9c1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
