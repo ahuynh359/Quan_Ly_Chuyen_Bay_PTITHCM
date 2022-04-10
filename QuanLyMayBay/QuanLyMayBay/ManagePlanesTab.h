@@ -191,14 +191,14 @@ public:
 		for (int i = 0; i < 3; i++) {
 			addPlaneEdittext[i].clearText();
 		}
-		adjustPointer = &adjustPlaneEdittext[ID];
+		//adjustPointer = &adjustPlaneEdittext[ID];
 		for (int i = 0; i < 3; i++) {
 			adjustPlaneEdittext[i].clearText();
 		}
 	}
 	void reset() {
 		currentMenu = 0;
-		writeFilePlane(planeList);
+		//writeFilePlane(planeList);
 
 	}
 	void onItemClicked(int page) {
@@ -238,7 +238,7 @@ public:
 				if (GetAsyncKeyState(VK_RBUTTON) && 0x8000) {
 					indexID = i - 1;
 					displayMessageBox(indexID);
-
+					
 
 				}
 				else if (GetAsyncKeyState(VK_LBUTTON) && 0x8000) {
@@ -295,7 +295,15 @@ public:
 
 	}
 	bool checkSaveData(EditText addPlaneEdittext[3], bool isAdjust = false) {
-		int i = 0;
+
+		for (int i = 0; i < 3; i++) {
+			addPlaneEdittext[i].clearCursor();
+		}
+		int i;
+		if (isAdjust)
+			i = 1;
+		else
+			i = 0;
 		bool s = true;
 		for (; i < 3; i++) {
 			if (addPlaneEdittext[i].isEmpty()) {
@@ -307,14 +315,7 @@ public:
 					addPlaneEdittext[i].checkParseInt();
 					s = false;
 				}
-				else
-					if (isAdjust) {
-						if (i == 0 && addPlaneEdittext[i].checkDup(checkDupID(planeList, addPlaneEdittext[i].getContent()))) {
-							addPlaneEdittext[i].checkDup(checkDupID(planeList, addPlaneEdittext[i].getContent()));
-							s = false;
-						}
 
-					}
 		}
 
 
@@ -645,10 +646,10 @@ public:
 				strcpy_s(p->idPlane, addPlaneEdittext[ID].getContent());
 				strcpy_s(p->type, addPlaneEdittext[BRAND].getContent());
 				p->seats = addPlaneEdittext[SEATS].getIntData();
-				
+
 
 				addPlane(planeList, p);
-				
+
 
 
 				resetInline();
@@ -691,7 +692,7 @@ public:
 
 		if (button[luu].isClicked()) {
 
-			if (checkSaveData(adjustPlaneEdittext)) {
+			if (checkSaveData(adjustPlaneEdittext,true)) {
 				Plane* p = new Plane;
 				for (int i = 0; i < 3; i++) {
 					adjustPlaneEdittext[i].clearCursor();
