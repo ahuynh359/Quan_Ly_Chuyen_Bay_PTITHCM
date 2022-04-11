@@ -32,6 +32,12 @@ struct PassengerList {
 
 };
 
+bool checkIDPassenger(char s[MAX_ID_PASS]) {
+	if (strlen(s) == 12)
+		return true;
+	return false;
+}
+
 
 void readFilePassenger(PassengerList& passengerList) {
 	ifstream inp("PassengerData.txt");

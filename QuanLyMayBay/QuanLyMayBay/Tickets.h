@@ -1,6 +1,7 @@
 #pragma once
 #include<iostream>
 #include<fstream>
+#include<string>
 
 
 
@@ -12,14 +13,16 @@ struct TicketList {
 };
 
 void initTicketList(TicketList& list, int totalTicket) {
-
-	list.ticket = new string[totalTicket];
 	list.totalTicket = totalTicket;
 	list.bookedTicket = 0;
+	list.ticket = new string[totalTicket];
+	for (int i = 0; i < totalTicket; i++)
+		list.ticket[i] = "";
+	
 }
 
 bool insertTicket(TicketList& list, int order, char idPass[12]) {
-	if (list.ticket->length() > 0)
+	if (list.ticket[order-1].length() > 0)
 		return false;
 	list.ticket[order - 1] = idPass;
 	list.bookedTicket++;
@@ -27,7 +30,7 @@ bool insertTicket(TicketList& list, int order, char idPass[12]) {
 }
 
 bool deleteTicket(TicketList& list, int order) {
-	if (list.ticket->length() > 0) {
+	if (list.ticket[order - 1].length() > 0) {
 		list.ticket[order - 1] = "";
 		return true;
 	}

@@ -63,6 +63,36 @@ public:
 		drawUI();
 	}
 
+	//Viet cho button ghe
+	void onAction(Button*& button,bool isBooked = 0) {
+		if (isLeftMouseClicked(mousex(), mousey()) ) {
+			button = this;
+			currentBackground = onSelectedBackgroundColor;
+			currentTextColor = textColor;
+
+		}
+
+		else if (button != this) {
+			if (isBooked) {
+				currentBackground = TICKET_NOT_AVAI;
+				currentTextColor = textOnPointedColor;
+			}
+			else {
+				currentBackground = backgroundColor;
+				currentTextColor = textOnPointedColor;
+			}
+		}
+
+		drawUI();
+
+	}
+
+	void setColor(int textColor,int backgroundColor) {
+		currentBackground = onSelectedBackgroundColor;
+		currentTextColor = textColor;
+		drawUI();
+	}
+
 	bool isClicked() {
 		return cliked;
 	}
