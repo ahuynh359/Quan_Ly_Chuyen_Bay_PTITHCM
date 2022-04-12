@@ -24,7 +24,6 @@ struct Flight {
 
 	TicketList ticketList;
 	//CHI SO PHU
-	int size;
 	bool active = true;
 };
 
@@ -41,25 +40,27 @@ void initialize(PTR& First)
 	First = NULL;
 }
 
-PTR newNode()
+PTR newNode(Flight& x)
 {
 	PTR p = new FlightNode;
+	p->info = x;
 	p->next = NULL;
+	return p;
+}
+PTR newNode() {
+	PTR p = new FlightNode;
 	return p;
 }
 
 void insertFirst(PTR& First, Flight x)
 {
-	PTR p;
-	p = new FlightNode;
-	p->info = x;
+	PTR p = newNode(x);
 	p->next = First;
 	First = p;
 }
 
-void insertAfter(PTR& p, Flight x)
+void insertAfter(PTR& p, PTR& q)
 {
-	PTR q;
 	if (p == NULL)
 		return;
 	else
@@ -67,8 +68,6 @@ void insertAfter(PTR& p, Flight x)
 		PTR first = p;
 		while (first->next != NULL)
 			p = p->next;
-		q = newNode();
-		q->info = x;
 		p->next = q;
 
 	}
@@ -101,9 +100,9 @@ void readFileFlight(PTR& flightNode) {
 		getline(inp, line);	   flight->info.status = atoi(line.c_str());
 		getline(inp, line);	   strcpy_s(flight->info.idPlane, line.c_str());
 
-		insertAfter(flightNode, x);
+		insertAfter(flightNode, flight);
 
-		flight->info.size++;
+
 
 
 	}
@@ -112,8 +111,7 @@ void readFileFlight(PTR& flightNode) {
 }
 
 bool checkDupID(PTR& First, char id[30]) {
-	PTR p = First;
-	for (p = First; p->next != NULL; p = p->next) {
+	for (PTR p = First; p != NULL; p = p->next) {
 		if (strcmp(p->info.idFlight, id) == 0) {
 			return true;
 		}
@@ -123,8 +121,9 @@ bool checkDupID(PTR& First, char id[30]) {
 
 void writeFileFlight(PTR& flightNode) {
 	ofstream out("FlightData.txt", ios::trunc);
-	out << flightNode->info.size << '\n';
-	for (int i = 0; i < flightNode->info.size; i++) {
+	int si = size(flightNode);
+	out << si << '\n';
+	for (int i = 0; i < si; i++) {
 		out << flightNode->info.idFlight << '\n';
 		out << flightNode->info.departure.day << '\n';
 		out << flightNode->info.departure.month << '\n';
@@ -141,53 +140,51 @@ void writeFileFlight(PTR& flightNode) {
 
 PTR searchInfo(PTR First, char  id[15])
 {
-	PTR p;
-	for (p = First; p != NULL; p = p->next)
+	for (PTR p = First; p != NULL; p = p->next)
 		if (strcmp(p->info.idFlight, id) == 0)
 			return p;
 	return NULL;
 }
 
-int empty(PTR First)
+bool empty(PTR& First)
 {
-	return(First == NULL ? 1 : 0);
+	return(First == NULL ? true : false);
 }
 
 void deleteFirst(PTR& First)
 {
-	PTR p;
-	if (empty(First))
-		printf("Khong co chuyen bay trong danh sach");
-	p = First;
+	if (First == NULL)
+		return;
+	PTR p = First;
 	First = p->next;
 	delete p;
 }
 
-void  deleteAfter(PTR& p)
-{
-	PTR q = p;
-	if ((p == NULL) || (p->next == NULL))
-		printf("Khong xoa chuyen bay nay duoc");
-	q = p->next;
-	p->next = q->next;
-	delete q;
-}
+//void  deleteAfter(PTR& p,char id[30])
+//{
+//	PTR q = p;
+//	if ((p == NULL) || (p->next == NULL))
+//		return;
+//	q = p->next;
+//	p->next = q->next;
+//	delete q;
+//}
 
 //incomplete
-int deleteInfo(PTR& First, Flight x)
-{
-	PTR p = First;
-	if (First == NULL) return 0;
-	if (First->info.idFlight == x.idFlight) {
-		deleteFirst(First); return 1;
-	}
-
-	for (p = First; p->next != NULL && p->next->info.idFlight != x.idFlight; p = p->next);
-	if (p->next != NULL) {
-		deleteAfter(p);  return 1;
-	}
-	return 0;
-}
+//int deleteInfo(PTR& First, Flight x)
+//{
+//	PTR p = First;
+//	if (First == NULL) return 0;
+//	if (First->info.idFlight == x.idFlight) {
+//		deleteFirst(First); return 1;
+//	}
+//
+//	for (p = First; p->next != NULL && p->next->info.idFlight != x.idFlight; p = p->next);
+//	if (p->next != NULL) {
+//		deleteAfter(p);  return 1;
+//	}
+//	return 0;
+//}
 /*
 void deleteAllInfo(PTR& First, Flight x)
 {
@@ -221,19 +218,7 @@ void clearList(PTR& First)
 	}
 }
 
-void traverse(PTR First)
-{
-	PTR p;
-	int stt = 0;
-	p = First;
-	if (p == NULL)
-		//printf("\nKhong co chuyen bay trong danh sach");
-	while (p != NULL)
-	{
-		//printf("\n %5d %8d %-50s %-10s", ++stt, p->info);
-		p = p->next;
-	}
-}
+
 /*
 void selectionSort(PTR& First)
 {
