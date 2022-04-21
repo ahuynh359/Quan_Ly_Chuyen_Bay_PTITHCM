@@ -1,4 +1,4 @@
-#pragma once;
+#pragma once
 #include"Flights.h"
 #include<iostream>
 #include"EditText.h"

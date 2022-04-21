@@ -12,7 +12,7 @@ private:
 	Tab t[MAX_TAB];
 	ManagePlanesTab managePlaneTab;
 	BookTicketTab bookTicketTab;
-	ManageFlightsTab manageFlightTab;
+	//ManageFlightsTab manageFlightTab;
 	Tab* temp;
 
 public:
@@ -66,7 +66,7 @@ public:
 		}
 		else if (temp == &t[1]) {
 			managePlaneTab.reset();
-			manageFlightTab.drawUI();
+			//manageFlightTab.drawUI();
 
 		}
 		else if (temp == &t[2]) {

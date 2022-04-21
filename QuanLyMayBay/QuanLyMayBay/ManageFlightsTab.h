@@ -212,7 +212,7 @@ public:
 		}
 		case MENU_CHINHSUA: {
 
-			drawAjustScreen();
+			//drawAjustScreen();
 
 			break;
 		}
@@ -423,8 +423,10 @@ public:
 
 				char s[30] = "Succesfully";
 				addFlightEdittext[STATUS].drawAnoune(s, false);
-
-				insertAfter(flightNode, p);
+				PTR temp = newNode();
+				temp->next = NULL;
+				temp->info = p;
+				insertAfter(flightNode, temp);
 
 				resetInline();
 			}
@@ -461,7 +463,7 @@ public:
 
 
 		//------------ VE SO TRANG
-		pageLimit = flightNode->info.size / 10;
+		//pageLimit = flightNode->info.size / 10;
 		sprintf_s(a, "%d", page);
 		showPage((LEFT_BORDER + RIGHT_BORDER - textwidth(a)) / 2 - 25, BOTTOM_BORDER + 35, page, pageLimit + 1);
 
@@ -493,7 +495,7 @@ public:
 			preX = x;
 		}
 
-		onItemClicked(page);
+		//onItemClicked(page);
 		if (button[them].isClicked()) {
 
 
@@ -516,6 +518,7 @@ public:
 	}
 
 	//Do du lieu ra bang va xu li su kien
+	/*
 	void onItemClicked(int page) {
 
 
@@ -547,7 +550,8 @@ public:
 			sprintf_s(a, "%d", page);
 			showPage((LEFT_BORDER + RIGHT_BORDER - textwidth(a)) / 2 - 25, BOTTOM_BORDER + 35, this->page, pageLimit + 1);
 		}
-			*/
+		*/
+			/*
 		for (; i <= maxSize; i++) {
 
 			int preX = LEFT_BORDER;
@@ -641,6 +645,7 @@ public:
 		}
 
 	}
+	*/
 	bool checkSaveData() {
 		for (int i = 0; i < 3; i++) {
 			if (addFlightEdittext[i].isEmpty()) {
@@ -655,7 +660,7 @@ public:
 
 	int displayMessageBox(int index)
 	{
-		int msgboxID;
+		/*int msgboxID;
 		if (!flightNode->info.active) {
 			msgboxID = MessageBox(
 				GetForegroundWindow(),
@@ -680,19 +685,19 @@ public:
 
 			break;
 		case IDOK: {
-			if (index >= 0)
+			//if (index >= 0)
 				//deleteInfo(flightNode, );
-				pageLimit = flightNode->info.size / 10;
+			//	pageLimit = flightNode->info.size / 10;
 
-		}
-				 return 1;
+		//}
+				// return 1;
 		}
 
 		return 0;
+		*/
 	}
 
-	void ThongBao(int x, int y, char noti[50], int mauChu, int mauNen)
-	{
+	void ThongBao(int x, int y, char noti[50], int mauChu, int mauNen){
 		setbkcolor(mauNen);
 		setcolor(mauChu);
 		outtextxy(x, y, noti);

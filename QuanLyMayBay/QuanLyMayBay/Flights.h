@@ -59,7 +59,7 @@ void insertFirst(PTR& First, Flight x)
 	First = p;
 }
 
-void insertAfter(PTR& p, PTR& q)
+void insertAfter(PTR& p, PTR q)
 {
 	if (p == NULL)
 		return;
