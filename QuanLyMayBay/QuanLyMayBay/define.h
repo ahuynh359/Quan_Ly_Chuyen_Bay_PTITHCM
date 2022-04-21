@@ -15,7 +15,7 @@ int SUBWINDOW_BOTTOM = SCREEN_HEIGHT;
 #define SUBWINDOW_BACKGROUND COLOR(232,242,247)
 
 //-------------------------TAB --------------------
-#define MAX_TAB 4
+#define MAX_TAB 5
 #define TAB_WIDTH 200
 #define TAB_HEIGHT 100
 #define TAB_SPACE 50
@@ -30,7 +30,8 @@ char TAB_TEXT[MAX_TAB][30] = {
    "PLANES",
    "FLIGHTS",
    "CUSTOMER",
-   "TICKET"
+   "TICKET",
+   "STATISTIC"
 
 };
 //------------BUTTON
