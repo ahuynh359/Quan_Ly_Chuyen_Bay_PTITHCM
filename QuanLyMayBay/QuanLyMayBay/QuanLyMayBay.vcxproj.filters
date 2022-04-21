@@ -28,9 +28,6 @@
     <ClInclude Include="Planes.h">
       <Filter>CTDL</Filter>
     </ClInclude>
-    <ClInclude Include="Tickets.h">
-      <Filter>CTDL</Filter>
-    </ClInclude>
     <ClInclude Include="Flights.h">
       <Filter>CTDL</Filter>
     </ClInclude>
@@ -52,6 +49,9 @@
     <ClInclude Include="FunctionTab.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="Day.h">
+      <Filter>CTDL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="PassengerData.txt">
@@ -61,9 +61,6 @@
       <Filter>Data</Filter>
     </Text>
     <Text Include="FlightData.txt">
-      <Filter>Data</Filter>
-    </Text>
-    <Text Include="TicketData.txt">
       <Filter>Data</Filter>
     </Text>
   </ItemGroup>

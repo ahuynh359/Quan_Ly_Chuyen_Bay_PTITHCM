@@ -5,16 +5,16 @@
 #define PLANE_H
 #include<iostream>
 #include<fstream>
-using namespace std;
+
 
 struct Plane {
-	char idPlane[MAX_ID];
-	char type[MAX_TYPE];
+	char idPlane[MAX_ID_PLANE + 1];
+	char type[MAX_TYPE_PLANE + 1];
 	int seats; //So cho >= 20
 
 	// CHI SO PHU
-	int flyTimes = 0; // so luot thuc hien
-	bool active = true;
+	int flyTimes = 0; 
+	
 
 
 };
@@ -26,46 +26,46 @@ struct PlaneList {
 
 };
 
-//Ham tim may bay 
-Plane* findPlane(PlaneList& list, char idPlane[MAX_ID]) {
-	for (int i = 0; i < list.size; i++) {
-		if (strcmp(list.data[i]->idPlane, idPlane) == 0)
-			return list.data[i];
-	}
-	return NULL;
+bool isEmpty(PlaneList& list) {
+	return (list.size == 0 ? true : false);
 }
 
-//Tra ve vi tri may bay
-int getIndexPlane(PlaneList& list, char idPlane[MAX_ID]) {
-	for (int i = 0; i < list.size; i++) {
-		if (strcmp(list.data[i]->idPlane, idPlane) == 0) {
-			return i;
-		}
-	}
-	return -1;
+bool isFull(PlaneList& list) {
+	return (list.size >= MAX_PLANE ? true : false);
 }
 
-//Remove may bay
-int removePlane(PlaneList& list, int index) {
-	if (index < 0 || index > list.size - 1)
-		return 0;
-	for (int i = index; i < list.size - 1; i++) {
-		list.data[i] = list.data[i + 1];
-	}
-	(list.size)--;
-	return 1;
-
+Plane* newPlane(Plane plane) {
+	Plane* p = new Plane;
+	*p = plane;
+	return p;
 }
 
-
-void addPlane(PlaneList& list, Plane* plane) {
-	list.data[list.size] = plane;
+void addPlane(PlaneList& list, Plane plane) {
+	list.data[list.size] = newPlane(plane);
 	list.size++;
 
 }
 
-//Check trung ID dua tren ma
-bool checkDupID(PlaneList& list, char id[30]) {
+int findPlane(PlaneList& list, char idPlane[MAX_ID_PLANE + 1]) {
+	for (int i = 0; i < list.size; i++) {
+		if (strcmp(list.data[i]->idPlane, idPlane) == 0)
+			return i;
+	}
+	return -1;
+}
+
+void removePlane(PlaneList& list, int index) {
+	if (index < 0 || index > list.size - 1)
+		return;
+	for (int i = index; i < list.size - 1; i++) {
+		list.data[i] = list.data[i + 1];
+	}
+	(list.size)--;
+	delete list.data[index];
+
+}
+
+bool checkDupID(PlaneList& list, char id[MAX_ID_PLANE + 1]) {
 	for (int i = 0; i < list.size; i++) {
 		if (strcmp(list.data[i]->idPlane, id) == 0) {
 			return true;
@@ -74,55 +74,45 @@ bool checkDupID(PlaneList& list, char id[30]) {
 	return false;
 }
 
-//Ham kt xem ID co trung tru thang dang duoc xet
-bool checkDupIDExcept(PlaneList& list, int index) {
-
-	for (int i = 0; i < index; i++) {
-		if (list.data[i]->idPlane == list.data[index]->idPlane)
-			return true;
-	}
-	for (int i = index + 1; i < list.size; i++) {
-		if (list.data[i]->idPlane == list.data[index]->idPlane)
-			return true;
-	}
-	return false;
-
-}
-
-
-void readFilePlane(PlaneList& planeList) {
-	ifstream inp("PlaneData.txt");
-	string line;
-
-	int n;
-	inp >> n;
-	inp.ignore();
-	for (int i = 0; i < n; i++) {
-		Plane* plane = new Plane();
-		getline(inp, line);    strcpy_s(plane->idPlane, line.c_str());
-		getline(inp, line);		strcpy_s(plane->type, line.c_str());
-		getline(inp, line);		plane->seats = atoi(line.c_str());
-
-		addPlane(planeList, plane);
-
-
-
-	}
-	inp.close();
-
+void adjustPlane(PlaneList& list, Plane& plane,int index) {
+	if (index < 0 || index > list.size - 1)
+		return;
+	*list.data[index] = plane;
 }
 
 void writeFilePlane(PlaneList& planeList) {
-	ofstream out("PlaneData.txt", ios::trunc);
-	out << planeList.size << '\n';
-	for (int i = 0; i < planeList.size; i++) {
-		out << planeList.data[i]->idPlane << '\n';
-		out << planeList.data[i]->type << '\n';
-		out << planeList.data[i]->seats << '\n';
 
+	ofstream out("PlaneData.txt", ios::binary);
+
+	if (out.fail()) {
+		cout << "Khong mo duoc file DSMB\n";
+		return;
+	}
+
+	for (int i = 0; i < planeList.size; i++) {
+		out.write(reinterpret_cast<char*>(planeList.data[i]), sizeof(Plane));
 
 	}
+
 	out.close();
+
+
+}
+
+void readFilePlane(PlaneList& planeList) {
+	ifstream inp("PlaneData.txt", ios::binary);
+
+	if (inp.fail()) {
+		cout << "Khong mo duoc file DSCB\n";
+		return;
+	}
+
+	Plane plane;
+	while (inp.read(reinterpret_cast<char*>(&plane), sizeof(Plane))) {
+		addPlane(planeList, plane);
+	}
+	inp.close();
+
 }
 
 #endif

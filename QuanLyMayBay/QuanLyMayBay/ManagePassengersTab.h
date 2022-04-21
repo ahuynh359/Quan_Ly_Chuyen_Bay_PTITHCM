@@ -6,15 +6,14 @@
 #include"Passengers.h"
 #include"UIController.h"
 using namespace std;
-// Anh dien
-class ManagePassengersTab {
+
+class ManagePassengersTab:public FunctionTab {
 private:
 	Button button[PASSENGER_MAX_BUTTON];
 	EditText editTextLoc;
 	int index = -1;
 	int indexID = -1;
-	int pageLimit;
-	int page;
+
 	PassengerList passengerList;
 	Passenger* temp;
 	enum BUTTON_NAME { trai, phai, lui };
@@ -27,7 +26,7 @@ public:
 	//Khoi tao cac tham so
 	ManagePassengersTab() {
 
-		page = 1;
+	
 		initButton();
 		initEditText();
 		readFilePassenger(passengerList);
@@ -43,32 +42,35 @@ public:
 		int right = left + 50;
 		int bottom = top + 30;
 		char a[15] = "<";
-		//button[trai] = Button(left, top, right, bottom, textButton, WHITE, a, PASSENGER_TEXT_COLOR);
+		button[trai] = Button(left, top, right, bottom, BUTTON_BACKGROUND, WHITE, a, BUTTON_TEXT_COLOR);
 
 		//--------------BUTTON PHAI
 		left = right + 70;
 		right = left + 50;
 		strcpy_s(a, ">");
-		//button[phai] = Button(left, top, right, bottom, textButton, WHITE, a, PASSENGER_TEXT_COLOR);
+		button[phai] = Button(left, top, right, bottom, BUTTON_BACKGROUND, WHITE, a, BUTTON_TEXT_COLOR);
 
 
 		//-----------BUTTON QUAY LUI
 		strcpy_s(a, "<");
-	//	button[lui] = Button(SUBWINDOW_LEFT + 10, SUBWINDOW_TOP + 10, SUBWINDOW_LEFT + 60, SUBWINDOW_TOP + 60, textButton, WHITE, a, PLANE_TEXT_COLOR);
+		button[lui] = Button(SUBWINDOW_LEFT + 10, SUBWINDOW_TOP + 10, SUBWINDOW_LEFT + 60, SUBWINDOW_TOP + 60, BUTTON_BACKGROUND, WHITE, a,
+			BUTTON_TEXT_COLOR);
 	}
 
 
 	void initEditText(){
 
 		//---------EDITTEXT ID FLIGHT
-		int spaceEdit = 80;
+
 		char hint[30] = "Enter here...";
 		char title[30] = "ID Flight";
 		char content[30] = "";
+
 		int left = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - EDITEXT_WIDTH + 90) / 2;
 		int top = SUBWINDOW_TOP + 100;
 		int right = left + EDITEXT_WIDTH;
 		int bottom = top + EDITTEXT_HEIGHT;
+
 		editTextLoc = EditText(hint, title, content, left, top, right, bottom, 10);
 	}
 
@@ -100,37 +102,11 @@ public:
 	}
 
 
-	void onButtonPage(int page, bool isMinus, int limit) {
-		switch (isMinus) {
-		case true: {
-			if (page <= 1)
-				break;
-
-			(this->page) -= 1;
-			delay(100);
-			break;
-		}
-				 //Is Plus
-		case false: {
-			if (page >= limit + 1)
-				return;
-
-
-			(this->page) += 1;
-			delay(100);
-			break;
-		}
-
-
-		default:
-			break;
-		}
-	}
 
 
 	void drawManagePassengerTab() {
 
-		//	settextstyle(BOLD_FONT, HORIZ_DIR, 2);
+		
 			//-------------------VE BORDER
 		setcolor(BLACK);
 		rectangle(LEFT_BORDER, TOP_BORDER, RIGHT_BORDER, BOTTOM_BORDER);

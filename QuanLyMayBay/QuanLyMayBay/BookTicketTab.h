@@ -13,12 +13,12 @@ private:
 	enum EDITTEXT_NAME { ID1, ID2, HO, TEN };
 	enum BUTTON_NAME { TRAI, GAI, LUU, QVE };
 	EditText* editextPointer;
-	TicketList list;
+	
 	Button* temp;
 
 public:
 	BookTicketTab() {
-		initialize(flightList);
+		initializeList(flightList);
 
 		initEdittext();
 		initButton();
@@ -29,9 +29,8 @@ public:
 
 	void createData() {
 		ticketButton = new Button[50];
-		initTicketList(list, 50);
-		list.ticket[0] = "adsds";
-		list.ticket[1] = "abc";
+		
+		
 
 		int x = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - 925) / 2;
 		int y = SUBWINDOW_TOP + 50;
@@ -88,11 +87,11 @@ public:
 	void drawUI() {
 		switch (currentMenu) {
 		case MENU_CHINH: {
-			drawTicketTab(list);
+			//drawTicketTab(list);
 			break;
 		}
 		case MENU_VE: {
-			drawTicketTab(list);
+			//drawTicketTab(list);
 			break;
 		}
 		case MENU_TTIN: {
@@ -160,23 +159,6 @@ public:
 
 
 	}
-
-	void drawTicketTab(TicketList& list) {
-
-		char s[30] = "TICKET";
-		FunctionTab::drawTitle(s);
-
-		for (int i = 0; i < 30; i++) {
-
-			ticketButton[i].onAction(temp, (list.ticket[i].length() > 0 ? 1 : 0));
-		}
-
-
-		drawInstructionInline();
-		button[QVE].onAction();
-
-	}
-
 
 
 

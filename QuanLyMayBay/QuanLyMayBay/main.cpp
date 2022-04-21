@@ -1,14 +1,16 @@
 
 #include"UIController.h"
+
 int main()
 {
+
 	UIController ui;
+
 	while (true) {
 		setactivepage(1 - getactivepage());
 		ui.onUpdate();
 		setvisualpage(getactivepage());
-		clearmouseclick(WM_LBUTTONDOWN);
-		
+		clearmouseclick(WM_LBUTTONDOWN);	
 		delay(20);
 	}
 

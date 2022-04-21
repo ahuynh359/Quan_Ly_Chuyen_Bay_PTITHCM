@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClInclude Include="BookTicketTab.h" />
     <ClInclude Include="DataConst.h" />
+    <ClInclude Include="Day.h" />
     <ClInclude Include="FunctionTab.h" />
     <ClInclude Include="ManagePassengersTab.h" />
     <ClInclude Include="Planes.h" />
@@ -157,7 +158,6 @@
     <ClInclude Include="ManagePlanesTab.h" />
     <ClInclude Include="Tab.h" />
     <ClInclude Include="Passengers.h" />
-    <ClInclude Include="Tickets.h" />
     <ClInclude Include="UI.h" />
     <ClInclude Include="UIController.h" />
   </ItemGroup>
@@ -165,7 +165,6 @@
     <Text Include="PassengerData.txt" />
     <Text Include="FlightData.txt" />
     <Text Include="PlaneData.txt" />
-    <Text Include="TicketData.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

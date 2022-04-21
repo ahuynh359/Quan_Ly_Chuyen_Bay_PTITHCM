@@ -18,18 +18,18 @@ private:
 public:
 	UIController() {
 		initwindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Manage Flights");
+
 		//Khoi tao tab
 		int x = TAB_LEFT;
 		int w = x + TAB_WIDTH;
 		for (int i = 0; i < MAX_TAB; i++) {
 
 			t[i] = Tab(x, TAB_TOP, w, TAB_HEIGHT, TAB_TEXT[i], TAB_TEXT_COLOR);
-
 			x = w + TAB_SPACE;
 			w += TAB_WIDTH + TAB_SPACE;
 		}
-		//managePlaneTab = ManagePlanesTab();
 
+		//Tab mac dinh la plane tab
 		temp = &t[0];
 
 
@@ -51,8 +51,6 @@ public:
 		bar(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	}
 
-
-
 	void onUpdate() {
 		drawBackground();
 		drawSubMenu();
@@ -71,8 +69,6 @@ public:
 		}
 		else if (temp == &t[2]) {
 
-		//	managePlaneTab.reset();
-			//	bookTicketTab.drawUI();
 
 		}
 		else if (temp == &t[3]) {
