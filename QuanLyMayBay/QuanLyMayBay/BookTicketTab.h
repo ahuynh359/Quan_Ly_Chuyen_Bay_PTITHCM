@@ -27,6 +27,10 @@ public:
 		temp = &button[0];
 	}
 
+	void reset() {
+
+	}
+
 	void createData() {
 		ticketButton = new Button[50];
 		
@@ -64,7 +68,7 @@ public:
 		right = ((LEFT_BORDER + RIGHT_BORDER) / 2) - 30;
 		bottom = SUBWINDOW_BOTTOM - 80;
 		button[LUU] = Button(left, top, right, bottom, TAB_ON_SELECTED_BACKGROUND, WHITE, text,
-			PLANE_TEXT_COLOR);
+			BUTTON_TEXT_COLOR);
 
 		//-----------BUTTON QUAY LUI
 		strcpy_s(text, "<");
@@ -72,7 +76,7 @@ public:
 		top = SUBWINDOW_TOP + 10;
 		right = SUBWINDOW_LEFT + 60;
 		bottom = SUBWINDOW_TOP + 60;
-		button[QVE] = Button(left, top, right, bottom, TAB_ON_SELECTED_BACKGROUND, WHITE, text, PLANE_TEXT_COLOR);
+		button[QVE] = Button(left, top, right, bottom, TAB_ON_SELECTED_BACKGROUND, WHITE, text, BUTTON_TEXT_COLOR);
 
 	}
 
@@ -120,7 +124,7 @@ public:
 
 
 		char s[30] = "Only Num";
-		editText[ID1].drawAnoune(s, true);
+		//editText[ID1].drawAnoune(s, true);
 
 		button[LUU].onAction();
 	}
@@ -153,7 +157,7 @@ public:
 
 
 		strcpy_s(s, "*Left click to view tickets");
-		FunctionTab::drawInstruction(s);
+//		FunctionTab::drawInstruction(s);
 
 		drawIDInputBorder();
 

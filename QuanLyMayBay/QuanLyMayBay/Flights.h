@@ -8,7 +8,7 @@
 
 struct Flight {
 	char idFlight[MAX_ID_FLIGHT+1];
-	Date departure;
+	Date date;
 	char arrive[MAX_ARRIVE+1];
 	char idPlane[MAX_ID_PLANE+1];
 	/*
@@ -106,6 +106,7 @@ bool searchByIDPlane(PTR& first, char id[MAX_ID_PLANE + 1]) {
 	return false;
 }
 
+//Huy ve khi chua hoan tat
 int checkCancleFlight(PTR& first) {
 	if (first->info.status == HAVE_TICKET || first->info.status == OUT_OF_TICKET) {
 		first->info.status = CANCEL_TICKET;
@@ -126,7 +127,6 @@ void initTicketList(PlaneList& planeList, Flight& flight) {
 	}
 
 }
-
 
 void writeFileFlight(PTR& first) {
 	ofstream out("FlightData.txt", ios::trunc,ios::binary);

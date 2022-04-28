@@ -11,9 +11,10 @@ class UIController {
 private:
 	Tab t[MAX_TAB];
 	ManagePlanesTab managePlaneTab;
-	BookTicketTab bookTicketTab;
-	//ManageFlightsTab manageFlightTab;
+	//BookTicketTab bookTicketTab;
+	ManageFlightsTab manageFlightTab;
 	Tab* temp;
+	Button closeButton;
 
 public:
 	UIController() {
@@ -26,15 +27,18 @@ public:
 
 			t[i] = Tab(x, TAB_TOP, w, TAB_HEIGHT, TAB_TEXT[i], TAB_TEXT_COLOR);
 			x = w + TAB_SPACE;
-			w += TAB_WIDTH + TAB_SPACE;
+			w = x + TAB_WIDTH;
 		}
 
 		//Tab mac dinh la plane tab
 		temp = &t[0];
+		char s[2] = "X";
+		closeButton = Button(SCREEN_WIDTH - 40, 0, SCREEN_WIDTH-10, 30, RED, RED, s, BLACK);
 
 
 	}
 	~UIController() {
+		
 		delete temp;
 	}
 
@@ -51,6 +55,8 @@ public:
 		bar(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 	}
 
+
+
 	void onUpdate() {
 		drawBackground();
 		drawSubMenu();
@@ -59,12 +65,13 @@ public:
 		}
 
 		if (temp == &t[0]) {
+			manageFlightTab.reset();
 			managePlaneTab.drawUI();
 
 		}
 		else if (temp == &t[1]) {
 			managePlaneTab.reset();
-			//manageFlightTab.drawUI();
+			manageFlightTab.drawUI();
 
 		}
 		else if (temp == &t[2]) {
@@ -72,15 +79,27 @@ public:
 
 		}
 		else if (temp == &t[3]) {
-			bookTicketTab.drawUI();
+		//	bookTicketTab.drawUI();
 		}
 		else if (temp == &t[4]) {
 
 		}
+		
+		closeButton.onAction();
+		if (closeButton.isClicked()) {
+			freeMemory();
+			//getch();
+			closegraph();
+			DestroyWindow(GetForegroundWindow());
+
+			PostQuitMessage(0);
+		}
 
 	}
 
-
+	void freeMemory() {
+		managePlaneTab.freeMemory();
+	}
 
 
 

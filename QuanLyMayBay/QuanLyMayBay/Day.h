@@ -1,4 +1,5 @@
 #pragma once
+
 #include<ctime>
 
 struct Date {
@@ -8,7 +9,21 @@ struct Date {
 	int hour = 0;
 	int minute = 0;
 };
+Date getCurTime() {
+	tm newTime;
+	time_t now = time(0);
+	localtime_s(&newTime, &now);
 
+	Date date;
+
+	date.day = newTime.tm_mday;
+	date.month = 1 + newTime.tm_mon;
+	date.year = 1900 + newTime.tm_year;
+	date.hour = newTime.tm_hour;
+	date.minute = newTime.tm_min;
+
+	return date;
+}
 bool isLeapYear(int year) {
 	if (year % 400 == 0)
 		return true;
@@ -17,7 +32,7 @@ bool isLeapYear(int year) {
 	return false;
 }
 
-bool checkDay(Date &d) {
+bool checkTime(Date &d) {
 	switch (d.month) {
 	case 1: case 3: case 5: case 7: case 8: case 10: case 12: 
 	{
@@ -45,18 +60,43 @@ bool checkDay(Date &d) {
 	}
 }
 
-Date getCurTime() {
-	tm newTime;
-	time_t now = time(0);
-	localtime_s(&newTime,&now);
+bool checkPassTime(Date& pass) {
+	Date now = getCurTime();
+	if (!checkTime(pass))
+		return false;
+	if (now.year < pass.year)
+		return false;
+	if (now.year >= pass.year)
+		return true;
+	if (now.month < pass.month)
+		return false;
+	if (now.month >= pass.month)
+		return true;
+	if (now.day < pass.day)
+		return false;
+	if (now.day >= pass.day)
+		return true;
+	if (now.hour < pass.hour)
+		return false;
+	if (now.hour >= pass.hour)
+		return true;
+	if (now.minute < pass.minute)
+		return false;
+	if (now.minute >= pass.minute)
+		return true;
 
-	Date date;
-
-	date.day = newTime.tm_mday;
-	date.month = 1 + newTime.tm_mon;
-	date.year = 1900 + newTime.tm_year;
-	date.hour = newTime.tm_hour;
-	date.minute = newTime.tm_min;
-
-	return date;
 }
+
+bool checkDay(int d) {
+	return (d <= 31 && d >= 1);
+}
+bool checkMonth(int d) {
+	return (d <= 12 && d >= 1);
+
+}
+bool checkYear(int d) {
+	Date curr = getCurTime();
+	return d >= curr.year;
+
+}
+

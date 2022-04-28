@@ -55,17 +55,16 @@ int findPlane(PlaneList& list, char idPlane[MAX_ID_PLANE + 1]) {
 }
 
 void removePlane(PlaneList& list, int index) {
-	if (index < 0 || index > list.size - 1)
-		return;
+	
 	for (int i = index; i < list.size - 1; i++) {
 		list.data[i] = list.data[i + 1];
 	}
-	(list.size)--;
-	delete list.data[index];
+	list.size--;
+	
 
 }
 
-bool checkDupID(PlaneList& list, char id[MAX_ID_PLANE + 1]) {
+bool checkDupIDPlane(PlaneList& list, char id[MAX_ID_PLANE + 1]) {
 	for (int i = 0; i < list.size; i++) {
 		if (strcmp(list.data[i]->idPlane, id) == 0) {
 			return true;
@@ -73,7 +72,9 @@ bool checkDupID(PlaneList& list, char id[MAX_ID_PLANE + 1]) {
 	}
 	return false;
 }
-
+bool checkSeat(int seat) {
+	return (seat <= 50 && seat >= 20);
+}
 void adjustPlane(PlaneList& list, Plane& plane,int index) {
 	if (index < 0 || index > list.size - 1)
 		return;

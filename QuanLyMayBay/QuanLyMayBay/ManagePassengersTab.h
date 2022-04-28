@@ -66,9 +66,9 @@ public:
 		char title[30] = "ID Flight";
 		char content[30] = "";
 
-		int left = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - EDITEXT_WIDTH + 90) / 2;
+		int left = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - EDITTEXT_WIDTH + 90) / 2;
 		int top = SUBWINDOW_TOP + 100;
-		int right = left + EDITEXT_WIDTH;
+		int right = left + EDITTEXT_WIDTH;
 		int bottom = top + EDITTEXT_HEIGHT;
 
 		editTextLoc = EditText(hint, title, content, left, top, right, bottom, 10);
