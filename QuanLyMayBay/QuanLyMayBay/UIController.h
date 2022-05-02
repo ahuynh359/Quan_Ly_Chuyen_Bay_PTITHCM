@@ -1,9 +1,10 @@
+
 #pragma once
 
 #include"Tab.h"
 #include"Button.h"
 #include"ManagePlanesTab.h"
-#include"BookTicketTab.h"
+
 #include"ManageFlightsTab.h"
 
 
@@ -33,12 +34,12 @@ public:
 		//Tab mac dinh la plane tab
 		temp = &t[0];
 		char s[2] = "X";
-		closeButton = Button(SCREEN_WIDTH - 40, 0, SCREEN_WIDTH-10, 30, RED, RED, s, BLACK);
+		closeButton = Button(SCREEN_WIDTH - 40, 0, SCREEN_WIDTH - 10, 30, RED, RED, s, BLACK);
 
 
 	}
 	~UIController() {
-		
+
 		delete temp;
 	}
 
@@ -79,15 +80,15 @@ public:
 
 		}
 		else if (temp == &t[3]) {
-		//	bookTicketTab.drawUI();
+			//	bookTicketTab.drawUI();
 		}
 		else if (temp == &t[4]) {
 
 		}
-		
+
 		closeButton.onAction();
 		if (closeButton.isClicked()) {
-			freeMemory();
+		
 			//getch();
 			closegraph();
 			DestroyWindow(GetForegroundWindow());
@@ -97,14 +98,10 @@ public:
 
 	}
 
-	void freeMemory() {
-		managePlaneTab.freeMemory();
-	}
 
 
 
 
 };
-
 
 

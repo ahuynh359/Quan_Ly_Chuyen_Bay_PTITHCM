@@ -21,7 +21,7 @@ struct Flight {
 
 	//-----CHI SO PHU
 	char** ticketList;
-	int totalTicket;
+	int totalTicket = 0;
 	
 
 };
@@ -79,6 +79,38 @@ int size(PTR& first) {
 	return cnt;
 }
 
+bool adjustFlight(PTR& flight, Date date) {
+	if (checkTime(date)) {
+		flight->info.date = date;
+		return true;
+	}
+	return false;
+}
+
+bool isPrefix(const char* pre, const char* str) {
+	if (strlen(pre) > strlen(str)) return false;
+	for (int i = 0; i < strlen(pre); i++) {
+		if (pre[i] != str[i]) return false;
+	}
+	return true;
+}
+
+/*
+ * Loc danh sach cac chuyen bay id bat dau la: strFind
+ * Luu vi tri cua cac chuyen bay vao 1 mang: listIndexDauSachSearch[]
+ * Size cua list se duoc luu vao bien: m
+ */
+void getListFlight(PTR& first, const char* strFind, int& m,PTR listFlight[MAX_FLIGHT] ) {
+	m = 0;
+	PTR k = first;
+	while (k != NULL) {
+		if (isPrefix(strFind, k->info.idFlight)){
+			listFlight[m++] = k;
+		}
+		k = k->next;
+	}
+	
+}
 
 
 bool checkDupIDFlight(PTR& first, char id[MAX_ID_FLIGHT+1]) {
@@ -138,9 +170,9 @@ void writeFileFlight(PTR& first) {
 
 	for (PTR k = first; k != NULL; k = k->next) {
 		out.write(reinterpret_cast<char*>(&k->info), sizeof(Flight));
-		for (int i = 0; i < k->info.totalTicket; i++) {
+		/*for (int i = 0; i < k->info.totalTicket; i++) {
 			out.write(reinterpret_cast<char*>(&k->info.ticketList[i]), sizeof(char[MAX_ID_FLIGHT + 1]));
-		}
+		}*/
 	}
 
 	
@@ -157,11 +189,11 @@ void readFileFlight(PTR& first) {
 	Flight flight;
 
 	while(inp.read(reinterpret_cast<char*>(&flight), sizeof(flight))){
-		flight.ticketList = new char* [flight.totalTicket + 1];
-		for (int i = 0; i < flight.totalTicket; i++) {
-			flight.ticketList[i] = new char[MAX_ID_FLIGHT + 1];
-			inp.read(reinterpret_cast<char*>(&flight.ticketList[i]), sizeof(char[MAX_ID_FLIGHT + 1]));
-		}
+		//flight.ticketList = new char* [flight.totalTicket + 1];
+		//for (int i = 0; i < flight.totalTicket; i++) {
+		//	flight.ticketList[i] = new char[MAX_ID_FLIGHT + 1];
+		//	inp.read(reinterpret_cast<char*>(&flight.ticketList[i]), sizeof(char[MAX_ID_FLIGHT + 1]));
+	//	}
 		
 		insertAfter(first, flight);
 	}

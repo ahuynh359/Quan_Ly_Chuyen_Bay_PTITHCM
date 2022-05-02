@@ -2,14 +2,22 @@
 #include<iostream>
 #include"define.h"
 #include"Button.h"
-
-
+#include"EditText.h"
+#include"Flights.h"
+#include"Planes.h"
 
 class FunctionTab {
 protected:
 	int currentMenu, currentPage, maxPage;
 	int startPage, endPage;
-	char title[30], instruction[30];
+	char title[40], instruction[40];
+
+	Button button[MAX_BUTTON];
+	EditText edittext[MAX_EDITTEXT];
+
+	EditText* buttonPointer, * edittextPointer;
+
+
 public:
 	FunctionTab() {
 		currentMenu = 0;
@@ -17,9 +25,55 @@ public:
 		startPage = endPage = 1;
 		strcpy_s(title, "");
 		strcpy_s(instruction, "");
+
+		initButton();
+
 	}
+
+	~FunctionTab() {
+		delete buttonPointer;
+		delete edittextPointer;
+	}
+
+	void  initButton() {
+		//------------BUTTON  TRAI  
+		int left = SCREEN_WIDTH / 2 - 100;
+		int top = BOTTOM_BORDER + 30;
+		int right = left + 50;
+		int bottom = top + 30;
+		char a[10] = "<";
+		button[LEFT] = Button(left, top, right, bottom, BUTTON_PAGE, WHITE, a, BUTTON_TEXT_COLOR);
+
+		//--------------BUTTON PHAI
+		left = right + 70;
+		right = left + 50;
+		strcpy_s(a, ">");
+		button[RIGHT] = Button(left, top, right, bottom, BUTTON_PAGE, WHITE, a, BUTTON_TEXT_COLOR);
+
+
+		//-----------BUTTON QUAY LUI
+		strcpy_s(a, "< BACK");
+		button[BACK] = Button(SUBWINDOW_LEFT + 10, SUBWINDOW_TOP + 10, SUBWINDOW_LEFT + 60, SUBWINDOW_TOP + 60,
+			BUTTON_PAGE, WHITE, a, BUTTON_TEXT_COLOR);
+
+		//-----------BUTTON LUU
+		strcpy_s(a, "SAVE");
+		button[SAVE] = Button(SUBWINDOW_RIGHT - 100, SUBWINDOW_BOTTOM - 100, SUBWINDOW_RIGHT - 30,
+			SUBWINDOW_BOTTOM - 50, BUTTON_BACKGROUND, WHITE, a, BUTTON_TEXT_COLOR);
+
+		//-------------BUTTON THEM
+		left = SUBWINDOW_RIGHT - 70;
+		top = SUBWINDOW_TOP + 50;
+		right = left + 50;
+		bottom = top + 50;
+		strcpy_s(a, "ADD");
+		button[ADD] = Button(left, top, right, bottom, BUTTON_BACKGROUND, WHITE, a,
+			BUTTON_TEXT_COLOR);
+
+	}
+
 	//Ve tieu de cho tab
-	void virtual drawTitle(char text[30]) {
+	void drawTitle(char text[30]) {
 		strcpy_s(title, text);
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(BLACK);
@@ -27,13 +81,13 @@ public:
 
 	}
 	//Ve huong dan
-	void  virtual drawInstruction(int x, int y, char text[30]) {
+	void drawInstruction(int x, int y, char text[30]) {
 		strcpy_s(instruction, text);
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(GREEN);
 		outtextxy(x, y, instruction);
 	}
-	void virtual  drawBackground() {
+	void drawBackground() {
 		setcolor(TAB_ON_SELECTED_BACKGROUND);
 		rectangle(SUBWINDOW_LEFT, SUBWINDOW_TOP, SUBWINDOW_RIGHT, SUBWINDOW_BOTTOM);
 		setfillstyle(SOLID_FILL, SUBWINDOW_BACKGROUND);
@@ -159,9 +213,9 @@ public:
 		case DUP: {
 			msgboxID = MessageBox(
 				GetForegroundWindow(),
-				(LPCWSTR)L"ID is duplicate. Do you want to adjust?",
+				(LPCWSTR)L"ID is duplicate!",
 				(LPCWSTR)L"Warning",
-				MB_ICONEXCLAMATION | MB_OKCANCEL
+				MB_ICONEXCLAMATION | MB_OK
 			);
 
 
@@ -183,7 +237,7 @@ public:
 				(LPCWSTR)L"Warning",
 				MB_ICONEXCLAMATION | MB_OKCANCEL
 			);
-			
+
 			break;
 		}
 		case PREVIOUS: {
@@ -267,12 +321,52 @@ public:
 
 			break;
 		}
+		case YEAR_ERROR: {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"Year is management for 2 years!",
+				(LPCWSTR)L"Warning",
+				MB_ICONEXCLAMATION | MB_OK
+			);
+
+			break;
+		}
+
+		case HOUR_ERROR: {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"Hour is between 0 - 23!",
+				(LPCWSTR)L"Warning",
+				MB_ICONEXCLAMATION | MB_OK
+			);
+
+			break;
+		}
+		case MINUTE_ERROR: {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"Minute is between 0 - 59!",
+				(LPCWSTR)L"Warning",
+				MB_ICONEXCLAMATION | MB_OK
+			);
+
+			break;
+		}
+		case GREATER_SEAT: {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"Seats >= current seats",
+				(LPCWSTR)L"This plane has been established flight",
+				MB_ICONEXCLAMATION | MB_OK
+			);
+			break;
+		}
 		default:
 			break;
 
 		}
 		return msgboxID;
-		
+
 
 
 
@@ -282,15 +376,332 @@ public:
 		currentMenu = MAIN_MENU;
 	}
 
-	//----- MOT SO HAM
 
 
-	void virtual dataPerPage() = 0;
-	void virtual initEdittext() = 0;
-	void virtual initButton() = 0;
-	void virtual drawData() = 0;
-	void virtual drawUI() = 0;
-	void virtual freeMemory() = 0;
+	void dataPerPage(int size) {
+
+		maxPage = ceil((size + 0.0) / 10);
+
+		if (currentPage > maxPage)
+			currentPage--;
+
+		currentPage = max(1, currentPage);
+		maxPage = max(maxPage, 1);
+
+		startPage = currentPage - 1;
+		startPage = startPage * 10 + 1;
+
+		//Toi da 10 du lieu 1 trang
+		endPage = min(startPage + 9, size);
+	}
+
+	void drawText(int x, int y, int w, char s[40]) {
+		int width = textwidth(s);
+		int height = textheight(s);
+		outtextxy((x + w - width) / 2, y, s);
+	}
+
+	void drawBackgroundBorder(int color) {
+		//-------------------VE BORDER
+		setcolor(BLACK);
+		rectangle(LEFT_BORDER, TOP_BORDER, RIGHT_BORDER, BOTTOM_BORDER);
+
+		//----------VE MAU NEN
+		setbkcolor(color);
+		setcolor(color);
+		setfillstyle(0, color);
+		bar(LEFT_BORDER + 2, TOP_BORDER + 2, RIGHT_BORDER - 2, TOP_BORDER + 48);
+
+	}
+
+
+
+	void drawBorderPlane(int n, const int space) {
+		drawBackgroundBorder(TAB_ON_SELECTED_BACKGROUND);
+
+		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
+		setcolor(BLACK);
+		setlinestyle(0, 0, 3);
+
+		//VE LINE NGANG DONG DAU TIEN
+		line(LEFT_BORDER, TOP_BORDER + 50, RIGHT_BORDER, TOP_BORDER + 50);
+
+		int preX = LEFT_BORDER;
+		int x = preX + 100;
+		int y = TOP_BORDER + 15;
+
+		for (int i = 0; i < n - 1; i++) {
+
+			line(x, TOP_BORDER, x, BOTTOM_BORDER);
+			drawText(preX, y, x, PLANE_TITLE[i]);
+
+			preX = x;
+
+			if (i == 1)
+				x += space + 200;
+			else if (i == n - 2)
+				x = RIGHT_BORDER;
+			else
+				x += space;
+
+		}
+
+		drawText(preX, y, x, PLANE_TITLE[n - 1]);
+
+	}
+	int  drawPlaneData(int n, PlaneList& planeList,int &index) {
+
+		setbkcolor(SUBWINDOW_BACKGROUND);
+		setcolor(COLOR(50, 45, 188));
+
+		button[LEFT].onAction();
+		button[RIGHT].onAction();
+
+		if (button[LEFT].isClicked()) {
+			onButtonPage(currentPage, true, maxPage);
+		}
+		if (button[RIGHT].isClicked()) {
+			onButtonPage(currentPage, false, maxPage);
+
+		}
+
+		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / (n + 1);
+		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20 - 3;
+		int preY = TOP_BORDER + 70;
+
+		drawBorderPlane(n, spaceX);
+
+
+		dataPerPage(planeList.size);
+		showPage(SCREEN_WIDTH / 2 - 35, BOTTOM_BORDER + 35, currentPage, maxPage);
+
+
+
+		for (int i = startPage - 1 ; i < endPage; i++) {
+
+			int preX = LEFT_BORDER;
+			setcolor(BLACK);
+
+			if (isPointed(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
+				setcolor(ON_SELECTED_DATA_COLOR);
+			}
+
+
+			if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
+				index = i ;
+				return 1;
+
+			}
+
+			else if (isRightMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY))
+			{
+				index = i ;
+
+				return 2;
+
+			}
+
+			//VE STT
+			char temp[3];
+			sprintf_s(temp, "%d", i+1);
+			int x = preX + 100;
+			drawText(preX, preY, x, temp);
+			preX = x;
+
+			//VE ID PLANE
+			x = preX + spaceX;
+			drawText(preX, preY, x, planeList.data[i]->idPlane);
+			preX = x;
+
+			//VE TYPE
+			x += (spaceX + 200);
+			drawText(preX, preY, x, planeList.data[i]->type);
+			preX = x;
+
+			//VE SEATS
+			sprintf_s(temp, "%d", planeList.data[i]->seats);
+			x = RIGHT_BORDER;
+			drawText(preX, preY, x, temp);
+
+
+
+
+			preY += spaceY;
+
+		}
+		index = -1;
+		return -1;
+
+
+	}
+
+	void drawBorderFlight(int n, const int space) {
+		drawBackgroundBorder(TAB_ON_SELECTED_BACKGROUND);
+
+		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
+		setcolor(BLACK);
+		setlinestyle(0, 0, 3);
+
+		//VE LINE NGANG DONG DAU TIEN
+		line(LEFT_BORDER, TOP_BORDER + 50, RIGHT_BORDER, TOP_BORDER + 50);
+
+		int preX = LEFT_BORDER;
+		int x = preX + 100;
+		int y = TOP_BORDER + 15;
+
+		for (int i = 0; i < n - 1; i++) {
+
+			line(x, TOP_BORDER, x, BOTTOM_BORDER);
+			drawText(preX, y, x, FLIGHT_TITLE[i]);
+
+			preX = x;
+
+
+			if (i == n - 2)
+				x = RIGHT_BORDER;
+			else x += space;
+
+
+		}
+
+		drawText(preX, y, x, FLIGHT_TITLE[n - 1]);
+	}
+	int drawFlightData(int n, PTR& flightList,PTR &flight) {
+		setbkcolor(SUBWINDOW_BACKGROUND);
+
+		setcolor(COLOR(50, 45, 188));
+
+		button[LEFT].onAction();
+		button[RIGHT].onAction();
+
+		if (button[LEFT].isClicked()) {
+			onButtonPage(currentPage, true, maxPage);
+		}
+		if (button[RIGHT].isClicked()) {
+			onButtonPage(currentPage, false, maxPage);
+
+		}
+
+		dataPerPage(size(flightList));
+		showPage(SCREEN_WIDTH / 2 - 35, BOTTOM_BORDER + 35, currentPage, maxPage);
+
+		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / (n + 1);
+		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20 - 3;
+		int preY = TOP_BORDER + 70;
+
+		drawBorderFlight(n, spaceX);
+		int cnt = 0;
+		PTR k = flightList;
+
+		while (k != NULL && cnt < startPage) {
+			cnt++;
+			k = k->next;
+		}
+		setbkcolor(SUBWINDOW_BACKGROUND);
+
+		
+		for (int i = startPage;  i <= endPage; i++) {
+
+			if (k == NULL) {
+					flight = NULL;
+					return -1;
+
+			}
+			int preX = LEFT_BORDER;
+
+			
+			setcolor(BLACK);
+
+			if (isPointed(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
+				setcolor(ON_SELECTED_DATA_COLOR);
+			}
+
+			if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
+				flight = k;
+				return 1;
+
+			}
+
+			else if (isRightMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY))
+			{
+				flight = k;
+
+
+				return 2;
+
+			}
+
+			//VE STT
+			char temp[40];
+			sprintf_s(temp, "%d", i);
+			int x = preX + 100;
+			drawText(preX, preY, x, temp);
+			preX = x;
+
+			//VE ID FLIGHT
+
+			x = preX + spaceX;
+			drawText(preX, preY, x, k->info.idFlight);
+			preX = x;
+
+			//VE ID PLANE
+			x = preX + spaceX;
+			drawText(preX, preY, x, k->info.idPlane);
+			preX = x;
+
+
+			//VE TIME
+			sprintf_s(temp, "%d%s%d%s%d%s%d%s%d", k->info.date.day, "/", k->info.date.month, "/",
+				k->info.date.year, " ", k->info.date.hour, ":", k->info.date.minute);
+			x = preX + spaceX;
+			drawText(preX, preY, x, temp);
+			preX = x;
+
+
+			//VE ARRIVE
+			x = preX + spaceX;
+			drawText(preX, preY, x, k->info.arrive);
+			preX = x;
+
+
+			switch (k->info.status) {
+			case 0: {
+				strcpy_s(temp, "CANCLED");
+				break;
+			}
+			case 1: {
+				strcpy_s(temp, "HAVE TICKET");
+				break;
+			}
+			case 2: {
+				strcpy_s(temp, "SOLD OUT");
+				break;
+			}
+			case 3: {
+				strcpy_s(temp, "COMPLETED");
+				break;
+			}
+			default:
+				break;
+			}
+
+
+			x = RIGHT_BORDER;
+			drawText(preX, preY, x, temp);
+
+			preY += spaceY;
+
+			k = k->next;
+
+		}
+		flight = NULL;
+		return -1;
+	}
+
+
+
+
+
 
 };
 

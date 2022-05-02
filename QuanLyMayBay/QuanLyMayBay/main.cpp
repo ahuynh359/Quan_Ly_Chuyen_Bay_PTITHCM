@@ -1,6 +1,5 @@
 
 #include"UIController.h"
-#include "Planes.h"
 
 void removeExitButton()
 {
@@ -8,13 +7,15 @@ void removeExitButton()
 	HMENU hmenu = GetSystemMenu(GetForegroundWindow(), FALSE);
 	EnableMenuItem(hmenu, SC_CLOSE, MF_GRAYED);
 }
+
+
 int main()
 {
 
+	initwindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Manage Flights");
+
 	UIController ui;
-
 	removeExitButton();
-
 
 	while (true) {
 		
@@ -26,8 +27,6 @@ int main()
 	}
 
 	
-	
-
 	return 0;
 }
 

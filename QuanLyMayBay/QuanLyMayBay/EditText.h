@@ -12,13 +12,13 @@ private:
 	char hint[30], title[30], content[50];
 	unsigned int maxChar;
 	int index;
-	bool active,isCliked;
+	bool active, isCliked;
 	unsigned int space;
 
 
 
 public:
-	EditText(char hint[30], char title[30], char content[50], int left, int top, int right, int bottom, unsigned int maxChar,unsigned int space = 80 ) :UI
+	EditText(char hint[30], char title[30], char content[50], int left, int top, int right, int bottom, unsigned int maxChar, unsigned int space = 80) :UI
 	(left, top, right, bottom, backgroundColor, onSelectedBackgroundColor) {
 
 		strcpy_s(this->hint, hint);
@@ -31,7 +31,7 @@ public:
 		this->active = true;
 		this->isCliked = false;
 		this->space = space;
-		
+
 	}
 	EditText() :UI() {
 		strcpy_s(this->hint, "");
@@ -41,9 +41,9 @@ public:
 		this->index = 0;
 		this->active = true;
 		this->isCliked = false;
-		this->space = space;
-		
-		
+		this->space = 80;
+
+
 	}
 
 
@@ -55,9 +55,10 @@ public:
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(EDITTEXT_TITLE_COLOR);
 		int h = textheight(title);
-		outtextxy(left - space , (top + bottom - h) / 2, title);
-		
+		outtextxy(left - space, (top + bottom - h) / 2, title);
+
 	}
+
 	void drawUI() {
 
 
@@ -65,8 +66,8 @@ public:
 		drawTitle();
 
 		if (!active) {
-			this->backgroundColor = EDITTEXT_DISABLE_COLOR;
-		}
+			this->currentBackground = EDITTEXT_DISABLE_COLOR;
+		} 
 
 		UI::drawUI();
 
@@ -74,7 +75,7 @@ public:
 
 			setcolor(EDITEXT_HINT_COLOR);
 			int h = textheight(hint);
-			outtextxy(left + 5 , (top + bottom - h) / 2, hint);
+			outtextxy(left + 5, (top + bottom - h) / 2, hint);
 
 		}
 		else if (strlen(content) > 0) {
@@ -85,14 +86,19 @@ public:
 
 		}
 
-		
-		if(isLeftMouseClicked(mousex(), mousey())) {
+
+		if (isLeftMouseClicked(mousex(), mousey())) {
 			this->isCliked = true;
 
-		} else 
+		}
+		else
 			this->isCliked = false;
 
-	
+
+	}
+
+	bool isActive() {
+		return active;
 	}
 
 	void setActive(bool s) {
@@ -105,11 +111,13 @@ public:
 
 
 	void onAction(EditText*& editext) {
-		if (editext == this  && active ) {
-
+		
+		if (editext == this && active) {
+			isCliked = true;
 			editext = this;
 			currentBackground = onSelectedBackgroundColor;
-			
+
+			//Them con tro
 			if (strlen(content) == 0 || !isExistDash(content) && strlen(content) < maxChar) {
 				content[index++] = '_';
 				content[index] = '\0';
@@ -120,13 +128,15 @@ public:
 		}
 
 		else if (editext != this) {
+			isCliked = false;
 			currentBackground = backgroundColor;
+			//Xoa con tro
 			if (isExistDash(content)) {
 				content[--index] = '\0';
 
 			}
 
-			
+
 
 		}
 
@@ -160,7 +170,9 @@ public:
 	}
 
 	void addChar(char c) {
-		if (index == maxChar)
+		if (isMaxChar())
+			return;
+		if (content[index - 2] == ' ' && c == ' ')
 			return;
 		content[index - 1] = c;
 		content[index] = '_';
@@ -169,14 +181,59 @@ public:
 
 	}
 
+	void deleteChar(char s[40], int index)
+	{
+		int n = strlen(s);
+		for (int i = index; i < n-1; i++)
+			s[i] = s[i + 1];
+		s[n - 1] = '\0';
+		(this->index)--;
+
+	}
+	void standarContent() {
+		//if (checkSpace()) {
+		//	clearText();
+		//	//return;
+		//}
+		while (content[0] == ' ')
+			deleteChar(content, 0);
+		
+			while (content[index-1] == ' ')
+				deleteChar(content, index-1);
+		while (content[index-1] == ' ')
+				deleteChar(content, index-1);
+		
+		for (int i = 0; i < strlen(content) - 1; i++)
+			
+				if (content[i] == ' ' && content[i + 1] == ' ')
+				{
+					deleteChar(content, i);
+					i--;
+				}
+		
+	}
+	//Ham check toan khoang trang
+	bool checkSpace() {
+		int n;
+		if (isExistDash(content))
+			n = strlen(content) - 1;
+		else
+			n = strlen(content);
+		for (int i = 0; i < n; i++) {
+			if (content[i] != ' ')
+				return false;
+		}
+		return true;
+	}
+
 
 	bool isEmpty() {
-		return strlen(content) == 0;
+		return strlen(content) == 0 || checkSpace();
 	}
 	bool checkInt() {
-		for (int i = 0; i < strlen(content);i++) {
-			if(!(content[i] <= '9' && content[i] >='0'))
-			return false;
+		for (int i = 0; i < strlen(content); i++) {
+			if (!(content[i] <= '9' && content[i] >= '0'))
+				return false;
 		}
 		return true;
 	}
@@ -194,8 +251,7 @@ public:
 
 	void clearCursor() {
 		if (isExistDash(this->content))
-			if (content[--index] == '_')
-				content[index] = '\0';
+			content[--index] = '\0';
 	}
 	char* getCharData() {
 		return content;
@@ -211,7 +267,7 @@ public:
 	void clearText() {
 		index = 0;
 		content[index] = '\0';
-	
+
 
 	}
 

@@ -1,82 +1,36 @@
 ﻿#pragma once
 
-#include "Button.h"
-#include"Tab.h"
-#include"EditText.h"
 #include"Planes.h"
 #include"FunctionTab.h"
-
+#include"EditText.h"
 
 class ManagePlanesTab :public FunctionTab {
-private:
-	PlaneList planeList;
 
-	Button button[MAX_BUTTON];
-	EditText edittext[MAX_EDITTEXT];
-	EditText* buttonPointer, * edittextPointer, * adjustEditextPointer;
+private:
+
+	PlaneList planeList;
+	char dataPerPage[100][41];
+	EditText* adjustEditextPointer;
 	int indexID = -1;
+
+	int currentSeats = 0;
+
 public:
 
-
 	ManagePlanesTab() {
-
-		initButton();
-		initEdittext();
 		readFilePlane(planeList);
+		initEdittext();
 
 		edittextPointer = &edittext[ID_PLANE];
-		adjustEditextPointer = &edittext[TYPE];
+
 	}
 	~ManagePlanesTab() {
-		writeFilePlane(planeList);
-		delete buttonPointer;
-		delete edittextPointer;
 		delete adjustEditextPointer;
 	}
 
-	//------------INIT--------
-	void initButton() {
-
-		//-------------BUTTON THEM
-		int left = SUBWINDOW_RIGHT - 70;
-		int top = SUBWINDOW_TOP + 50;
-		int right = left + 50;
-		int bottom = top + 50;
-		char a[15] = "ADD";
-		button[ADD] = Button(left, top, right, bottom, BUTTON_BACKGROUND, WHITE, a,
-			BUTTON_TEXT_COLOR);
-
-
-		//------------BUTTON  TRAI  
-		left = SCREEN_WIDTH / 2 - 100;
-		top = BOTTOM_BORDER + 30;
-		right = left + 50;
-		bottom = top + 30;
-		strcpy_s(a, "<");
-		button[LEFT] = Button(left, top, right, bottom, BUTTON_PAGE, WHITE, a, BUTTON_TEXT_COLOR);
-		//--------------BUTTON PHAI
-		left = right + 70;
-		right = left + 50;
-		strcpy_s(a, ">");
-		button[RIGHT] = Button(left, top, right, bottom, BUTTON_PAGE, WHITE, a, BUTTON_TEXT_COLOR);
-
-
-		//-----------BUTTON QUAY LUI
-		strcpy_s(a, "<");
-		button[BACK] = Button(SUBWINDOW_LEFT + 10, SUBWINDOW_TOP + 10, SUBWINDOW_LEFT + 60, SUBWINDOW_TOP + 60,
-			BUTTON_PAGE, WHITE, a, BUTTON_TEXT_COLOR);
-
-		//-----------BUTTON LUU
-		strcpy_s(a, "SAVE");
-		button[SAVE] = Button(SUBWINDOW_RIGHT - 100, SUBWINDOW_BOTTOM - 100, SUBWINDOW_RIGHT - 30,
-			SUBWINDOW_BOTTOM - 50, BUTTON_BACKGROUND, WHITE, a, BUTTON_TEXT_COLOR);
-
-
-	}
 	void initEdittext() {
 
 		//---------EDITTEXT ID
-
 		char hint[30] = "Data must be entered!";
 		char title[30] = "ID";
 		char content[30] = "";
@@ -86,8 +40,8 @@ public:
 		int right = left + EDITTEXT_WIDTH;
 		int bottom = top + EDITTEXT_HEIGHT;
 
+		//------------EDITTEXT ID PLANE
 		edittext[ID_PLANE] = EditText(hint, title, content, left, top, right, bottom, MAX_ID_PLANE);
-		strcpy_s(title, "Can't be modified");
 
 
 		//------------EDITTEXT TYPE
@@ -106,6 +60,56 @@ public:
 
 
 	}
+	void initAdjustMenu(Plane* p, bool isAvai) {
+
+
+		//Neu da thanh lap chuyen bay nhung chua bay
+		edittext[ID_PLANE].setActive(false);
+		
+
+		if (!isAvai) {
+			edittext[TYPE].setActive(false);
+			adjustEditextPointer = &edittext[SEATS];
+
+		}
+		else {
+			edittext[TYPE].setActive(true);
+			adjustEditextPointer = &edittext[TYPE];
+		}
+
+		edittext[ID_PLANE].customInitChar(p->idPlane);
+		edittext[TYPE].customInitChar(p->type);
+		edittext[SEATS].customInitNum(p->seats);
+
+	}
+	void initAddMenu() {
+		edittext[ID_PLANE].setActive(true);
+		edittext[TYPE].setActive(true);
+	}
+
+	//Tra ve mot mang du lieu hien len 1 trang
+	void getDataPerPage() {
+
+		//Tinh toan start page , end page
+		FunctionTab::dataPerPage(planeList.size);
+
+		int cnt = 0;
+
+		if (isEmpty(planeList))
+			return;
+
+		for (int i = startPage; i <= endPage; i++) {
+			char temp[3];
+			strcpy_s(dataPerPage[cnt++], planeList.data[i - 1]->idPlane);
+			sprintf_s(temp, "%d", planeList.data[i - 1]->seats);
+			strcpy_s(dataPerPage[cnt++], temp);
+			strcpy_s(dataPerPage[cnt++], planeList.data[i - 1]->type);
+
+
+		}
+	}
+
+	//Lay du lieu may bay tu edittext
 	Plane getPlaneData() {
 		Plane p;
 
@@ -118,64 +122,51 @@ public:
 		edittext[SEATS].clearCursor();
 		p.seats = edittext[SEATS].getIntData();
 
-
 		return p;
 
 	}
-	void resetInLine() {
-		edittext[ID_PLANE].clearText();
-		edittext[TYPE].clearText();
-		edittext[SEATS].clearText();
-	}
-	void freeMemory() {
-		currentMenu = MAIN_MENU;
-		writeFilePlane(planeList);
 
-	}
-
-
+	//Xoa  het du lieu 3 edittext
 	void resetEdittext() {
 		edittext[ID_PLANE].clearText();
 		edittext[TYPE].clearText();
 		edittext[SEATS].clearText();
 
 	}
-	void dataPerPage() {
-
-		maxPage = ceil((planeList.size + 0.0) / 10);
-
-		if (currentPage > maxPage)
-			currentPage--;
-
-		currentPage = max(1, currentPage);
-		maxPage = max(maxPage, 1);
-
-		startPage = currentPage - 1;
-		startPage = startPage * 10 + 1;
-
-		//Toi da 10 du lieu 1 trang
-		endPage = min(startPage + 9, planeList.size);
+	void reset() {
+		FunctionTab::reset();
+		writeFilePlane(planeList);
 	}
+
 
 	void moveEdittextDown(EditText*& edittextPointer) {
 		if (edittextPointer == &edittext[ID_PLANE])
 			edittextPointer = &edittext[TYPE];
-		else if (edittextPointer == &edittext[TYPE])
+		else if (edittextPointer == &edittext[TYPE]) {
+			edittextPointer->standarContent();
 			edittextPointer = &edittext[SEATS];
+
+		}
 
 	}
 	void moveEdittextUp(EditText*& edittextPointer) {
-		if (edittextPointer == &edittext[TYPE])
+		if (edittextPointer == &edittext[TYPE]) {
+			edittextPointer->standarContent();
+			if(edittext[ID_PLANE].isActive())
 			edittextPointer = &edittext[ID_PLANE];
+
+		}
 		else if (edittextPointer == &edittext[SEATS])
+			if (edittext[TYPE].isActive())
 			edittextPointer = &edittext[TYPE];
 
 	}
 
-	bool checkEdittextError(EditText*& edittextPointer, bool adjust = 0) {
+	//Neu adjust = 1 thi ap dung cho adjust screen ko check plane ID
+	bool checkEdittextError(EditText*& edittextPointer, bool adjust = false) {
 		edittextPointer->clearCursor();
 
-	//	if (!adjust) {
+		if (!adjust) {
 			if (edittextPointer == &edittext[ID_PLANE]) {
 				if (edittextPointer->isEmpty()) {
 					drawAnounce(EMPTY);
@@ -186,13 +177,19 @@ public:
 					return false;
 				}
 			}
-		//}
+		}
+
+
+
 		if (edittextPointer == &edittext[TYPE]) {
 			if (edittextPointer->isEmpty()) {
 				drawAnounce(EMPTY);
 				return false;
 			}
 		}
+
+
+
 		if (edittextPointer == &edittext[SEATS]) {
 			if (edittextPointer->isEmpty()) {
 				drawAnounce(EMPTY);
@@ -209,10 +206,12 @@ public:
 
 		return true;
 	}
-	bool checkSaveData(EditText*& edittextPointer, bool adjust = 0) {
+	bool checkSaveData(EditText*& edittextPointer, bool adjust = false) {
+
 		edittext[ID_PLANE].clearCursor();
 		edittext[TYPE].clearCursor();
 		edittext[SEATS].clearCursor();
+
 		if (!adjust) {
 			if (edittext[ID_PLANE].isEmpty()) {
 				drawAnounce(EMPTY);
@@ -226,35 +225,45 @@ public:
 				return false;
 			}
 		}
-		
+
+
+
 		if (edittext[TYPE].isEmpty()) {
 			drawAnounce(EMPTY);
 			edittextPointer = &edittext[TYPE];
 			return false;
 		}
+
+		edittext[TYPE].standarContent();
+
+
 		if (edittext[SEATS].isEmpty()) {
 			drawAnounce(EMPTY);
 			edittextPointer = &edittext[SEATS];
 			return false;
 		}
+
 		if (!checkSeat(edittext[SEATS].getIntData())) {
 			drawAnounce(SEAT_ERROR);
 			edittextPointer = &edittext[SEATS];
 			return false;
 		}
+
+		cout << currentSeats;
+		if (!isGreaterSeat(currentSeats, edittext[SEATS].getIntData())) {
+			drawAnounce(GREATER_SEAT);
+			edittextPointer = &edittext[SEATS];
+			return false;
+		}
+
+
+
 		return true;
 	}
-	void setAdjustScreen(Plane *p) {
-		edittext[ID_PLANE].setActive(false);
-		edittext[ID_PLANE].customInitChar(p->idPlane);
-		edittext[TYPE].customInitChar(p->type);
-		edittext[SEATS].customInitNum(p->seats);
 
-	}
-	void setAddScreen() {
-		edittext[ID_PLANE].setActive(true);
-	}
-	void inputHandel(EditText*& edittextPointer,bool adjust) {
+
+	//Xu li su kien ban phim nhap edittext
+	void inputHandel(EditText*& edittextPointer, bool adjust) {
 		int c = FunctionTab::getInput();
 
 		if (edittextPointer != NULL) {
@@ -264,7 +273,7 @@ public:
 				break;
 			}
 			case 1: {
-				if (!checkEdittextError(edittextPointer,adjust)) {
+				if (!checkEdittextError(edittextPointer, adjust)) {
 
 				}
 				else
@@ -311,26 +320,25 @@ public:
 		}
 
 	}
+
 	
+
 	//---------------------------------UI-------------------------
 	void drawUI() {
-
 		FunctionTab::drawBackground();
 
 		switch (currentMenu) {
 		case MAIN_MENU: {
-			drawManagePlaneTab();
+			drawMainMenu();
 			break;
 		}
 
 		case ADD_MENU: {
-			setAddScreen();
-			drawAddPlaneBorder();
+			drawAddMenu();
 			break;
 		}
 		case ADJUST_MENU: {
-			
-			drawAjustScreen();
+			drawAjustMenu();
 			break;
 		}
 
@@ -342,202 +350,30 @@ public:
 		}
 
 	}
-	void drawData() {
-
-		setbkcolor(SUBWINDOW_BACKGROUND);
-		setcolor(COLOR(50, 45, 188));
-
-
-		dataPerPage();
-		showPage(SCREEN_WIDTH / 2 - 35, BOTTOM_BORDER + 35, currentPage, maxPage);
-
-		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / 5;
-		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20 - 3;
-		int preY = TOP_BORDER + 70;
-
-
-		for (int i = startPage; i <= endPage; i++) {
-
-			int preX = LEFT_BORDER;
-
-			setcolor(BLACK);
-
-
-
-			if (isPointed(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
-				if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
-					int s = drawAnounce(DELETE);
-					switch (s) {
-					case IDOK: {
-						removePlane(planeList, i - 1);
-						break;
-					}
-					case IDCANCEL: {
-						break;
-					}
-					default:
-						break;
-					}
-
-				}
-
-
-
-				else if (isRightMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY))
-				{
-					setAdjustScreen(planeList.data[i - 1]);
-					currentMenu = ADJUST_MENU;
-					indexID = i - 1;
-
-				}
-				setcolor(ON_SELECTED_DATA_COLOR);
-			}
-
-
-			//STT
-			char charValue[50];
-			sprintf_s(charValue, sizeof(charValue), "%d", i);
-			int width = textwidth(charValue);
-			int height = textheight(charValue);
-			int x = preX + spaceX;
-			outtextxy((x + preX - width) / 2, preY, charValue);
-			preX = x;
-
-			//ID
-			width = textwidth(planeList.data[i - 1]->idPlane);
-			height = textheight(planeList.data[i - 1]->idPlane);
-			x = preX + spaceX;
-			outtextxy((x + preX - width) / 2, preY, planeList.data[i - 1]->idPlane);
-			preX = x;
-
-			//TYPE
-			width = textwidth(planeList.data[i - 1]->type);
-			height = textheight(planeList.data[i - 1]->type);
-			x = preX + spaceX;
-			outtextxy((x + preX - width) / 2, preY, planeList.data[i - 1]->type);
-			preX = x;
-
-			//SEATS
-			sprintf_s(charValue, sizeof(charValue), "%d", planeList.data[i - 1]->seats);
-			width = textwidth(charValue);
-			height = textheight(charValue);
-			x = preX + spaceX;
-			outtextxy((x + preX - width) / 2, preY, charValue);
-
-
-			preY += spaceY;
-
-		}
-
-
-
-
-	}
-	void drawManagePlaneTab() {
-
-
-		//-------------------VE BORDER
-		setcolor(BLACK);
-		rectangle(LEFT_BORDER, TOP_BORDER, RIGHT_BORDER, BOTTOM_BORDER);
+	void drawMainMenu() {
 
 		//-----------VE BUTTON
 		button[ADD].onAction();
 		button[SHOW].onAction();
-		button[LEFT].onAction();
-		button[RIGHT].onAction();
 
+
+		
+
+		
+		getDataPerPage();
+		
 
 		//-----------------VE HUONG DAN TEXT
 		char a[30] = "*Left click to delete item";
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
 		strcpy_s(a, " Right click to edit item");
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 40, a);
-
-
-		//----------VE MAU NEN
-		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
-		setcolor(TAB_ON_SELECTED_BACKGROUND);
-		setfillstyle(0, TAB_ON_SELECTED_BACKGROUND);
-		bar(LEFT_BORDER + 2, TOP_BORDER + 2, RIGHT_BORDER - 2, TOP_BORDER + 48);
-
-
-		//----------VE LINE TUNG COT
-		setcolor(BLACK);
-		setlinestyle(0, 0, 3);
-		int space = (RIGHT_BORDER + LEFT_BORDER) / 5;
-		int l = LEFT_BORDER + space;
-		for (int i = 1; i <= 3; i++) {
-			line(l, TOP_BORDER,l , BOTTOM_BORDER);
-			l = l + space;
-
-		}
-
-		//VE LINE DONG DAU TIEN
-		line(LEFT_BORDER, TOP_BORDER + 50, RIGHT_BORDER, TOP_BORDER + 50);
-
-
-		drawData();
-
-
-		//-----------VE TIEU DE CHO KHUNG
-		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
-		setcolor(BLACK);
-		int preX = LEFT_BORDER;
-		for (int i = 1; i <= 4; i++) {
-			int width = textwidth(PLANE_TITLE[i - 1]);
-			int height = textheight(PLANE_TITLE[i - 1]);
-			int x = LEFT_BORDER + space * i;
-			outtextxy((x + preX - width) / 2, TOP_BORDER + 15, PLANE_TITLE[i - 1]);
-			preX = x;
-		}
-
-
-		if (button[ADD].isClicked()) {
-			currentMenu = ADD_MENU;
-			drawUI();
-		}
-		else if (button[LEFT].isClicked()) {
-			onButtonPage(currentPage, true, maxPage);
-		}
-		else if (button[RIGHT].isClicked()) {
-			onButtonPage(currentPage, false, maxPage);
-
-		}
-		else if (button[SHOW].isClicked()) {
-			currentMenu = SHOW_MENU;
-			drawUI();
-		}
-
-	}
-	void drawAddPlaneBorder() {
-
-
-		//-----------------VE HUONG DAN TEXT
-		char a[30] = "*Use Up/Down/Enter button";
-		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
-
-		button[BACK].onAction();
-		button[SAVE].onAction();
-
-
-
-		edittext[ID_PLANE].onAction(edittextPointer);
-		edittext[TYPE].onAction(edittextPointer);
-		edittext[SEATS].onAction(edittextPointer);
-
-		inputHandel(edittextPointer,false);
-
-
-
-
-		if (button[BACK].isClicked()) {
-			int s = drawAnounce(PREVIOUS);
+		int s = FunctionTab::drawPlaneData(4, planeList, indexID);
+		if (s == 1) {
+			int s = drawAnounce(DELETE);
 			switch (s) {
 			case IDOK: {
-				resetEdittext();
-				edittextPointer = &edittext[ID_PLANE];
-				currentMenu = MAIN_MENU;
-				drawUI();
+				removePlane(planeList,indexID);
 				break;
 			}
 			case IDCANCEL: {
@@ -548,28 +384,28 @@ public:
 			}
 
 		}
-		 if (button[SAVE].isClicked()) {
-			Plane p = getPlaneData();
-			if (!checkSaveData(edittextPointer,false)) {
+		else if (s == 2) {
+			cout << indexID << "\n";
 
-			}
-			else {
-				addPlane(planeList, p);
+			currentSeats = planeList.data[indexID]->seats;
 
-				drawAnounce(SUCCESS);
-				resetEdittext();
-				edittextPointer = &edittext[ID_PLANE];
-
-
-			}
-
-
+			initAdjustMenu(planeList.data[indexID], planeList.data[indexID]->isAvai);
+			currentMenu = ADJUST_MENU;
+			drawUI();
 		}
 
 
-	}
-	void drawAjustScreen() {
+		if (button[ADD].isClicked()) {
+			initAddMenu();
+			currentMenu = ADD_MENU;
+		}
 
+		else if (button[SHOW].isClicked()) {
+			currentMenu = SHOW_MENU;
+		}
+
+	}
+	void drawAddMenu() {
 
 		//-----------------VE HUONG DAN TEXT
 		char a[30] = "*Use Up/Down/Enter button";
@@ -579,23 +415,20 @@ public:
 		button[SAVE].onAction();
 
 
+		edittext[ID_PLANE].onAction(edittextPointer);
+		edittext[TYPE].onAction(edittextPointer);
+		edittext[SEATS].onAction(edittextPointer);
 
-		edittext[ID_PLANE].onAction(adjustEditextPointer);
-		edittext[TYPE].onAction(adjustEditextPointer);
-		edittext[SEATS].onAction(adjustEditextPointer);
+		inputHandel(edittextPointer, false);
 
-		inputHandel(adjustEditextPointer,1);
+
 		if (button[BACK].isClicked()) {
 			int s = drawAnounce(PREVIOUS);
 			switch (s) {
 			case IDOK: {
 				resetEdittext();
-				adjustEditextPointer = &edittext[TYPE];
+				edittextPointer = &edittext[ID_PLANE];
 				currentMenu = MAIN_MENU;
-				drawUI();
-				break;
-			}
-			case IDCANCEL: {
 				break;
 			}
 			default:
@@ -604,30 +437,77 @@ public:
 
 		}
 		if (button[SAVE].isClicked()) {
-			Plane p = getPlaneData();
-			if (!checkSaveData(adjustEditextPointer,1)) {
+
+			if (!checkSaveData(edittextPointer, false)) {
 
 			}
 			else {
-				adjustPlane(planeList, p, indexID);
-
+				Plane p = getPlaneData();
+				edittext[TYPE].drawUI();
+				addPlane(planeList, p);
 				drawAnounce(SUCCESS);
 				resetEdittext();
-				adjustEditextPointer = &edittext[TYPE];
-				currentMenu = MAIN_MENU;
-				drawUI();
+				edittextPointer = &edittext[ID_PLANE];
+
+
 			}
 
 
 		}
 
-	}
 
+	}
+	void drawAjustMenu() {
+
+		//-----------------VE HUONG DAN TEXT
+		char a[30] = "*Use Up/Down/Enter button";
+		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
+
+		button[BACK].onAction();
+		button[SAVE].onAction();
+
+		edittext[ID_PLANE].onAction(adjustEditextPointer);
+		edittext[TYPE].onAction(adjustEditextPointer);
+		edittext[SEATS].onAction(adjustEditextPointer);
+
+		inputHandel(adjustEditextPointer, 1);
+
+		if (button[BACK].isClicked()) {
+			int s = drawAnounce(PREVIOUS);
+			switch (s) {
+			case IDOK: {
+				resetEdittext();
+				currentMenu = MAIN_MENU;
+				break;
+			}
+
+			default:
+				break;
+			}
+
+		}
+		else if (button[SAVE].isClicked()) {
+
+			if (!checkSaveData(adjustEditextPointer, 1)) {
+
+			}
+			else {
+				Plane p = getPlaneData();
+				adjustPlane(planeList, p, this->indexID);
+				drawAnounce(SUCCESS);
+				resetEdittext();
+				currentMenu = MAIN_MENU;
+			}
+
+
+		}
+
+
+
+	}
 
 	//----------------------DATA
-	PlaneList getPlaneList() {
-		return planeList;
-	}
+	
 
 
 };

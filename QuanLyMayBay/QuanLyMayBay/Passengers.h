@@ -4,14 +4,13 @@
 using namespace std;
 
 struct Passenger {
-	//1. data
 	char lastName[MAX_LAST_NAME+1];
 	char firstName[MAX_FIRST_NAME+1];
-	int sex;
 	/*
 	* 0 NAM
 	* 1 NU
 	*/
+	int sex;
 	char idPass[MAX_ID_PASS+1];
 };
 

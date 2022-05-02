@@ -19,9 +19,6 @@
     <ClInclude Include="UI.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="UIController.h">
-      <Filter>UI</Filter>
-    </ClInclude>
     <ClInclude Include="Passengers.h">
       <Filter>CTDL</Filter>
     </ClInclude>
@@ -43,7 +40,7 @@
     <ClInclude Include="ManagePlanesTab.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="BookTicketTab.h">
+    <ClInclude Include="TicketTab.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="FunctionTab.h">
@@ -52,15 +49,21 @@
     <ClInclude Include="Day.h">
       <Filter>CTDL</Filter>
     </ClInclude>
+    <ClInclude Include="StatictisTab.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="UIController.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="PassengerData.txt">
       <Filter>Data</Filter>
     </Text>
-    <Text Include="PlaneData.txt">
+    <Text Include="FlightData.txt">
       <Filter>Data</Filter>
     </Text>
-    <Text Include="FlightData.txt">
+    <Text Include="PlaneData.txt">
       <Filter>Data</Filter>
     </Text>
   </ItemGroup>

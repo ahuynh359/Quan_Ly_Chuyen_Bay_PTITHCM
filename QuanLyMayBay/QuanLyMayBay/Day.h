@@ -24,6 +24,7 @@ Date getCurTime() {
 
 	return date;
 }
+
 bool isLeapYear(int year) {
 	if (year % 400 == 0)
 		return true;
@@ -60,7 +61,8 @@ bool checkTime(Date &d) {
 	}
 }
 
-bool checkPassTime(Date& pass) {
+
+bool checkPassTime(Date pass) {
 	Date now = getCurTime();
 	if (!checkTime(pass))
 		return false;
@@ -86,6 +88,32 @@ bool checkPassTime(Date& pass) {
 		return true;
 
 }
+bool checkFutureTime(Date pass) {
+	Date now = getCurTime();
+	if (!checkTime(pass))
+		return false;
+	if (now.year > pass.year)
+		return false;
+	if (now.year <= pass.year)
+		return true;
+	if (now.month > pass.month)
+		return false;
+	if (now.month <= pass.month)
+		return true;
+	if (now.day > pass.day)
+		return false;
+	if (now.day <= pass.day)
+		return true;
+	if (now.hour > pass.hour)
+		return false;
+	if (now.hour <= pass.hour)
+		return true;
+	if (now.minute > pass.minute)
+		return false;
+	if (now.minute <= pass.minute)
+		return true;
+
+}
 
 bool checkDay(int d) {
 	return (d <= 31 && d >= 1);
@@ -96,7 +124,15 @@ bool checkMonth(int d) {
 }
 bool checkYear(int d) {
 	Date curr = getCurTime();
-	return d >= curr.year;
+	return (d >= curr.year && d <= curr.year + 2);
+
+}
+bool checkHour(int d) {
+	return (d <= 23 && d >= 0);
+}
+
+bool checkMinute(int d) {
+	return (d <= 59 && d >= 0);
 
 }
 

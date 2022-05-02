@@ -5,7 +5,7 @@
 #define PLANE_H
 #include<iostream>
 #include<fstream>
-
+using namespace std;
 
 struct Plane {
 	char idPlane[MAX_ID_PLANE + 1];
@@ -14,6 +14,7 @@ struct Plane {
 
 	// CHI SO PHU
 	int flyTimes = 0; 
+	bool isAvai = false; //Da thanh lap chuyen bay
 	
 
 
@@ -75,6 +76,9 @@ bool checkDupIDPlane(PlaneList& list, char id[MAX_ID_PLANE + 1]) {
 bool checkSeat(int seat) {
 	return (seat <= 50 && seat >= 20);
 }
+bool isGreaterSeat(int oldSeat,int newSeat) {
+	return (newSeat >= oldSeat);
+}
 void adjustPlane(PlaneList& list, Plane& plane,int index) {
 	if (index < 0 || index > list.size - 1)
 		return;
@@ -114,6 +118,30 @@ void readFilePlane(PlaneList& planeList) {
 	}
 	inp.close();
 
+}
+
+void partition(int low, int high,PlaneList &list) {
+	int i = low, j = high;
+	Plane* plane;
+	int pivot = list.data[(low + high) / 2]->flyTimes;
+	do {
+		while (list.data[i]->flyTimes > pivot) i++;
+		while (list.data[j]->flyTimes < pivot) j--;
+		if (i <= j) {
+			plane = list.data[i];
+			list.data[i] = list.data[j];
+			list.data[j] = plane;
+			i++; j--;
+		}
+	} while (i <= j);
+
+	if (low < j) partition(low, j,list);
+	if (i < high) partition(i, high,list);
+}
+void sort(PlaneList &list) {
+	// Sap xep theo thu tu cnt giam dan
+	// Su dung QuickSort
+	partition(0, list.size-1,list);
 }
 
 #endif
