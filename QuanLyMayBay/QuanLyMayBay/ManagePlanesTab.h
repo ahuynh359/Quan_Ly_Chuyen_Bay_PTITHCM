@@ -6,6 +6,7 @@
 
 class ManagePlanesTab :public FunctionTab {
 
+	
 private:
 
 	PlaneList planeList;
@@ -14,14 +15,17 @@ private:
 	int indexID = -1;
 
 	int currentSeats = 0;
-
+	friend class ManageFlightsTab;
 public:
 
 	ManagePlanesTab() {
 		readFilePlane(planeList);
+
 		initEdittext();
 
 		edittextPointer = &edittext[ID_PLANE];
+
+	
 
 	}
 	~ManagePlanesTab() {
@@ -135,8 +139,10 @@ public:
 	}
 	void reset() {
 		FunctionTab::reset();
-		writeFilePlane(planeList);
+	
 	}
+
+	
 
 
 	void moveEdittextDown(EditText*& edittextPointer) {
@@ -249,7 +255,6 @@ public:
 			return false;
 		}
 
-		cout << currentSeats;
 		if (!isGreaterSeat(currentSeats, edittext[SEATS].getIntData())) {
 			drawAnounce(GREATER_SEAT);
 			edittextPointer = &edittext[SEATS];
@@ -325,6 +330,7 @@ public:
 
 	//---------------------------------UI-------------------------
 	void drawUI() {
+		
 		FunctionTab::drawBackground();
 
 		switch (currentMenu) {
@@ -355,12 +361,6 @@ public:
 		//-----------VE BUTTON
 		button[ADD].onAction();
 		button[SHOW].onAction();
-
-
-		
-
-		
-		getDataPerPage();
 		
 
 		//-----------------VE HUONG DAN TEXT
@@ -368,6 +368,8 @@ public:
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
 		strcpy_s(a, " Right click to edit item");
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 40, a);
+
+
 		int s = FunctionTab::drawPlaneData(4, planeList, indexID);
 		if (s == 1) {
 			int s = drawAnounce(DELETE);
@@ -385,7 +387,6 @@ public:
 
 		}
 		else if (s == 2) {
-			cout << indexID << "\n";
 
 			currentSeats = planeList.data[indexID]->seats;
 
@@ -508,6 +509,12 @@ public:
 
 	//----------------------DATA
 	
+	PlaneList getPlaneList() {
+		return planeList;
+	}
 
+	void witeFile() {
+		writeFilePlane(planeList);
+	}
 
 };

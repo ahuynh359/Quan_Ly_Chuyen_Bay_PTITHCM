@@ -4,35 +4,33 @@
 #include"Flights.h"
 #include"FunctionTab.h"
 #include"ManagePlanesTab.h"
-
+	
 class ManageFlightsTab :public FunctionTab {
 protected:
 	EditText addEdittext[MAX_EDITTEXT];
 
 	int indexID = -1;
-
 	PTR first;
 	PTR tempFlight;
 	EditText * addPointer;
 
 	PlaneList planeList;
-	ManagePlanesTab managePlane;
 
-	char dataPerPage[60][41];
 public:
 
 	ManageFlightsTab() {
-
 		initializeList(first);
 		readFileFlight(first);
+		
 		initEdittext();
 
 		edittextPointer = NULL;
 		addPointer = &addEdittext[ID_FLIGHT];
-
 		
+
 	}
 
+	
 	~ManageFlightsTab() {
 		deleteList(first);
 		delete addPointer;
@@ -195,26 +193,25 @@ public:
 		addEdittext[STATUS].customInitChar(tempFlight->info.arrive);
 
 
-		addEdittext[DAY].customInitNum(tempFlight->info.date.day);
+		addEdittext[DAY].customInitChar(tempFlight->info.date.day);
 
 
-		addEdittext[MONTH].customInitNum(tempFlight->info.date.month);
+		addEdittext[MONTH].customInitChar(tempFlight->info.date.month);
 
 
-		addEdittext[YEAR].customInitNum(tempFlight->info.date.year);
+		addEdittext[YEAR].customInitChar(tempFlight->info.date.year);
 
 
 
-		addEdittext[HOUR].customInitNum(tempFlight->info.date.hour);
+		addEdittext[HOUR].customInitChar(tempFlight->info.date.hour);
 
 
-		addEdittext[MINUTE].customInitNum(tempFlight->info.date.minute);
+		addEdittext[MINUTE].customInitChar(tempFlight->info.date.minute);
 	}
 
 	void reset() {
 		FunctionTab::reset();
 		resetEdittext();
-		writeFileFlight(first);
 	}
 	void resetAddEdittext() {
 		addEdittext[ID_FLIGHT].clearText();
@@ -243,11 +240,11 @@ public:
 
 		addEdittext[STATUS].customInitChar(s);
 		addEdittext[STATUS].setActive(false);
-		addEdittext[MINUTE].customInitNum(getCurTime().minute);
-		addEdittext[HOUR].customInitNum(getCurTime().hour);
-		addEdittext[YEAR].customInitNum(getCurTime().year);
-		addEdittext[MONTH].customInitNum(getCurTime().month);
-		addEdittext[DAY].customInitNum(getCurTime().day);
+		addEdittext[MINUTE].customInitChar(getCurTime().minute);
+		addEdittext[HOUR].customInitChar(getCurTime().hour);
+		addEdittext[YEAR].customInitChar(getCurTime().year);
+		addEdittext[MONTH].customInitChar(getCurTime().month);
+		addEdittext[DAY].customInitChar(getCurTime().day);
 
 
 	}
@@ -271,6 +268,7 @@ public:
 			addPointer = &addEdittext[ID_PLANE];
 		else if (addPointer = &addEdittext[DAY])
 			addPointer = &addEdittext[ARRIVE];
+		
 
 
 	}
@@ -298,11 +296,14 @@ public:
 	
 	Date getDate() {
 		Date d;
-		d.day = addEdittext[DAY].getIntData();
-		d.month = addEdittext[MONTH].getIntData();
-		d.year = addEdittext[YEAR].getIntData();
-		d.hour = addEdittext[HOUR].getIntData();
-		d.minute = addEdittext[MINUTE].getIntData();
+		strcpy_s(d.day, addEdittext[DAY].getCharData());
+		strcpy_s(d.month, addEdittext[MONTH].getCharData());
+		strcpy_s(d.year, addEdittext[YEAR].getCharData());
+		strcpy_s(d.hour, addEdittext[HOUR].getCharData());
+		strcpy_s(d.minute, addEdittext[MINUTE].getCharData());
+
+		format(d);
+		
 		return d;
 	}
 	Flight getFlight() {
@@ -312,11 +313,12 @@ public:
 		strcpy_s(f.arrive, addEdittext[ARRIVE].getCharData());
 
 		f.status = 1;
-		f.date.day = addEdittext[DAY].getIntData();
-		f.date.month = addEdittext[MONTH].getIntData();
-		f.date.year = addEdittext[YEAR].getIntData();
-		f.date.hour = addEdittext[HOUR].getIntData();
-		f.date.minute = addEdittext[MINUTE].getIntData();
+
+		Date d = getDate();
+		f.date = d;
+		
+		initTicketList(planeList, f);
+		
 		return f;
 	}
 
@@ -369,7 +371,7 @@ public:
 
 		}
 
-		if (!checkDay(addEdittext[DAY].getIntData())) {
+		if (!checkDay(addEdittext[DAY].getCharData())) {
 			drawAnounce(DAY_ERROR);
 			addPointer = &addEdittext[DAY];
 			return false;
@@ -381,7 +383,7 @@ public:
 
 		}
 
-		if (!checkMonth(addEdittext[MONTH].getIntData())) {
+		if (!checkMonth(addEdittext[MONTH].getCharData())) {
 			drawAnounce(MONTH_ERROR);
 			addPointer = &addEdittext[MONTH];
 			return false;
@@ -393,7 +395,7 @@ public:
 
 		}
 
-		if (!checkYear(addEdittext[YEAR].getIntData())) {
+		if (!checkYear(addEdittext[YEAR].getCharData())) {
 			drawAnounce(YEAR_ERROR);
 			addPointer = &addEdittext[YEAR];
 			return false;
@@ -405,7 +407,7 @@ public:
 
 		}
 
-		if (!checkHour(addEdittext[HOUR].getIntData())) {
+		if (!checkHour(addEdittext[HOUR].getCharData())) {
 			drawAnounce(HOUR_ERROR);
 			addPointer = &addEdittext[HOUR];
 			return false;
@@ -417,7 +419,7 @@ public:
 
 		}
 
-		if (!checkMinute(addEdittext[MINUTE].getIntData())) {
+		if (!checkMinute(addEdittext[MINUTE].getCharData())) {
 			drawAnounce(MINUTE_ERROR);
 			addPointer = &addEdittext[MINUTE];
 			return false;
@@ -463,7 +465,7 @@ public:
 		if (addPointer == &addEdittext[DAY]) {
 
 
-			if (!checkDay(addPointer->getIntData())) {
+			if (!checkDay(addPointer->getCharData())) {
 				drawAnounce(DAY_ERROR);
 				return false;
 			}
@@ -473,7 +475,7 @@ public:
 		if (addPointer == &addEdittext[MONTH]) {
 
 
-			if (!checkMonth(addPointer->getIntData())) {
+			if (!checkMonth(addPointer->getCharData())) {
 				drawAnounce(MONTH_ERROR);
 				return false;
 			}
@@ -483,7 +485,7 @@ public:
 		if (addPointer == &addEdittext[YEAR]) {
 
 
-			if (!checkYear(addPointer->getIntData())) {
+			if (!checkYear(addPointer->getCharData())) {
 				drawAnounce(YEAR_ERROR);
 				return false;
 			}
@@ -494,7 +496,7 @@ public:
 		if (addPointer == &addEdittext[HOUR]) {
 
 
-			if (!checkHour(addPointer->getIntData())) {
+			if (!checkHour(addPointer->getCharData())) {
 				drawAnounce(HOUR_ERROR);
 				return false;
 			}
@@ -505,7 +507,7 @@ public:
 		if (addPointer == &addEdittext[MINUTE]) {
 
 
-			if (!checkMinute(addPointer->getIntData())) {
+			if (!checkMinute(addPointer->getCharData())) {
 				drawAnounce(MINUTE_ERROR);
 				return false;
 			}
@@ -520,7 +522,7 @@ public:
 	}
 	
 
-	void inputHandel() {
+	void inputHandel(bool isAdjust = 0) {
 		int c = FunctionTab::getInput();
 
 		if (addPointer != NULL) {
@@ -529,12 +531,16 @@ public:
 				addPointer->deleteChar();
 				break;
 			}
+				   
 			case 1: {
-				if (!checkEdittextError()) {
+				if (!isAdjust) {
+					if (!checkEdittextError()) {
 
+					}
+					else
+						moveEdittextUp();
 				}
-				else
-					moveEdittextUp();
+				
 
 
 				break;
@@ -647,8 +653,10 @@ public:
 	}
 
 
-	void  drawUI() {
-	
+	void  drawUI(ManagePlanesTab &manage) {
+		this->planeList = manage.planeList;
+		
+		
 		switch (currentMenu) {
 		case MAIN_MENU: {
 			resetAddEdittext();
@@ -661,6 +669,7 @@ public:
 			break;
 		}
 		case FIND_PLANE: {
+			
 			drawFindPlane();
 			break;
 		}
@@ -687,16 +696,27 @@ public:
 		button[RIGHT].onAction();
 
 		int s= drawFlightData(6, first, tempFlight);
+		
 		if (s == 1) {
-			drawAnounce(SUCCESS);
+			if (checkCancleFlight(tempFlight)) {
+				drawAnounce(SUCCESS);
+			}
+			else
+				drawAnounce(CANCLE_FLIGHT_ERROR);
 		}
+		else  if (s == 2) {
+			initAdjustScreen();
+			currentMenu = ADJUST_MENU;
+			return;
+		}
+		if(tempFlight != NULL)
 		inputMainMenuHandel();
 		
 
 		//-----------------VE HUONG DAN TEXT
-		char a[30] = "*Left click to cancle flight";
+		char a[40] = "*Left click to cancle flight";
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
-		strcpy_s(a, " Right click to edit flight");
+		strcpy_s(a, " Right click to edit time flight");
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 40, a);
 		strcpy_s(a, " Use left/right/enter button");
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 60, a);
@@ -707,7 +727,7 @@ public:
 			resetEdittext();
 			customEdittext();
 			currentMenu = ADD_MENU;
-			drawUI();
+			
 		}
 
 
@@ -748,12 +768,14 @@ public:
 
 		if (button[BACK].isClicked()) {
 			currentMenu = MAIN_MENU;
-			drawUI();
+			
 		}
 
 		if (button[FIND].isClicked()) {
+			
+			delay(50);
 			currentMenu = FIND_PLANE;
-			drawUI();
+			
 		}
 
 
@@ -768,7 +790,8 @@ public:
 		addEdittext[YEAR].onAction(addPointer);
 		addEdittext[HOUR].onAction(addPointer);
 		addEdittext[MINUTE].onAction(addPointer);
-		inputHandel();
+
+		inputHandel(1);
 
 		button[BACK].onAction();
 		button[SAVE].onAction();
@@ -777,7 +800,7 @@ public:
 
 		if (button[BACK].isClicked()) {
 			currentMenu = MAIN_MENU;
-			drawUI();
+			
 		}
 		if (button[SAVE].isClicked()) {
 			if (!checkSaveData(1)) {
@@ -788,24 +811,36 @@ public:
 				adjustFlight(tempFlight, getDate());
 				drawAnounce(SUCCESS);
 				currentMenu = MAIN_MENU;
-				drawUI();
+				
 			}
 		}
 
 	}
 	void drawFindPlane() {
 
-		
+		button[BACK].onAction();
 		int s = drawPlaneData(4, planeList,indexID);
 		if (s == 1) {
 			addEdittext[ID_PLANE].customInitChar(planeList.data[indexID]->idPlane);
 			currentMenu = ADD_MENU;
+			delay(50);
 
+		}
+		if (button[BACK].isClicked()) {
+			currentMenu = MAIN_MENU;
 		}
 		
 	}
 	
 
+	//------------------DATA
+	PTR getFlightList() {
+		return first;
+	}
 
+	void writeFile() {
+		writeFileFlight(first);
+
+	}
 
 };

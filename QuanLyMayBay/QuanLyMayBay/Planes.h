@@ -14,8 +14,8 @@ struct Plane {
 
 	// CHI SO PHU
 	int flyTimes = 0; 
-	bool isAvai = false; //Da thanh lap chuyen bay
-	
+	bool isAvai = true; 
+	//Dang ranh
 
 
 };
@@ -43,7 +43,7 @@ Plane* newPlane(Plane plane) {
 
 void addPlane(PlaneList& list, Plane plane) {
 	list.data[list.size] = newPlane(plane);
-	list.size++;
+	(list.size)++;
 
 }
 

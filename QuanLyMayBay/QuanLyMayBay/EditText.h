@@ -71,14 +71,14 @@ public:
 
 		UI::drawUI();
 
-		if (strlen(content) == 0) {
+		if (strlen(content) == 0 ) {
 
 			setcolor(EDITEXT_HINT_COLOR);
 			int h = textheight(hint);
 			outtextxy(left + 5, (top + bottom - h) / 2, hint);
 
 		}
-		else if (strlen(content) > 0) {
+		else if(strlen(content) > 0) {
 			setbkcolor(currentBackground);
 			setcolor(BLACK);
 			int h = textheight(content);
@@ -183,6 +183,7 @@ public:
 
 	void deleteChar(char s[40], int index)
 	{
+		
 		int n = strlen(s);
 		for (int i = index; i < n-1; i++)
 			s[i] = s[i + 1];
@@ -240,6 +241,8 @@ public:
 
 
 	void deleteChar() {
+		if (content[0] == '_')
+			return;
 		if (strlen(content) == 1)
 			return;
 		index -= 2;

@@ -182,6 +182,12 @@ public:
 		}
 		return false;
 	}
+	bool virtual isDoubleClick(int left, int top, int right, int bottom) {
+		if (isPointed(left, top, right, bottom) && GetAsyncKeyState(WM_LBUTTONDBLCLK) ) {
+			return true;
+		}
+		return false;
+	}
 	bool virtual isRightMouseClicked(int left, int top, int right, int bottom) {
 		if (isPointed(left, top, right, bottom) && GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
 			return true;
@@ -590,7 +596,7 @@ public:
 		int preY = TOP_BORDER + 70;
 
 		drawBorderFlight(n, spaceX);
-		int cnt = 0;
+		int cnt = 1;
 		PTR k = flightList;
 
 		while (k != NULL && cnt < startPage) {
@@ -651,7 +657,7 @@ public:
 
 
 			//VE TIME
-			sprintf_s(temp, "%d%s%d%s%d%s%d%s%d", k->info.date.day, "/", k->info.date.month, "/",
+			sprintf_s(temp, "%s%s%s%s%s%s%s%s%s", k->info.date.day, "/", k->info.date.month, "/",
 				k->info.date.year, " ", k->info.date.hour, ":", k->info.date.minute);
 			x = preX + spaceX;
 			drawText(preX, preY, x, temp);

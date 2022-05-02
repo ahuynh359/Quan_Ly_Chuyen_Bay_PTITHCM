@@ -1,6 +1,6 @@
 
 #include"UIController.h"
-
+#include"ManagePlanesTab.h"
 void removeExitButton()
 {
 	HWND hwnd = GetConsoleWindow();
@@ -15,6 +15,7 @@ int main()
 	initwindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Manage Flights");
 
 	UIController ui;
+
 	removeExitButton();
 
 	while (true) {

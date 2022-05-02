@@ -151,7 +151,11 @@ int checkCancleFlight(PTR& first) {
 //-------------TICKET
 void initTicketList(PlaneList& planeList, Flight& flight) {
 	flight.status = HAVE_TICKET;
-	flight.totalTicket = planeList.data[findPlane(planeList, flight.idPlane)]->seats;
+
+	Plane *p = planeList.data[findPlane(planeList, flight.idPlane)];
+	flight.totalTicket = p->seats;
+
+	p->isAvai = false;
 	flight.ticketList = new char* [flight.totalTicket + 1];
 	for (int i = 0; i < flight.totalTicket; i++) {
 		flight.ticketList[i] = new char[MAX_ID_PASS];
