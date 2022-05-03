@@ -14,8 +14,8 @@ public:
 
 	
 	
-	void drawUI(ManagePlanesTab &manage) {
-		this->planeList = manage.getPlaneList();
+	void drawUI(PlaneList &planeList) {
+		this->planeList = planeList;
 		drawPlaneData(4, planeList, index);
 
 		

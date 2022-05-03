@@ -1,6 +1,6 @@
 #pragma once
 #include"UI.h"
-#include<iostream>
+
 
 
 
@@ -67,13 +67,15 @@ public:
 
 		if (!active) {
 			this->currentBackground = EDITTEXT_DISABLE_COLOR;
+			
 		} 
 
 		UI::drawUI();
 
-		if (strlen(content) == 0 ) {
-
-			setcolor(EDITEXT_HINT_COLOR);
+		if ( strlen(content) == 0 ) {
+			if (active)
+				setcolor(EDITEXT_HINT_COLOR);
+			else setcolor(BLACK);
 			int h = textheight(hint);
 			outtextxy(left + 5, (top + bottom - h) / 2, hint);
 

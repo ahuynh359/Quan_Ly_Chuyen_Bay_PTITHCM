@@ -1,38 +1,36 @@
 ﻿#pragma once
 
 
+#include"Planes.h"
 #include"Flights.h"
+#include"Passengers.h"
 #include"FunctionTab.h"
-#include"ManagePlanesTab.h"
-	
+
 class ManageFlightsTab :public FunctionTab {
 protected:
 	EditText addEdittext[MAX_EDITTEXT];
 
 	int indexID = -1;
-	PTR first;
 	PTR tempFlight;
 	EditText * addPointer;
-
+	PTR flightList;
 	PlaneList planeList;
-
 public:
 
+	
 	ManageFlightsTab() {
-		initializeList(first);
-		readFileFlight(first);
-		
+		initializeList(flightList);
+		readFileFlight(flightList);
 		initEdittext();
 
 		edittextPointer = NULL;
 		addPointer = &addEdittext[ID_FLIGHT];
 		
-
+	
 	}
 
 	
 	~ManageFlightsTab() {
-		deleteList(first);
 		delete addPointer;
 		
 	}
@@ -340,7 +338,7 @@ public:
 				return false;
 			}
 
-			if (checkDupIDFlight(first, addEdittext[ID_FLIGHT].getCharData())) {
+			if (checkDupIDFlight(flightList, addEdittext[ID_FLIGHT].getCharData())) {
 				drawAnounce(DUP);
 				addPointer = &addEdittext[ID_FLIGHT];
 				return false;
@@ -447,7 +445,7 @@ public:
 
 		if (addPointer == &addEdittext[ID_FLIGHT]) {
 
-			if (checkDupIDFlight(first, addPointer->getCharData())) {
+			if (checkDupIDFlight(flightList, addPointer->getCharData())) {
 				drawAnounce(DUP);
 				return false;
 			}
@@ -653,10 +651,8 @@ public:
 	}
 
 
-	void  drawUI(ManagePlanesTab &manage) {
-		this->planeList = manage.planeList;
-		
-		
+	void  drawUI(ManagePlanesTab &plane) {
+		this->planeList = plane.getPlaneList();
 		switch (currentMenu) {
 		case MAIN_MENU: {
 			resetAddEdittext();
@@ -695,7 +691,7 @@ public:
 		button[LEFT].onAction();
 		button[RIGHT].onAction();
 
-		int s= drawFlightData(6, first, tempFlight);
+		int s= drawFlightData(6, flightList, tempFlight);
 		
 		if (s == 1) {
 			if (checkCancleFlight(tempFlight)) {
@@ -756,7 +752,7 @@ public:
 			}
 			else {
 				Flight p = getFlight();
-				insertAfter(first, p);
+				insertAfter(flightList, p);
 				drawAnounce(SUCCESS);
 				resetAddEdittext();
 
@@ -832,15 +828,14 @@ public:
 		
 	}
 	
-
-	//------------------DATA
 	PTR getFlightList() {
-		return first;
+		return flightList;
 	}
-
 	void writeFile() {
-		writeFileFlight(first);
-
+		
+		writeFileFlight(flightList);
+		
 	}
+	
 
 };

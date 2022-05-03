@@ -36,6 +36,7 @@ typedef FlightNode* PTR;
 
 void initializeList(PTR& first)
 {
+	if(first != NULL)
 	first = NULL;
 }
 

@@ -14,14 +14,15 @@ private:
 
 	ManagePlanesTab managePlaneTab;
 	ManageFlightsTab manageFlightTab;
+	ManagePassengersTab managePassengerTab;
 	TicketTab ticketTab;
 	StatictisTab statictisTab;
 
 	Tab* temp;
 	Button closeButton;
 
-	PlaneList planeList;
-	PTR flightList;
+	
+	
 
 public:
 	UIController() {
@@ -42,15 +43,17 @@ public:
 		char s[2] = "X";
 		closeButton = Button(SCREEN_WIDTH - 40, 0, SCREEN_WIDTH - 10, 30, RED, RED, s, BLACK);
 
-		
-		
 
-		
 	}
+
+	
 	~UIController() {
 
 		delete temp;
 	}
+
+
+	
 
 	void drawSubMenu() {
 		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
@@ -68,9 +71,9 @@ public:
 
 
 	void onUpdate() {
+		
 		drawBackground();
 		drawSubMenu();
-	
 		
 		for (int i = 0; i < MAX_TAB; i++) {
 			t[i].onAction(temp);
@@ -78,33 +81,39 @@ public:
 		
 		if (temp == &t[0]) {
 			manageFlightTab.reset();
+			ticketTab.reset();
 			managePlaneTab.drawUI();
-
 		}
 		else if (temp == &t[1]) {
 			managePlaneTab.reset();
+			ticketTab.reset();
 			manageFlightTab.drawUI(managePlaneTab);
-
 		}
 		else if (temp == &t[2]) {
-			
+			managePlaneTab.reset();
+			manageFlightTab.reset();
+			ticketTab.reset();
+			managePassengerTab.drawUI();
 
 		}
 		else if (temp == &t[3]) {
 			managePlaneTab.reset();
 			manageFlightTab.reset();
-			ticketTab.drawUI(manageFlightTab);
+			ticketTab.drawUI(managePassengerTab,manageFlightTab);
 		}
 		else if (temp == &t[4]) {
-			statictisTab.drawUI(managePlaneTab);
+			managePlaneTab.reset();
+			manageFlightTab.reset();
+			ticketTab.reset();
 		}
 
 		closeButton.onAction();
 		if (closeButton.isClicked()) {
-			
-			managePlaneTab.witeFile();
 			manageFlightTab.writeFile();
-
+			managePlaneTab.writeFile();
+			managePassengerTab.writeFile();
+			
+			
 			closegraph();
 			DestroyWindow(GetForegroundWindow());
 
@@ -112,8 +121,7 @@ public:
 		}
 
 	}
-
-
+	
 
 
 

@@ -1,10 +1,16 @@
 #pragma once
-#include<iostream>
+
+#ifndef FUNCTION_TAB_H
+#define FUNCTION_TAB_H
+
 #include"define.h"
 #include"Button.h"
 #include"EditText.h"
 #include"Flights.h"
 #include"Planes.h"
+#include"Passengers.h"
+
+
 
 class FunctionTab {
 protected:
@@ -17,7 +23,7 @@ protected:
 
 	EditText* buttonPointer, * edittextPointer;
 
-
+	
 public:
 	FunctionTab() {
 		currentMenu = 0;
@@ -27,6 +33,7 @@ public:
 		strcpy_s(instruction, "");
 
 		initButton();
+		
 
 	}
 
@@ -34,6 +41,8 @@ public:
 		delete buttonPointer;
 		delete edittextPointer;
 	}
+
+	
 
 	void  initButton() {
 		//------------BUTTON  TRAI  
@@ -363,6 +372,25 @@ public:
 				GetForegroundWindow(),
 				(LPCWSTR)L"Seats >= current seats",
 				(LPCWSTR)L"This plane has been established flight",
+				MB_ICONEXCLAMATION | MB_OK
+			);
+			break;
+		}
+		
+		case ID_PASS_ERROR: {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"ID Passenger must have 12 letters",
+				(LPCWSTR)L"Warning",
+				MB_ICONEXCLAMATION | MB_OK
+			);
+			break;
+		}
+		case GENDER_ERROR: {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"Gender is not checked!",
+				(LPCWSTR)L"Warning",
 				MB_ICONEXCLAMATION | MB_OK
 			);
 			break;
@@ -706,8 +734,142 @@ public:
 
 
 
+	void drawBorderPassenger(int n, const int space) {
+		drawBackgroundBorder(TAB_ON_SELECTED_BACKGROUND);
+
+		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
+		setcolor(BLACK);
+		setlinestyle(0, 0, 3);
+
+		//VE LINE NGANG DONG DAU TIEN
+		line(LEFT_BORDER, TOP_BORDER + 50, RIGHT_BORDER, TOP_BORDER + 50);
+
+		int preX = LEFT_BORDER;
+		int x = preX + 100;
+		int y = TOP_BORDER + 15;
+
+		for (int i = 0; i < n - 1; i++) {
+
+			line(x, TOP_BORDER, x, BOTTOM_BORDER);
+			drawText(preX, y, x, PASS_TITLE[i]);
+
+			preX = x;
+
+			if (i == 0)
+				x += 100;
+			else if (i == n - 2)
+				x = RIGHT_BORDER;
+			else
+				x += space;
+
+		}
+
+		drawText(preX, y, x, PASS_TITLE[n - 1]);
+
+	}
+	int  drawPassengerData(int n, AVLTree& root, AVLTree &index) {
+
+		setbkcolor(SUBWINDOW_BACKGROUND);
+		setcolor(COLOR(50, 45, 188));
+
+		button[LEFT].onAction();
+		button[RIGHT].onAction();
+
+		if (button[LEFT].isClicked()) {
+			onButtonPage(currentPage, true, maxPage);
+		}
+		if (button[RIGHT].isClicked()) {
+			onButtonPage(currentPage, false, maxPage);
+
+		}
+
+		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / (n + 1);
+		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20 - 3;
+		int preY = TOP_BORDER + 70;
+
+		drawBorderPassenger(n, spaceX);
+
+		int s = 0;
+		size(root, s);
+		dataPerPage(s);
+
+		showPage(SCREEN_WIDTH / 2 - 35, BOTTOM_BORDER + 35, currentPage, maxPage);
+
+		AVLTree k = root;
+		s = 0;
+		while (k != NULL && s < startPage) {
+			s++;
+			cout << k->data.firstName << '\n';
+			k = k->pleft;
+			k = k->pright;
+			
+		}
+
+		
+		for (int i = startPage - 1; i < endPage; i++) {
+			if (k == NULL) {
+				index = NULL;
+				return -1;
+
+			}
+				
+			int preX = LEFT_BORDER;
+			setcolor(BLACK);
+
+			if (isPointed(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
+				setcolor(ON_SELECTED_DATA_COLOR);
+			}
+
+
+			if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
+				index = k;
+				return 1;
+
+			}
+
+			else if (isRightMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY))
+			{
+				index = k;
+
+				return 2;
+
+			}
+
+			//VE STT
+			char temp[3];
+			sprintf_s(temp, "%d", i + 1);
+			int x = preX + 100;
+			drawText(preX, preY, x, temp);
+			preX = x;
+
+			x = preX + spaceX;
+			drawText(preX, preY, x, k->data.firstName);
+			preX = x;
+
+			x = preX + spaceX;
+			drawText(preX, preY, x, k->data.lastName);
+			preX = x;
+
+
+			x = RIGHT_BORDER;
+			drawText(preX, preY, x, temp);
+
+
+
+
+			preY += spaceY;
+			k = k->pleft;
+			k = k->pright;
+		}
+		index = NULL;
+		return -1;
+
+
+	}
+
 
 
 
 };
 
+#endif

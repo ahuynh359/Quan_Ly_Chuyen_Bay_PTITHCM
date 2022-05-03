@@ -44,6 +44,7 @@ Plane* newPlane(Plane plane) {
 void addPlane(PlaneList& list, Plane plane) {
 	list.data[list.size] = newPlane(plane);
 	(list.size)++;
+	cout << list.size << "PLANEDATA\n\n";
 
 }
 

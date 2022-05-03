@@ -10,6 +10,7 @@ private:
 	int textOnPointedColor;
 	int currentTextColor;
 	bool cliked;
+	int active;
 
 public:
 	Button(int left, int top, int right, int bottom, int backgroundColor,
@@ -19,7 +20,11 @@ public:
 		this->textOnPointedColor = textOnPointedColor;
 		this->currentTextColor = textColor;
 		this->cliked = false;
+		this->active = true;
+	}
 
+	void setActive(bool s) {
+		this->active = s;
 	}
 	Button() :UI() {
 		strcpy_s(this->text, "");
@@ -27,12 +32,16 @@ public:
 		this->textOnPointedColor = -1;
 		this->currentTextColor = -1;
 		this->cliked = false;
+		this->active = true;
+
 	}
 
 	void drawUI() {
 
 
-
+		if (!active) {
+			this->currentBackground = EDITTEXT_DISABLE_COLOR;
+		}
 		UI::drawUI();
 
 		setcolor(currentTextColor);
@@ -42,12 +51,12 @@ public:
 	}
 
 	void onAction() {
-		if (isLeftMouseClicked(mousex(), mousey())) {
+		if (isLeftMouseClicked(mousex(), mousey()) && active) {
 			currentBackground = onSelectedBackgroundColor;
 			currentTextColor = textColor;
 			cliked = true;
 		}
-		else if (isPointed(mousex(), mousey())) {
+		else if (isPointed(mousex(), mousey()) && active) {
 			currentBackground = onSelectedBackgroundColor;
 			currentTextColor = textColor;
 			cliked = false;
@@ -64,7 +73,7 @@ public:
 	}
 
 	//Viet cho button ghe
-	void onAction(Button*& button,bool isBooked = 0) {
+	void onAction(Button*& button, bool isBooked = 0) {
 		if (isLeftMouseClicked(mousex(), mousey()) ) {
 			button = this;
 			currentBackground = onSelectedBackgroundColor;
@@ -87,7 +96,7 @@ public:
 
 	}
 
-	void setColor(int textColor,int backgroundColor) {
+	void setColor(int textColor, int backgroundColor) {
 		currentBackground = onSelectedBackgroundColor;
 		currentTextColor = textColor;
 		drawUI();

@@ -1,21 +1,17 @@
 ﻿#pragma once
-
 #include"Planes.h"
+#include"Flights.h"
+#include"Passengers.h"
 #include"FunctionTab.h"
-#include"EditText.h"
-
 class ManagePlanesTab :public FunctionTab {
 
-	
+
 private:
 
-	PlaneList planeList;
-	char dataPerPage[100][41];
 	EditText* adjustEditextPointer;
+	PlaneList planeList;
 	int indexID = -1;
-
 	int currentSeats = 0;
-	friend class ManageFlightsTab;
 public:
 
 	ManagePlanesTab() {
@@ -24,8 +20,8 @@ public:
 		initEdittext();
 
 		edittextPointer = &edittext[ID_PLANE];
+		
 
-	
 
 	}
 	~ManagePlanesTab() {
@@ -69,7 +65,7 @@ public:
 
 		//Neu da thanh lap chuyen bay nhung chua bay
 		edittext[ID_PLANE].setActive(false);
-		
+
 
 		if (!isAvai) {
 			edittext[TYPE].setActive(false);
@@ -91,27 +87,7 @@ public:
 		edittext[TYPE].setActive(true);
 	}
 
-	//Tra ve mot mang du lieu hien len 1 trang
-	void getDataPerPage() {
-
-		//Tinh toan start page , end page
-		FunctionTab::dataPerPage(planeList.size);
-
-		int cnt = 0;
-
-		if (isEmpty(planeList))
-			return;
-
-		for (int i = startPage; i <= endPage; i++) {
-			char temp[3];
-			strcpy_s(dataPerPage[cnt++], planeList.data[i - 1]->idPlane);
-			sprintf_s(temp, "%d", planeList.data[i - 1]->seats);
-			strcpy_s(dataPerPage[cnt++], temp);
-			strcpy_s(dataPerPage[cnt++], planeList.data[i - 1]->type);
-
-
-		}
-	}
+	
 
 	//Lay du lieu may bay tu edittext
 	Plane getPlaneData() {
@@ -139,10 +115,10 @@ public:
 	}
 	void reset() {
 		FunctionTab::reset();
-	
+
 	}
 
-	
+
 
 
 	void moveEdittextDown(EditText*& edittextPointer) {
@@ -158,13 +134,13 @@ public:
 	void moveEdittextUp(EditText*& edittextPointer) {
 		if (edittextPointer == &edittext[TYPE]) {
 			edittextPointer->standarContent();
-			if(edittext[ID_PLANE].isActive())
-			edittextPointer = &edittext[ID_PLANE];
+			if (edittext[ID_PLANE].isActive())
+				edittextPointer = &edittext[ID_PLANE];
 
 		}
 		else if (edittextPointer == &edittext[SEATS])
 			if (edittext[TYPE].isActive())
-			edittextPointer = &edittext[TYPE];
+				edittextPointer = &edittext[TYPE];
 
 	}
 
@@ -326,11 +302,10 @@ public:
 
 	}
 
-	
+
 
 	//---------------------------------UI-------------------------
 	void drawUI() {
-		
 		FunctionTab::drawBackground();
 
 		switch (currentMenu) {
@@ -361,7 +336,7 @@ public:
 		//-----------VE BUTTON
 		button[ADD].onAction();
 		button[SHOW].onAction();
-		
+
 
 		//-----------------VE HUONG DAN TEXT
 		char a[30] = "*Left click to delete item";
@@ -375,7 +350,7 @@ public:
 			int s = drawAnounce(DELETE);
 			switch (s) {
 			case IDOK: {
-				removePlane(planeList,indexID);
+				removePlane(planeList, indexID);
 				break;
 			}
 			case IDCANCEL: {
@@ -392,7 +367,8 @@ public:
 
 			initAdjustMenu(planeList.data[indexID], planeList.data[indexID]->isAvai);
 			currentMenu = ADJUST_MENU;
-			drawUI();
+			return;
+			
 		}
 
 
@@ -422,6 +398,7 @@ public:
 
 		inputHandel(edittextPointer, false);
 
+		cout << planeList.size << "PLANE\n\n";
 
 		if (button[BACK].isClicked()) {
 			int s = drawAnounce(PREVIOUS);
@@ -444,7 +421,6 @@ public:
 			}
 			else {
 				Plane p = getPlaneData();
-				edittext[TYPE].drawUI();
 				addPlane(planeList, p);
 				drawAnounce(SUCCESS);
 				resetEdittext();
@@ -507,14 +483,14 @@ public:
 
 	}
 
-	//----------------------DATA
-	
+	void writeFile() {
+		writeFilePlane(planeList);
+	}
 	PlaneList getPlaneList() {
 		return planeList;
 	}
 
-	void witeFile() {
-		writeFilePlane(planeList);
-	}
+
+	
 
 };
