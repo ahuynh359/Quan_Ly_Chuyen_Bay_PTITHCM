@@ -115,8 +115,9 @@ char STATICITS_TITLE[4][20]{
 };
 
 // STATICTIS TAB
-char PASS_TITLE[5][20]{
+char PASS_TITLE[6][20]{
 	"Number",
+	"Ticket",
 	"First Name",
 	"Last Name",
 	"ID Passenger"

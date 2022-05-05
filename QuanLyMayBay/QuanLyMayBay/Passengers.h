@@ -2,7 +2,8 @@
 #include <iostream>
 #include"DataConst.h"
 using namespace std;
-
+#ifndef PASSENGER_H
+#define PASSENGER_H
 struct Passenger {
 	char lastName[MAX_LAST_NAME + 1];
 	char firstName[MAX_FIRST_NAME + 1];
@@ -46,9 +47,6 @@ bool checkIDPassenger(char s[MAX_ID_PASS]) {
 	return false;
 }
 
-bool isEmpty(AVLTree &tree) {
-	return (tree == NULL);
-}
 
 // TIM GIA TRI LON NHAT GIUA a & b
 int findMax(int a, int b) {
@@ -68,7 +66,7 @@ int findHeight(AVLTree& root) {
 }
 
 // XOAY PHAI
-AVLTree rotateRight(AVLTree& y) {
+AVLTree rotateRight(AVLTree y) {
 	AVLTree x = y->pleft;
 	AVLTree T2 = x->pright;
 
@@ -104,7 +102,7 @@ AVLTree rotateLeft(AVLTree x) {
 
 
 // LAY HE SO CAN BANG
-int getBalanceFactor(AVLTree& root) {
+int getBalanceFactor(AVLTree root) {
 	if (root == NULL)
 		return 0;
 	return findHeight(root->pleft) - findHeight(root->pright);
@@ -153,13 +151,7 @@ AVLTree updateBalanceFactor(AVLTree& root, Passenger& data) {
 	return root;
 }
 
-void size(AVLTree& root,int &cnt) {
-	while (!isEmpty(root)) {
-		cnt++;
-		size(root->pleft, cnt);
-		size(root->pright, cnt);
-	}
-}
+
 
 
 
@@ -178,7 +170,7 @@ AVLTree findMinValue(AVLTree root) {
 AVLTree deletePassenger(AVLTree& root, Passenger data) {
 
 	// Tim vi tri ung voi nut can xoa
-	if (isEmpty(root))
+	if (root == NULL)
 		return root;
 	if (data.idPass < root->data.idPass)
 		root->pleft = deletePassenger(root->pleft, data);
@@ -207,7 +199,7 @@ AVLTree deletePassenger(AVLTree& root, Passenger data) {
 		}
 
 		// TH2: Co 2 nhanh con
-		else 
+		else
 		{
 			/*Node thay the la node trai nho nhat cua nhanh ben PHAI*/
 			/*Vi no lon hon tat ca node ben o nhanh ben trai va nho hon tat
@@ -258,9 +250,18 @@ AVLTree deletePassenger(AVLTree& root, Passenger data) {
 	return root;
 }
 
+void traverse(AVLTree& root) {
+	if (root == NULL)
+		return;
+	cout << root->data.idPass << '\n';
+	traverse(root->pleft);
+	traverse(root->pright);
+}
+
 
 AVLTree findPassenger(AVLTree root, char* foundID) {
-	while (root != NULL) {
+	if (root != NULL)
+	{
 		if (root->data.idPass == foundID)
 			return root;
 
@@ -277,9 +278,9 @@ AVLTree findPassenger(AVLTree root, char* foundID) {
 // CHEN NUT
 AVLTree addPassenger(AVLTree& root, Passenger& data) {
 	// Tim vi tri thich hop de them nut
-	
-	if (isEmpty(root)) {
-		cout << "1";
+
+	if (root == NULL) {
+
 		return createTree(data);
 
 	}
@@ -324,7 +325,16 @@ AVLTree addPassenger(AVLTree& root, Passenger& data) {
 
 }
 
-void writeFilePassenger(AVLTree& passengerList) {
+
+void savePassengerData(AVLTree passengerList, ofstream& out) {
+	if (passengerList != NULL) {
+		out.write(reinterpret_cast<char*>(&passengerList->data), sizeof(Passenger));
+		savePassengerData(passengerList->pleft, out);
+		savePassengerData(passengerList->pright, out);
+	}
+}
+
+void writeFilePassenger(AVLTree passengerList) {
 	ofstream out("PassengerData.txt", ios::binary);
 
 
@@ -333,16 +343,14 @@ void writeFilePassenger(AVLTree& passengerList) {
 		return;
 	}
 
-	while (!isEmpty(passengerList)) {
-		out.write(reinterpret_cast<char*>(&passengerList->data), sizeof(Passenger));
-		writeFilePassenger(passengerList->pleft);
-		writeFilePassenger(passengerList->pright);
-	}
-	
+	savePassengerData(passengerList, out);
+
 
 
 	out.close();
 }
+
+
 
 
 void readFilePassenger(AVLTree& passengerList) {
@@ -362,3 +370,4 @@ void readFilePassenger(AVLTree& passengerList) {
 
 }
 
+#endif

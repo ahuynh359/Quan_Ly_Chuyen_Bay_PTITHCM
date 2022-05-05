@@ -2,8 +2,6 @@
 #include"UI.h"
 
 
-
-
 using namespace std;
 #ifndef EDITTEXT_H
 #define EDITTEXT_H

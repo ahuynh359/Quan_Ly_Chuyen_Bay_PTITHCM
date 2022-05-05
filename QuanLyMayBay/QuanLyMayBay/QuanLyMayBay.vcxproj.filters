@@ -55,6 +55,9 @@
     <ClInclude Include="UIController.h">
       <Filter>UI</Filter>
     </ClInclude>
+    <ClInclude Include="Data.h">
+      <Filter>UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="PassengerData.txt">

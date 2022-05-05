@@ -1,22 +1,30 @@
 ﻿#pragma once
+
+
+#ifndef MANAGE_PLANE_H
+#define MANAGE_PLANE_H
+
 #include"Planes.h"
 #include"Flights.h"
 #include"Passengers.h"
 #include"FunctionTab.h"
+#include"Data.h"
+using namespace std;
 class ManagePlanesTab :public FunctionTab {
 
 
 private:
 
 	EditText* adjustEditextPointer;
-	PlaneList planeList;
+	Data *d;
 	int indexID = -1;
 	int currentSeats = 0;
 public:
-
 	ManagePlanesTab() {
-		readFilePlane(planeList);
 
+	}
+	ManagePlanesTab(Data* d) {
+		this->d = d;
 		initEdittext();
 
 		edittextPointer = &edittext[ID_PLANE];
@@ -25,7 +33,8 @@ public:
 
 	}
 	~ManagePlanesTab() {
-		delete adjustEditextPointer;
+		//delete adjustEditextPointer;
+		
 	}
 
 	void initEdittext() {
@@ -83,8 +92,10 @@ public:
 
 	}
 	void initAddMenu() {
+		edittextPointer = &edittext[ID_PLANE];
 		edittext[ID_PLANE].setActive(true);
 		edittext[TYPE].setActive(true);
+		
 	}
 
 	
@@ -154,7 +165,7 @@ public:
 					drawAnounce(EMPTY);
 					return false;
 				}
-				if (checkDupIDPlane(planeList, edittextPointer->getCharData())) {
+				if (checkDupIDPlane(d->planeList, edittextPointer->getCharData())) {
 					drawAnounce(DUP);
 					return false;
 				}
@@ -201,7 +212,7 @@ public:
 				return false;
 			}
 
-			if (checkDupIDPlane(planeList, edittext[ID_PLANE].getCharData())) {
+			if (checkDupIDPlane(d->planeList, edittext[ID_PLANE].getCharData())) {
 				drawAnounce(DUP);
 				edittextPointer = &edittext[ID_PLANE];
 				return false;
@@ -345,12 +356,12 @@ public:
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 40, a);
 
 
-		int s = FunctionTab::drawPlaneData(4, planeList, indexID);
+		int s = FunctionTab::drawPlaneData(4, d->planeList, indexID);
 		if (s == 1) {
 			int s = drawAnounce(DELETE);
 			switch (s) {
 			case IDOK: {
-				removePlane(planeList, indexID);
+				removePlane(d->planeList, indexID);
 				break;
 			}
 			case IDCANCEL: {
@@ -363,9 +374,9 @@ public:
 		}
 		else if (s == 2) {
 
-			currentSeats = planeList.data[indexID]->seats;
+			currentSeats = d->planeList.data[indexID]->seats;
 
-			initAdjustMenu(planeList.data[indexID], planeList.data[indexID]->isAvai);
+			initAdjustMenu(d->planeList.data[indexID], d->planeList.data[indexID]->isAvai);
 			currentMenu = ADJUST_MENU;
 			return;
 			
@@ -398,7 +409,6 @@ public:
 
 		inputHandel(edittextPointer, false);
 
-		cout << planeList.size << "PLANE\n\n";
 
 		if (button[BACK].isClicked()) {
 			int s = drawAnounce(PREVIOUS);
@@ -421,7 +431,7 @@ public:
 			}
 			else {
 				Plane p = getPlaneData();
-				addPlane(planeList, p);
+				addPlane(d->planeList, p);
 				drawAnounce(SUCCESS);
 				resetEdittext();
 				edittextPointer = &edittext[ID_PLANE];
@@ -470,7 +480,7 @@ public:
 			}
 			else {
 				Plane p = getPlaneData();
-				adjustPlane(planeList, p, this->indexID);
+				adjustPlane(d->planeList, p, this->indexID);
 				drawAnounce(SUCCESS);
 				resetEdittext();
 				currentMenu = MAIN_MENU;
@@ -483,14 +493,12 @@ public:
 
 	}
 
-	void writeFile() {
-		writeFilePlane(planeList);
-	}
-	PlaneList getPlaneList() {
-		return planeList;
-	}
+
+
+		
 
 
 	
 
 };
+#endif

@@ -24,7 +24,7 @@ int main()
 		ui.onUpdate();
 		setvisualpage(getactivepage());
 		clearmouseclick(WM_LBUTTONDOWN);
-		delay(20);
+		delay(50);
 	}
 
 	

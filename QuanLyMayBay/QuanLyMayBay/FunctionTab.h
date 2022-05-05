@@ -11,6 +11,7 @@
 #include"Passengers.h"
 
 
+using namespace std;
 
 class FunctionTab {
 protected:
@@ -38,8 +39,8 @@ public:
 	}
 
 	~FunctionTab() {
-		delete buttonPointer;
-		delete edittextPointer;
+		//delete buttonPointer;
+		//delete edittextPointer;
 	}
 
 	
@@ -755,21 +756,20 @@ public:
 
 			preX = x;
 
-			if (i == 0)
-				x += 100;
-			else if (i == n - 2)
+		 if (i == n - 2)
 				x = RIGHT_BORDER;
 			else
 				x += space;
+		 
 
 		}
 
 		drawText(preX, y, x, PASS_TITLE[n - 1]);
 
 	}
-	int  drawPassengerData(int n, AVLTree& root, AVLTree &index) {
-
+	int drawPassengerData(int n, PTR& flightList,AVLTree &root) {
 		setbkcolor(SUBWINDOW_BACKGROUND);
+
 		setcolor(COLOR(50, 45, 188));
 
 		button[LEFT].onAction();
@@ -783,88 +783,92 @@ public:
 
 		}
 
+		dataPerPage(flightList->info.totalTicket);
+		showPage(SCREEN_WIDTH / 2 - 35, BOTTOM_BORDER + 35, currentPage, maxPage);
+
 		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / (n + 1);
 		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20 - 3;
 		int preY = TOP_BORDER + 70;
 
 		drawBorderPassenger(n, spaceX);
-
-		int s = 0;
-		size(root, s);
-		dataPerPage(s);
-
-		showPage(SCREEN_WIDTH / 2 - 35, BOTTOM_BORDER + 35, currentPage, maxPage);
-
-		AVLTree k = root;
-		s = 0;
-		while (k != NULL && s < startPage) {
-			s++;
-			cout << k->data.firstName << '\n';
-			k = k->pleft;
-			k = k->pright;
-			
-		}
-
+		int cnt = 1;
+	
+	
 		
-		for (int i = startPage - 1; i < endPage; i++) {
-			if (k == NULL) {
-				index = NULL;
-				return -1;
+		setbkcolor(SUBWINDOW_BACKGROUND);
 
-			}
-				
+
+		for (int i = startPage - 1; i < endPage;i++) {
+
 			int preX = LEFT_BORDER;
+
+
 			setcolor(BLACK);
 
 			if (isPointed(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
 				setcolor(ON_SELECTED_DATA_COLOR);
 			}
 
-
 			if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
-				index = k;
+				
 				return 1;
 
 			}
 
 			else if (isRightMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY))
 			{
-				index = k;
+				
+
 
 				return 2;
 
 			}
 
 			//VE STT
-			char temp[3];
-			sprintf_s(temp, "%d", i + 1);
+			char temp[40];
+			sprintf_s(temp, "%d", cnt);
 			int x = preX + 100;
 			drawText(preX, preY, x, temp);
 			preX = x;
+			cnt++;
+			//VE SO VE
+			AVLTree p = findPassenger(root, flightList->info.ticketList[i]);
 
 			x = preX + spaceX;
-			drawText(preX, preY, x, k->data.firstName);
-			preX = x;
-
-			x = preX + spaceX;
-			drawText(preX, preY, x, k->data.lastName);
-			preX = x;
-
-
-			x = RIGHT_BORDER;
+			sprintf_s(temp, "%d", i);
 			drawText(preX, preY, x, temp);
+			preX = x;
+
+			
+
+			//VE First Name
+			x = preX + spaceX;
+			drawText(preX, preY, x, p->data.firstName);
+			preX = x;
+
+
+			//VE Last Name
+			x = preX + spaceX;
+			drawText(preX, preY, x, p->data.lastName);
+			preX = x;
 
 
 
+			//VE CMND
+			x = RIGHT_BORDER;
+			drawText(preX, preY, x, p->data.idPass);
+			preX = x;
+
+
+		
 
 			preY += spaceY;
-			k = k->pleft;
-			k = k->pright;
+
+			
+
 		}
-		index = NULL;
+		
 		return -1;
-
-
 	}
 
 

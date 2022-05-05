@@ -5,7 +5,8 @@
 #include"Day.h"
 #include"Planes.h"
 
-
+#ifndef FLIGHT_H
+#define FLIGHT_H
 struct Flight {
 	char idFlight[MAX_ID_FLIGHT+1];
 	Date date;
@@ -74,6 +75,8 @@ void insertAfter(PTR& first, Flight &flight)
 
 int size(PTR& first) {
 	int cnt = 0;
+	if (first == NULL)
+		return cnt;
 	for (PTR k = first; k != NULL; k = k->next) {
 		cnt++;
 	}
@@ -155,13 +158,24 @@ void initTicketList(PlaneList& planeList, Flight& flight) {
 
 	Plane *p = planeList.data[findPlane(planeList, flight.idPlane)];
 	flight.totalTicket = p->seats;
-
+	char s[MAX_ID_PASS + 1] = "0";
 	p->isAvai = false;
 	flight.ticketList = new char* [flight.totalTicket + 1];
 	for (int i = 0; i < flight.totalTicket; i++) {
-		flight.ticketList[i] = new char[MAX_ID_PASS];
-		strcpy_s(flight.ticketList[i], 2, "0");
+		flight.ticketList[i] = new char[MAX_ID_PASS+1];
+		strcpy_s(flight.ticketList[i], 2,s);
 	}
+
+}
+
+void bookTicket(PTR &first,int index, char id[MAX_ID_PASS+1]) {
+	strcpy_s(first->info.ticketList[index], MAX_ID_PASS + 1, id);
+}
+
+void cancleTicket(PTR& first, int index, char id[MAX_ID_PASS + 1]) {
+	char s[MAX_ID_PASS + 1] = "0";
+	strcpy_s(first->info.ticketList[index], 2,s);
+
 
 }
 
@@ -175,9 +189,9 @@ void writeFileFlight(PTR& first) {
 
 	for (PTR k = first; k != NULL; k = k->next) {
 		out.write(reinterpret_cast<char*>(&k->info), sizeof(Flight));
-		/*for (int i = 0; i < k->info.totalTicket; i++) {
-			out.write(reinterpret_cast<char*>(&k->info.ticketList[i]), sizeof(char[MAX_ID_FLIGHT + 1]));
-		}*/
+		for (int i = 0; i < k->info.totalTicket; i++) {
+			out.write(reinterpret_cast<char*>(&(*k->info.ticketList[i])), sizeof(char[MAX_ID_PASS + 1]));
+		}
 	}
 
 	
@@ -194,11 +208,13 @@ void readFileFlight(PTR& first) {
 	Flight flight;
 
 	while(inp.read(reinterpret_cast<char*>(&flight), sizeof(flight))){
-		//flight.ticketList = new char* [flight.totalTicket + 1];
-		//for (int i = 0; i < flight.totalTicket; i++) {
-		//	flight.ticketList[i] = new char[MAX_ID_FLIGHT + 1];
-		//	inp.read(reinterpret_cast<char*>(&flight.ticketList[i]), sizeof(char[MAX_ID_FLIGHT + 1]));
-	//	}
+		flight.ticketList = new char* [flight.totalTicket + 1];
+		for (int i = 0; i < flight.totalTicket; i++) {
+			flight.ticketList[i] = new char[MAX_ID_PASS+1];
+		}
+		for (int i = 0; i < flight.totalTicket; i++) {
+			inp.read(reinterpret_cast<char*>(&*(flight.ticketList[i])), sizeof(char[MAX_ID_PASS + 1]));
+		}
 		
 		insertAfter(first, flight);
 	}
@@ -206,13 +222,18 @@ void readFileFlight(PTR& first) {
 
 }
 
-void deleteList(PTR& first)
+void deleteFlightList(PTR& first)
 {
 	PTR temp = first;
 	while (temp != NULL) {
 		PTR t = temp;
 		temp = temp->next;
+		for (int i = 0; i < t->info.totalTicket; i++) {
+			delete[] t->info.ticketList[i];
+		}
+		delete[] t->info.ticketList;
 		delete t;
 	}
 }
 
+#endif

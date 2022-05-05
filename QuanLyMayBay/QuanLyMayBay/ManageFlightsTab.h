@@ -1,26 +1,32 @@
 ﻿#pragma once
 
 
+
+
 #include"Planes.h"
 #include"Flights.h"
 #include"Passengers.h"
 #include"FunctionTab.h"
+#include"ManagePlanesTab.h"
+#include"Data.h"
+
 
 class ManageFlightsTab :public FunctionTab {
-protected:
+private:
 	EditText addEdittext[MAX_EDITTEXT];
 
 	int indexID = -1;
 	PTR tempFlight;
 	EditText * addPointer;
-	PTR flightList;
-	PlaneList planeList;
+	Data* d;
 public:
 
-	
 	ManageFlightsTab() {
-		initializeList(flightList);
-		readFileFlight(flightList);
+
+	}
+	ManageFlightsTab( Data* data) {
+		d = data;
+		
 		initEdittext();
 
 		edittextPointer = NULL;
@@ -31,7 +37,7 @@ public:
 
 	
 	~ManageFlightsTab() {
-		delete addPointer;
+		//delete addPointer;
 		
 	}
 	
@@ -312,10 +318,9 @@ public:
 
 		f.status = 1;
 
-		Date d = getDate();
-		f.date = d;
-		
-		initTicketList(planeList, f);
+		Date date = getDate();
+		f.date = date;
+		initTicketList(d->planeList, f);
 		
 		return f;
 	}
@@ -338,7 +343,7 @@ public:
 				return false;
 			}
 
-			if (checkDupIDFlight(flightList, addEdittext[ID_FLIGHT].getCharData())) {
+			if (checkDupIDFlight(d->flightList, addEdittext[ID_FLIGHT].getCharData())) {
 				drawAnounce(DUP);
 				addPointer = &addEdittext[ID_FLIGHT];
 				return false;
@@ -350,7 +355,7 @@ public:
 				return false;
 			}
 
-			if (findPlane(planeList, addEdittext[ID_PLANE].getCharData()) == -1) {
+			if (findPlane(d->planeList, addEdittext[ID_PLANE].getCharData()) == -1) {
 				drawAnounce(PLANE_NOT_EXIST);
 				addPointer = &edittext[ID_PLANE];
 				return false;
@@ -445,7 +450,7 @@ public:
 
 		if (addPointer == &addEdittext[ID_FLIGHT]) {
 
-			if (checkDupIDFlight(flightList, addPointer->getCharData())) {
+			if (checkDupIDFlight(d->flightList, addPointer->getCharData())) {
 				drawAnounce(DUP);
 				return false;
 			}
@@ -453,7 +458,7 @@ public:
 
 		if (addPointer == &addEdittext[ID_PLANE]) {
 
-			if (findPlane(planeList, addPointer->getCharData()) == -1) {
+			if (findPlane(d->planeList, addPointer->getCharData()) == -1) {
 				drawAnounce(PLANE_NOT_EXIST);
 				return false;
 			}
@@ -651,8 +656,8 @@ public:
 	}
 
 
-	void  drawUI(ManagePlanesTab &plane) {
-		this->planeList = plane.getPlaneList();
+	void  drawUI() {
+		
 		switch (currentMenu) {
 		case MAIN_MENU: {
 			resetAddEdittext();
@@ -691,7 +696,7 @@ public:
 		button[LEFT].onAction();
 		button[RIGHT].onAction();
 
-		int s= drawFlightData(6, flightList, tempFlight);
+		int s= drawFlightData(6, d->flightList, tempFlight);
 		
 		if (s == 1) {
 			if (checkCancleFlight(tempFlight)) {
@@ -752,10 +757,10 @@ public:
 			}
 			else {
 				Flight p = getFlight();
-				insertAfter(flightList, p);
+				insertAfter(d->flightList, p);
 				drawAnounce(SUCCESS);
 				resetAddEdittext();
-
+				cout << p.ticketList[0] << "FLIGHT\n";
 				customEdittext();
 
 
@@ -798,13 +803,21 @@ public:
 			currentMenu = MAIN_MENU;
 			
 		}
+	
 		if (button[SAVE].isClicked()) {
 			if (!checkSaveData(1)) {
 
 			}
 			else
 			{
+				for (int i = 0; i < tempFlight->info.totalTicket; i++) {
+					if(tempFlight->info.ticketList[i] != NULL)
+						cout << tempFlight->info.ticketList[i] << "FLIGHT\n";
+
+				}
+
 				adjustFlight(tempFlight, getDate());
+
 				drawAnounce(SUCCESS);
 				currentMenu = MAIN_MENU;
 				
@@ -815,27 +828,18 @@ public:
 	void drawFindPlane() {
 
 		button[BACK].onAction();
-		int s = drawPlaneData(4, planeList,indexID);
+		int s = drawPlaneData(4, d->planeList,indexID);
 		if (s == 1) {
-			addEdittext[ID_PLANE].customInitChar(planeList.data[indexID]->idPlane);
+			addEdittext[ID_PLANE].customInitChar(d->planeList.data[indexID]->idPlane);
 			currentMenu = ADD_MENU;
 			delay(50);
 
-		}
+		}  
 		if (button[BACK].isClicked()) {
 			currentMenu = MAIN_MENU;
 		}
 		
 	}
-	
-	PTR getFlightList() {
-		return flightList;
-	}
-	void writeFile() {
-		
-		writeFileFlight(flightList);
-		
-	}
-	
+
 
 };
