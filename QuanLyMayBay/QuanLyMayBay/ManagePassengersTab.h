@@ -43,6 +43,8 @@ public:
 	}
 
 	void drawMainMenu() {
+		
+
 		//-----------------VE HUONG DAN TEXT
 		char a[40] = "*Left click to see passenger list";
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
@@ -63,8 +65,12 @@ public:
 
 	
 	void drawShowMenu() {
-		//AVLTree root = findPassenger(d->)
-		cout << flightTemp->info.totalTicket << "FLIGHT\n";
-		//drawPassengerData(5, flightTemp, d->passengerList);
+		
+		drawPassengerData(5, flightTemp, d->passengerList);
+	
+		button[BACK].onAction();
+		if (button[BACK].isClicked()) {
+			currentMenu = MAIN_MENU;
+		}
 	}
 };

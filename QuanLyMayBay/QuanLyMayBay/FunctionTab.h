@@ -24,7 +24,7 @@ protected:
 
 	EditText* buttonPointer, * edittextPointer;
 
-	
+
 public:
 	FunctionTab() {
 		currentMenu = 0;
@@ -34,7 +34,7 @@ public:
 		strcpy_s(instruction, "");
 
 		initButton();
-		
+
 
 	}
 
@@ -43,7 +43,7 @@ public:
 		//delete edittextPointer;
 	}
 
-	
+
 
 	void  initButton() {
 		//------------BUTTON  TRAI  
@@ -193,7 +193,7 @@ public:
 		return false;
 	}
 	bool virtual isDoubleClick(int left, int top, int right, int bottom) {
-		if (isPointed(left, top, right, bottom) && GetAsyncKeyState(WM_LBUTTONDBLCLK) ) {
+		if (isPointed(left, top, right, bottom) && GetAsyncKeyState(WM_LBUTTONDBLCLK)) {
 			return true;
 		}
 		return false;
@@ -377,7 +377,7 @@ public:
 			);
 			break;
 		}
-		
+
 		case ID_PASS_ERROR: {
 			msgboxID = MessageBox(
 				GetForegroundWindow(),
@@ -391,6 +391,26 @@ public:
 			msgboxID = MessageBox(
 				GetForegroundWindow(),
 				(LPCWSTR)L"Gender is not checked!",
+				(LPCWSTR)L"Warning",
+				MB_ICONEXCLAMATION | MB_OK
+			);
+			break;
+		}
+
+		case DUP_ID_PASS: {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"ID has been booked",
+				(LPCWSTR)L"Warning",
+				MB_ICONEXCLAMATION | MB_OK
+			);
+			break;
+		}
+
+		case CANCLE_TICKET: {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"Do you want to cancle ticket?",
 				(LPCWSTR)L"Warning",
 				MB_ICONEXCLAMATION | MB_OK
 			);
@@ -484,7 +504,7 @@ public:
 		drawText(preX, y, x, PLANE_TITLE[n - 1]);
 
 	}
-	int  drawPlaneData(int n, PlaneList& planeList,int &index) {
+	int  drawPlaneData(int n, PlaneList& planeList, int& index) {
 
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(COLOR(50, 45, 188));
@@ -512,7 +532,7 @@ public:
 
 
 
-		for (int i = startPage - 1 ; i < endPage; i++) {
+		for (int i = startPage - 1; i < endPage; i++) {
 
 			int preX = LEFT_BORDER;
 			setcolor(BLACK);
@@ -523,14 +543,14 @@ public:
 
 
 			if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
-				index = i ;
+				index = i;
 				return 1;
 
 			}
 
 			else if (isRightMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY))
 			{
-				index = i ;
+				index = i;
 
 				return 2;
 
@@ -538,7 +558,7 @@ public:
 
 			//VE STT
 			char temp[3];
-			sprintf_s(temp, "%d", i+1);
+			sprintf_s(temp, "%d", i + 1);
 			int x = preX + 100;
 			drawText(preX, preY, x, temp);
 			preX = x;
@@ -601,7 +621,7 @@ public:
 
 		drawText(preX, y, x, FLIGHT_TITLE[n - 1]);
 	}
-	int drawFlightData(int n, PTR& flightList,PTR &flight) {
+	int drawFlightData(int n, PTR& flightList, PTR& flight) {
 		setbkcolor(SUBWINDOW_BACKGROUND);
 
 		setcolor(COLOR(50, 45, 188));
@@ -634,17 +654,17 @@ public:
 		}
 		setbkcolor(SUBWINDOW_BACKGROUND);
 
-		
-		for (int i = startPage;  i <= endPage; i++) {
+
+		for (int i = startPage; i <= endPage; i++) {
 
 			if (k == NULL) {
-					flight = NULL;
-					return -1;
+				flight = NULL;
+				return -1;
 
 			}
 			int preX = LEFT_BORDER;
 
-			
+
 			setcolor(BLACK);
 
 			if (isPointed(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
@@ -756,18 +776,18 @@ public:
 
 			preX = x;
 
-		 if (i == n - 2)
+			if (i == n - 2)
 				x = RIGHT_BORDER;
 			else
 				x += space;
-		 
+
 
 		}
 
 		drawText(preX, y, x, PASS_TITLE[n - 1]);
 
 	}
-	int drawPassengerData(int n, PTR& flightList,AVLTree &root) {
+	void drawPassengerData(int n, PTR& flightList, AVLTree& root) {
 		setbkcolor(SUBWINDOW_BACKGROUND);
 
 		setcolor(COLOR(50, 45, 188));
@@ -782,8 +802,14 @@ public:
 			onButtonPage(currentPage, false, maxPage);
 
 		}
+		int cnt = 0;
+		for (int i = 0; i < flightList->info.totalTicket; i++)
+			if (strcmp(flightList->info.ticketList[i], "0") != 0)
+				cnt++;
 
-		dataPerPage(flightList->info.totalTicket);
+
+
+		dataPerPage(cnt);
 		showPage(SCREEN_WIDTH / 2 - 35, BOTTOM_BORDER + 35, currentPage, maxPage);
 
 		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / (n + 1);
@@ -791,38 +817,28 @@ public:
 		int preY = TOP_BORDER + 70;
 
 		drawBorderPassenger(n, spaceX);
-		int cnt = 1;
-	
-	
-		
+		cnt = 1;
+
+
 		setbkcolor(SUBWINDOW_BACKGROUND);
 
 
-		for (int i = startPage - 1; i < endPage;i++) {
+		for (int i = 0; i < flightList->info.totalTicket; i++) {
+
+
+			AVLTree p = findPassenger(root, flightList->info.ticketList[i]);
+
+
+
+			if (p == NULL)
+				continue;
 
 			int preX = LEFT_BORDER;
 
 
 			setcolor(BLACK);
 
-			if (isPointed(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
-				setcolor(ON_SELECTED_DATA_COLOR);
-			}
 
-			if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
-				
-				return 1;
-
-			}
-
-			else if (isRightMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY))
-			{
-				
-
-
-				return 2;
-
-			}
 
 			//VE STT
 			char temp[40];
@@ -831,15 +847,16 @@ public:
 			drawText(preX, preY, x, temp);
 			preX = x;
 			cnt++;
+
 			//VE SO VE
-			AVLTree p = findPassenger(root, flightList->info.ticketList[i]);
+
 
 			x = preX + spaceX;
-			sprintf_s(temp, "%d", i);
+			sprintf_s(temp, "%d", i + 1);
 			drawText(preX, preY, x, temp);
 			preX = x;
 
-			
+
 
 			//VE First Name
 			x = preX + spaceX;
@@ -860,15 +877,15 @@ public:
 			preX = x;
 
 
-		
+
 
 			preY += spaceY;
 
-			
+
 
 		}
-		
-		return -1;
+
+
 	}
 
 

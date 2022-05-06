@@ -13,6 +13,7 @@ private:
 	bool cliked;
 	int active;
 	bool isChoosen;
+	bool isLeftClick, isRightClick;
 
 public:
 	Button(int left, int top, int right, int bottom, int backgroundColor,
@@ -24,6 +25,8 @@ public:
 		this->cliked = false;
 		this->active = true;
 		this->isChoosen = false;
+		this->isLeftClick = false;
+		this->isRightClick = false;
 
 	}
 
@@ -32,9 +35,6 @@ public:
 
 	}
 
-	void setChoosen(bool s) {
-		this->isChoosen = s;
-	}
 
 
 
@@ -54,6 +54,12 @@ public:
 		drawUI();
 	}
 
+	bool getIsLeftClick() {
+		return isLeftClick;
+	}
+	bool getIsRightClick() {
+		return isRightClick;
+	}
 	void drawUI() {
 
 
@@ -76,10 +82,14 @@ public:
 	void drawSeatUI() {
 
 		if (isChoosen) {
-			this->currentBackground = TICKET_NOT_AVAI;
+			currentBackground = TICKET_NOT_AVAI;
+			currentTextColor = textOnPointedColor;
 		}
-		else if (!isChoosen)
-			this->currentBackground = TICKET_AVAI;
+		else {
+			currentBackground = TICKET_AVAI;
+			currentTextColor = textOnPointedColor;
+		}
+			
 
 
 		UI::drawUI();
@@ -132,31 +142,41 @@ public:
 		drawUI();
 	}
 
+	bool getIsChoosen() {
+		return isChoosen;
+	}
 
+	void setChoosen(bool s) {
+		this -> isChoosen = s;
+
+	}
 	//Viet cho button ghe
-	void onActionSeatButton() {
+	void onActionSeatButton(Button *&button) {
 
-		if (isChoosen == false && isLeftMouseClicked(mousex(), mousey())) {
-			currentBackground = TICKET_NOT_AVAI;
-			currentTextColor = textOnPointedColor;
+		if (isChoosen == false && button == this || isLeftMouseClicked(mousex(), mousey())) {
+			
 			cliked = true;
-			isChoosen = true;
+			
+			button = this;
+			isLeftClick = true;
+			isRightClick = false;
 
 		}
-		else if (isChoosen == true && isRightMouseClicked(mousex(), mousey())) {
-			currentBackground = TICKET_AVAI;
-			currentTextColor = textOnPointedColor;
+		else if (isChoosen == true && button == this || isRightMouseClicked(mousex(), mousey())) {
+			
 			cliked = true;
-			isChoosen = false;
-
+			button = this;
+			isLeftClick = false;
+			isRightClick = true;
 
 		}
 		else {
-			currentBackground = backgroundColor;
-			currentTextColor = textOnPointedColor;
 			cliked = false;
+			isLeftClick = false;
+			isRightClick = false;
 
 		}
+		
 
 
 		drawSeatUI();

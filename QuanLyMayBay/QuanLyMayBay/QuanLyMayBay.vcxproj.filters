@@ -60,7 +60,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="PassengerData.txt">
+    <Text Include="PassData.txt">
       <Filter>Data</Filter>
     </Text>
     <Text Include="FlightData.txt">

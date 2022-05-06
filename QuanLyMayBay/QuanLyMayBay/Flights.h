@@ -5,6 +5,7 @@
 #include"Day.h"
 #include"Planes.h"
 
+
 #ifndef FLIGHT_H
 #define FLIGHT_H
 struct Flight {
@@ -166,6 +167,16 @@ void initTicketList(PlaneList& planeList, Flight& flight) {
 		strcpy_s(flight.ticketList[i], 2,s);
 	}
 
+}
+
+//kiem tra CMND trung tren 1 chuyen bay
+bool ableToBook(PTR& flightList, char id[MAX_ID_PASS + 1]) {
+	for (int i = 0; i < flightList->info.totalTicket;i++) {
+		if (strcmp(flightList->info.ticketList[i], id) == 0) {
+			return false;
+		}
+	}
+	return true;
 }
 
 void bookTicket(PTR &first,int index, char id[MAX_ID_PASS+1]) {

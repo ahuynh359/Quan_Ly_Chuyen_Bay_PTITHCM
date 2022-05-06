@@ -34,15 +34,15 @@ public:
 		genderButton = &button[FEMALE];
 		closeButton = &button[CLOSE];
 
-
+		ticketPointer = NULL;
 
 	}
 	void customEdittext(AVLTree& pass) {
 		edittext[FIRST_NAME].customInitChar(pass->data.firstName);
 		edittext[LAST_NAME].customInitChar(pass->data.lastName);
 		if (pass->data.gender == 0)
-			button[MALE].setActive(true);
-		else button[FEMALE].setActive(true);
+			genderButton = &button[MALE];
+		else genderButton = &button[FEMALE];
 	}
 	Passenger getPassenger() {
 		Passenger p;
@@ -64,14 +64,14 @@ public:
 		edittext[ID_PASS].clearText();
 		edittext[LAST_NAME].clearText();
 		edittext[FIRST_NAME].clearText();
-		genderButton = &button[FEMALE];
-		
+		genderButton = NULL;
+
 	}
 	void initEdittext() {
 
 		//---------EDITTEXT ID
 		char hint[30] = "Data must be entered!";
-		char title[30] = "ID PASSENGER";
+		char title[30] = "ID PASS";
 		char content[30] = "";
 
 		int left = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - EDITTEXT_WIDTH + 90) / 2;
@@ -79,7 +79,13 @@ public:
 		int right = left + EDITTEXT_WIDTH;
 		int bottom = top + EDITTEXT_HEIGHT;
 
-		
+
+		//------------EDITTEXT ID PASS
+
+		strcpy_s(title, "ID PASS");
+		edittext[ID_PASS] = EditText(hint, title, content, left, top, right, bottom, MAX_ID_PASS);
+
+
 
 		//------------EDITTEXT SURNAME
 		strcpy_s(title, "FIRST NAME");
@@ -105,10 +111,6 @@ public:
 		button[MALE] = Button(left, top, left + 30, top + 30, EDITEXT_BACKGROUND_COLOR, COLOR(135, 206, 222), title, BLACK);
 
 
-		//------------EDITTEXT ID PLANE
-		edittext[ID_PASS] = EditText(hint, title, content, left, top, right, bottom, MAX_ID_PASS, 130);
-
-
 
 
 
@@ -128,19 +130,16 @@ public:
 			BUTTON_PAGE, WHITE, a, BUTTON_TEXT_COLOR);
 
 
-		
-		
-		//-----BUTTON CLOSE
-		strcpy_s(a, "X");
-		button[ALL] = Button(RIGHT_BORDER - 50, SUBWINDOW_TOP + 2, RIGHT_BORDER, SUBWINDOW_TOP + 48,
-			BUTTON_PAGE, WHITE, a, BUTTON_TEXT_COLOR);
+
+
+
 
 
 
 
 	}
 	void initAdjustMenu(bool s) {
-		
+
 
 		if (!s) {
 			edittext[FIRST_NAME].setActive(false);
@@ -220,10 +219,14 @@ public:
 				drawAnounce(ID_PASS_ERROR);
 				return false;
 			}
+			if (!ableToBook(flightTemp, edittext[ID_PASS].getCharData())) {
+				drawAnounce(DUP_ID_PASS);
+				return false;
+			}
 			initAdjustMenu(true);
 		}
 
-		
+
 
 		if (edittextPointer == &edittext[FIRST_NAME]) {
 			if (edittextPointer->isEmpty()) {
@@ -319,6 +322,12 @@ public:
 		}
 
 
+		if (!ableToBook(flightTemp, edittext[ID_PASS].getCharData())) {
+			drawAnounce(DUP_ID_PASS);
+			edittextPointer = &edittext[ID_PASS];
+			return false;
+		}
+
 
 
 		if (edittext[FIRST_NAME].isEmpty()) {
@@ -357,11 +366,7 @@ public:
 			drawTicketMenu();
 			break;
 		}
-		case SHOW_MENU: {
-			drawTicketMenu();
-			
-			break;
-		}
+
 		case ADJUST_MENU: {
 			drawAdjustMenu();
 			break;
@@ -389,49 +394,51 @@ public:
 			delay(50);
 			currentMenu = TICKET_MENU;
 		}
-		
+
 
 	}
-	void drawShowIDInput() {
 
-		int w = 500;
-		int h = 200;
-
-		setbkcolor(SUBWINDOW_BACKGROUND);
-		
-		bar(SUBWINDOW_LEFT, SUBWINDOW_BOTTOM - h, w, SUBWINDOW_BOTTOM);
-
-		setcolor(BLACK);
-		line(SUBWINDOW_LEFT, SUBWINDOW_BOTTOM - h, w, SUBWINDOW_BOTTOM - h);
-		line(w, SUBWINDOW_BOTTOM - h, w, SUBWINDOW_BOTTOM);
-
-		edittext[ID_PASS].onAction(edittextPointer);
-
-		button[CLOSE].onAction();
-		if (button[CLOSE].isClicked()) {
-			currentMenu = TICKET_MENU;
-		}
-		
-	}
 	void drawTicketMenu() {
 
 		drawInstructionInline();
 
-		for (int i = 1; i <= flightTemp->info.totalTicket; i++) {
-			buttonTicket[i].onActionSeatButton();
-			if (buttonTicket[i].isClicked()) {
-				ticketPointer = &buttonTicket[i];
+		for (int i = 1; i <= flightTemp->info.totalTicket; i++)
+			buttonTicket[i].onActionSeatButton(ticketPointer);
+
+
+		if (ticketPointer != NULL) {
+			if (!ticketPointer->getIsChoosen() && ticketPointer->getIsLeftClick()) {
 				edittextPointer = &edittext[ID_PASS];
 				initAdjustMenu(false);
-			
-				drawShowIDInput();
-			
+
+				delay(50);
+				currentMenu = ADJUST_MENU;
+				return;
+
 			}
+			else
+				if (ticketPointer->getIsChoosen() && ticketPointer->getIsRightClick()) {
+					cout << "AHIHI RIGHT CLICK\n";
+
+					int s = drawAnounce(CANCLE_TICKET);
+					if (s == IDOK) {
+						ticketPointer->setChoosen(false);
+						ticketPointer->drawSeatUI();
+						char a[MAX_ID_PASS + 1] = "0";
+						bookTicket(flightTemp, ticketPointer->getIntData() - 1, a);
+						ticketPointer = NULL;
+					}
+					delay(50);
+
+				}
 		}
+	
 
 		button[BACK].onAction();
 
 		if (button[BACK].isClicked()) {
+			ticketPointer = NULL;
+			delay(50);
 			currentMenu = MAIN_MENU;
 			return;
 		}
@@ -465,6 +472,8 @@ public:
 		inputHandel();
 
 		if (button[BACK].isClicked()) {
+			ticketPointer = NULL;
+			delay(50);
 			currentMenu = TICKET_MENU;
 		}
 		if (button[SAVE].isClicked()) {
@@ -473,12 +482,15 @@ public:
 			}
 			else {
 				Passenger p = getPassenger();
-				d->passengerList = addPassenger(d->passengerList, p);
 				traverse(d->passengerList);
+				d->passengerList = addPassenger(d->passengerList, p);
+				ticketPointer->setChoosen(true);
+				
 				drawAnounce(SUCCESS);
 				clearEditext();
 				bookTicket(flightTemp, ticketPointer->getIntData() - 1, p.idPass);
 				currentMenu = TICKET_MENU;
+				ticketPointer = NULL;
 			}
 		}
 

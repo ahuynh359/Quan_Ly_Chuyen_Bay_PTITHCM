@@ -7,6 +7,7 @@ using namespace std;
 #define EDITTEXT_H
 class EditText :public UI {
 private:
+	
 	char hint[30], title[30], content[50];
 	unsigned int maxChar;
 	int index;

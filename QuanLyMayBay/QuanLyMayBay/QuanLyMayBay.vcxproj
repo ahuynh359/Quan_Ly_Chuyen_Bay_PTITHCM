@@ -164,7 +164,7 @@
     <ClInclude Include="UIController.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="PassengerData.txt" />
+    <Text Include="PassData.txt" />
     <Text Include="FlightData.txt" />
     <Text Include="PlaneData.txt" />
   </ItemGroup>

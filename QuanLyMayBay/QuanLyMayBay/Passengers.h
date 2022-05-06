@@ -66,7 +66,7 @@ int findHeight(AVLTree& root) {
 }
 
 // XOAY PHAI
-AVLTree rotateRight(AVLTree y) {
+AVLTree rotateRight(AVLTree& y) {
 	AVLTree x = y->pleft;
 	AVLTree T2 = x->pright;
 
@@ -84,7 +84,7 @@ AVLTree rotateRight(AVLTree y) {
 
 
 // XOAY TRAI
-AVLTree rotateLeft(AVLTree x) {
+AVLTree rotateLeft(AVLTree& x) {
 	AVLTree y = x->pright;
 	AVLTree T2 = y->pleft;
 
@@ -102,7 +102,7 @@ AVLTree rotateLeft(AVLTree x) {
 
 
 // LAY HE SO CAN BANG
-int getBalanceFactor(AVLTree root) {
+int getBalanceFactor(AVLTree& root) {
 	if (root == NULL)
 		return 0;
 	return findHeight(root->pleft) - findHeight(root->pright);
@@ -127,22 +127,22 @@ AVLTree updateBalanceFactor(AVLTree& root, Passenger& data) {
 
 	// Neu cay mat can bang -> Co 4 truong hop
 	// 1. Trai - Trai
-	if (balance > 1 && data.idPass > root->pleft->data.idPass)
+	if (balance > 1 && strcmp(data.idPass , root->pleft->data.idPass)>0)
 		return rotateRight(root);
 
 	//2. Phai - Phai
-	if (balance < -1 && data.idPass > root->pright->data.idPass)
+	if (balance < -1 && strcmp(data.idPass , root->pright->data.idPass)>0)
 		return rotateLeft(root);
 
 	//3. Trai - Phai
-	if (balance > 1 && data.idPass > root->pleft->data.idPass)
+	if (balance > 1 &&strcmp( data.idPass , root->pleft->data.idPass) >0)
 	{
 		root->pleft = rotateLeft(root->pleft);
 		return rotateRight(root);
 	}
 
 	//4. Phai - Trai
-	if (balance < -1 && data.idPass > root->pright->data.idPass)
+	if (balance < -1 && strcmp( data.idPass , root->pright->data.idPass) < 0)
 	{
 		root->pright = rotateRight(root->pleft);
 		return rotateLeft(root);
@@ -157,7 +157,7 @@ AVLTree updateBalanceFactor(AVLTree& root, Passenger& data) {
 
 
 // TRA VE GIA TRI BEN TRAI THAP NHAT
-AVLTree findMinValue(AVLTree root) {
+AVLTree findMinValue(AVLTree& root) {
 	AVLTree current = root;
 	while (current->pleft != NULL)
 		current = current->pleft;
@@ -216,37 +216,7 @@ AVLTree deletePassenger(AVLTree& root, Passenger data) {
 	}
 	if (root == NULL)
 		return root;
-
-
-	// Cap nhat lai chieu cao cho cay
-	root->height = 1 + findMax(findHeight(root->pleft), findHeight(root->pright));
-
-	// Cap nhat lai he so can bang
-	int balance = getBalanceFactor(root);
-
-	// Neu cay mat can bang -> Co 4 truong hop
-	// 1. Trai - Trai
-	if (balance > 1 && data.idPass > root->pleft->data.idPass)
-		return rotateRight(root);
-
-	//2. Phai - Phai
-	if (balance < -1 && data.idPass > root->pright->data.idPass)
-		return rotateLeft(root);
-
-	//3. Trai - Phai
-	if (balance > 1 && data.idPass > root->pleft->data.idPass)
-	{
-		root->pleft = rotateLeft(root->pleft);
-		return rotateRight(root);
-	}
-
-	//4. Phai - Trai
-	if (balance < -1 && data.idPass > root->pright->data.idPass)
-	{
-		root->pright = rotateRight(root->pleft);
-		return rotateLeft(root);
-	}
-
+	return updateBalanceFactor(root, data);
 	return root;
 }
 
@@ -259,17 +229,17 @@ void traverse(AVLTree& root) {
 }
 
 
-AVLTree findPassenger(AVLTree root, char* foundID) {
+AVLTree findPassenger(AVLTree& root, char foundID[MAX_ID_PASS+1]) {
 	if (root != NULL)
 	{
-		if (root->data.idPass == foundID)
+		if (strcmp(root->data.idPass, foundID) == 0)
 			return root;
 
-		else if (root->data.idPass > foundID)
-			findPassenger(root->pright, foundID);
+		else if (strcmp(foundID, root->data.idPass) > 0)
+			return findPassenger(root->pright, foundID);
 
-		else if (root->data.idPass < foundID)
-			findPassenger(root->pleft, foundID);
+		else if (strcmp(foundID, root->data.idPass) < 0)
+			return findPassenger(root->pleft, foundID);
 	}
 	return NULL;
 }
@@ -280,62 +250,33 @@ AVLTree addPassenger(AVLTree& root, Passenger& data) {
 	// Tim vi tri thich hop de them nut
 
 	if (root == NULL) {
-
 		return createTree(data);
-
 	}
-	if (data.idPass < root->data.idPass)
+
+
+	if (strcmp(data.idPass, root->data.idPass) < 0)
 		root->pleft = addPassenger(root->pleft, data);
-	else if (data.idPass > root->data.idPass)
+	else if (strcmp(data.idPass, root->data.idPass) > 0)
 		root->pright = addPassenger(root->pright, data);
-	else return root;
+	else
+		return root;
 
-	updateBalanceFactor(root, data);
-
-	// Cap nhat lai chieu cao cho cay
-	root->height = 1 + findMax(findHeight(root->pleft), findHeight(root->pright));
-
-	// Cap nhat lai he so can bang
-	int balance = getBalanceFactor(root);
-
-	// Neu cay mat can bang -> Co 4 truong hop
-	// 1. Trai - Trai
-	if (balance > 1 && data.idPass > root->pleft->data.idPass)
-		return rotateRight(root);
-
-	//2. Phai - Phai
-	if (balance < -1 && data.idPass > root->pright->data.idPass)
-		return rotateLeft(root);
-
-	//3. Trai - Phai
-	if (balance > 1 && data.idPass > root->pleft->data.idPass)
-	{
-		root->pleft = rotateLeft(root->pleft);
-		return rotateRight(root);
-	}
-
-	//4. Phai - Trai
-	if (balance < -1 && data.idPass > root->pright->data.idPass)
-	{
-		root->pright = rotateRight(root->pleft);
-		return rotateLeft(root);
-	}
-
-	return root;
+	//return updateBalanceFactor(root, data);
 
 }
 
 
-void savePassengerData(AVLTree passengerList, ofstream& out) {
-	if (passengerList != NULL) {
-		out.write(reinterpret_cast<char*>(&passengerList->data), sizeof(Passenger));
-		savePassengerData(passengerList->pleft, out);
-		savePassengerData(passengerList->pright, out);
+void savePassengerData(AVLTree& passengerList, ofstream& out) {
+	if (passengerList == NULL) {
+		return;
 	}
+	out.write(reinterpret_cast<char*>(&passengerList->data), sizeof(Passenger));
+	savePassengerData(passengerList->pleft, out);
+	savePassengerData(passengerList->pright, out);
 }
 
-void writeFilePassenger(AVLTree passengerList) {
-	ofstream out("PassengerData.txt", ios::binary);
+void writeFilePassenger(AVLTree& passengerList) {
+	ofstream out("PassData.txt", ios::binary);
 
 
 	if (out.fail()) {
@@ -355,7 +296,7 @@ void writeFilePassenger(AVLTree passengerList) {
 
 void readFilePassenger(AVLTree& passengerList) {
 	Passenger passenger;
-	ifstream inp("PassengerData.txt", ios::binary);
+	ifstream inp("PassData.txt", ios::binary);
 
 	if (inp.fail()) {
 		cout << "Passenger Data File cannot be opened!";
@@ -363,7 +304,7 @@ void readFilePassenger(AVLTree& passengerList) {
 
 	}
 	while (inp.read(reinterpret_cast<char*>(&passenger), sizeof(Passenger))) {
-		addPassenger(passengerList, passenger);
+		passengerList = addPassenger(passengerList, passenger);
 	}
 
 	inp.close();
