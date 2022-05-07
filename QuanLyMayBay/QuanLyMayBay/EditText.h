@@ -122,6 +122,7 @@ public:
 			if (strlen(content) == 0 || !isExistDash(content) && strlen(content) < maxChar) {
 				content[index++] = '_';
 				content[index] = '\0';
+				cout << content[0];
 
 			}
 			
@@ -181,6 +182,27 @@ public:
 
 
 	}
+	
+	void addCharName(char c) {
+		if (isMaxChar())
+			return;
+		if (index > 2 && content[index - 2] == ' ' && c == ' ')
+			return;
+
+		if (content[0] == '_' && (c <= 'z' && c >= 'a'))
+			c -= 32;
+		else
+		if (index >= 2 && content[index - 2] == ' ' && (c <= 'z' && c >= 'a'))
+			c -= 32;
+		else if (index >= 2  && content[index - 2] != ' ' && (c <= 'Z' && c >= 'A'))
+			c += 32;
+
+		content[index - 1] = c;
+		content[index] = '_';
+		content[++index] = '\0';
+
+
+	}
 
 	void deleteChar(char s[40], int index)
 	{
@@ -214,6 +236,8 @@ public:
 				}
 		
 	}
+
+
 	//Ham check toan khoang trang
 	bool checkSpace() {
 		int n;
@@ -258,7 +282,15 @@ public:
 			content[--index] = '\0';
 	}
 	char* getCharData() {
+	
 		return content;
+	}
+	
+	char* getDate() {
+		if(content != NULL)
+		return content;
+		char s[3] = "00";
+		return s;
 	}
 	int getIntData() {
 		int data = 0;

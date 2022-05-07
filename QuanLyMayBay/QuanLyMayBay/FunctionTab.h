@@ -17,7 +17,7 @@ class FunctionTab {
 protected:
 	int currentMenu, currentPage, maxPage;
 	int startPage, endPage;
-	char title[40], instruction[40];
+	char title[70], instruction[40];
 
 	Button button[MAX_BUTTON];
 	EditText edittext[MAX_EDITTEXT];
@@ -83,12 +83,13 @@ public:
 	}
 
 	//Ve tieu de cho tab
-	void drawTitle(char text[30]) {
+	void drawTitle(int x,int y, char text[70]) {	
 		strcpy_s(title, text);
 		setbkcolor(SUBWINDOW_BACKGROUND);
-		setcolor(BLACK);
-		outtextxy((SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(title)) / 2, SUBWINDOW_TOP + 10, title);
-
+		setcolor(COLOR(3, 53, 252));
+		outtextxy(x,y, title);
+	
+		
 	}
 	//Ve huong dan
 	void drawInstruction(int x, int y, char text[30]) {
@@ -456,54 +457,80 @@ public:
 		outtextxy((x + w - width) / 2, y, s);
 	}
 
-	void drawBackgroundBorder(int color) {
-		//-------------------VE BORDER
-		setcolor(BLACK);
-		rectangle(LEFT_BORDER, TOP_BORDER, RIGHT_BORDER, BOTTOM_BORDER);
-
-		//----------VE MAU NEN
-		setbkcolor(color);
-		setcolor(color);
-		setfillstyle(0, color);
-		bar(LEFT_BORDER + 2, TOP_BORDER + 2, RIGHT_BORDER - 2, TOP_BORDER + 48);
-
-	}
 
 
+	/*
+	* stt = 0 -> drawPlane
+	* stt = 1 -> drawFlight
+	* stt = 2 -> drawPassenger
+	*/
+	void drawBorder(int n, const int space, int stt) {
 
-	void drawBorderPlane(int n, const int space) {
-		drawBackgroundBorder(TAB_ON_SELECTED_BACKGROUND);
+		int x = LEFT_BORDER;
+		int y = TOP_BORDER + 50;
+
+		//----------VE MAU NEN CHO TUA DE
+		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
+		setcolor(TAB_ON_SELECTED_BACKGROUND);
+		setfillstyle(0, TAB_ON_SELECTED_BACKGROUND);
+		bar(x, TOP_BORDER, RIGHT_BORDER, y);
+
 
 		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
 		setcolor(BLACK);
 		setlinestyle(0, 0, 3);
 
+		//-------------------VE BORDER
+		rectangle(LEFT_BORDER, TOP_BORDER, RIGHT_BORDER, BOTTOM_BORDER);
+
 		//VE LINE NGANG DONG DAU TIEN
-		line(LEFT_BORDER, TOP_BORDER + 50, RIGHT_BORDER, TOP_BORDER + 50);
+		line(x, y, RIGHT_BORDER, y);
 
-		int preX = LEFT_BORDER;
-		int x = preX + 100;
-		int y = TOP_BORDER + 15;
 
-		for (int i = 0; i < n - 1; i++) {
+		int x1 = 0;
+		for (int i = 0; i < n; i++) {
 
-			line(x, TOP_BORDER, x, BOTTOM_BORDER);
-			drawText(preX, y, x, PLANE_TITLE[i]);
+			if (i == 0)
+				x1 = x + 100; //STT
+			else if (i == n - 1) //Cuoi
+				x1 = RIGHT_BORDER;
+			else if (i == 2 && stt == 0) //Type cua may bay
+				x1 += space + 200;
+			else 
+				x1 += space;
 
-			preX = x;
 
-			if (i == 1)
-				x += space + 200;
-			else if (i == n - 2)
-				x = RIGHT_BORDER;
-			else
-				x += space;
+			line(x1, TOP_BORDER, x1, BOTTOM_BORDER);
+
+			switch (stt) {
+			case 0: {
+				drawText(x, (TOP_BORDER+y-textheight(PLANE_TITLE[i]))/2, x1, PLANE_TITLE[i]);
+
+				break;
+			}
+			case 1: {
+				drawText(x, (TOP_BORDER + y - textheight(FLIGHT_TITLE[i])) / 2, x1, FLIGHT_TITLE[i]);
+				break;
+			}
+			case 2: {
+				drawText(x, (TOP_BORDER + y - textheight(PASS_TITLE[i])) / 2, x1, PASS_TITLE[i]);
+				break;
+			}
+			default:
+				break;
+			}
+
+
+			x = x1;
+
+
 
 		}
 
-		drawText(preX, y, x, PLANE_TITLE[n - 1]);
+
 
 	}
+
 	int  drawPlaneData(int n, PlaneList& planeList, int& index) {
 
 		setbkcolor(SUBWINDOW_BACKGROUND);
@@ -521,10 +548,10 @@ public:
 		}
 
 		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / (n + 1);
-		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20 - 3;
-		int preY = TOP_BORDER + 70;
+		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
+		int preY = TOP_BORDER + 60;
 
-		drawBorderPlane(n, spaceX);
+		drawBorder(n, spaceX, 0);
 
 
 		dataPerPage(planeList.size);
@@ -589,38 +616,6 @@ public:
 
 
 	}
-
-	void drawBorderFlight(int n, const int space) {
-		drawBackgroundBorder(TAB_ON_SELECTED_BACKGROUND);
-
-		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
-		setcolor(BLACK);
-		setlinestyle(0, 0, 3);
-
-		//VE LINE NGANG DONG DAU TIEN
-		line(LEFT_BORDER, TOP_BORDER + 50, RIGHT_BORDER, TOP_BORDER + 50);
-
-		int preX = LEFT_BORDER;
-		int x = preX + 100;
-		int y = TOP_BORDER + 15;
-
-		for (int i = 0; i < n - 1; i++) {
-
-			line(x, TOP_BORDER, x, BOTTOM_BORDER);
-			drawText(preX, y, x, FLIGHT_TITLE[i]);
-
-			preX = x;
-
-
-			if (i == n - 2)
-				x = RIGHT_BORDER;
-			else x += space;
-
-
-		}
-
-		drawText(preX, y, x, FLIGHT_TITLE[n - 1]);
-	}
 	int drawFlightData(int n, PTR& flightList, PTR& flight) {
 		setbkcolor(SUBWINDOW_BACKGROUND);
 
@@ -641,10 +636,11 @@ public:
 		showPage(SCREEN_WIDTH / 2 - 35, BOTTOM_BORDER + 35, currentPage, maxPage);
 
 		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / (n + 1);
-		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20 - 3;
-		int preY = TOP_BORDER + 70;
+		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
+		int preY = TOP_BORDER + 60;
 
-		drawBorderFlight(n, spaceX);
+		drawBorder(n, spaceX, 1);
+
 		int cnt = 1;
 		PTR k = flightList;
 
@@ -752,41 +748,6 @@ public:
 		flight = NULL;
 		return -1;
 	}
-
-
-
-	void drawBorderPassenger(int n, const int space) {
-		drawBackgroundBorder(TAB_ON_SELECTED_BACKGROUND);
-
-		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
-		setcolor(BLACK);
-		setlinestyle(0, 0, 3);
-
-		//VE LINE NGANG DONG DAU TIEN
-		line(LEFT_BORDER, TOP_BORDER + 50, RIGHT_BORDER, TOP_BORDER + 50);
-
-		int preX = LEFT_BORDER;
-		int x = preX + 100;
-		int y = TOP_BORDER + 15;
-
-		for (int i = 0; i < n - 1; i++) {
-
-			line(x, TOP_BORDER, x, BOTTOM_BORDER);
-			drawText(preX, y, x, PASS_TITLE[i]);
-
-			preX = x;
-
-			if (i == n - 2)
-				x = RIGHT_BORDER;
-			else
-				x += space;
-
-
-		}
-
-		drawText(preX, y, x, PASS_TITLE[n - 1]);
-
-	}
 	void drawPassengerData(int n, PTR& flightList, AVLTree& root) {
 		setbkcolor(SUBWINDOW_BACKGROUND);
 
@@ -813,10 +774,11 @@ public:
 		showPage(SCREEN_WIDTH / 2 - 35, BOTTOM_BORDER + 35, currentPage, maxPage);
 
 		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / (n + 1);
-		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20 - 3;
-		int preY = TOP_BORDER + 70;
+		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
+		int preY = TOP_BORDER + 60;
 
-		drawBorderPassenger(n, spaceX);
+		drawBorder(n, spaceX, 2);
+
 		cnt = 1;
 
 
@@ -888,8 +850,69 @@ public:
 
 	}
 
+	void drawStatictisData(int *a,int n,PlaneList &planeList) {
+		setbkcolor(SUBWINDOW_BACKGROUND);
+		setcolor(COLOR(50, 45, 188));
+
+		button[LEFT].onAction();
+		button[RIGHT].onAction();
+
+		if (button[LEFT].isClicked()) {
+			onButtonPage(currentPage, true, maxPage);
+		}
+		if (button[RIGHT].isClicked()) {
+			onButtonPage(currentPage, false, maxPage);
+
+		}
+
+		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / (n + 1);
+		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
+		int preY = TOP_BORDER + 60;
+
+		drawBorder(n, spaceX, 0);
+		
+		dataPerPage(planeList.size);
+		showPage(SCREEN_WIDTH / 2 - 35, BOTTOM_BORDER + 35, currentPage, maxPage);
 
 
+
+		for (int i = startPage - 1; i < endPage; i++) {
+
+			int preX = LEFT_BORDER;
+			setcolor(BLACK);
+
+			
+
+			//VE STT
+			char temp[3];
+			sprintf_s(temp, "%d", i + 1);
+			int x = preX + 100;
+			drawText(preX, preY, x, temp);
+			preX = x;
+
+			//VE ID PLANE
+			x = preX + spaceX;
+			drawText(preX, preY, x, planeList.data[a[i]]->idPlane);
+			preX = x;
+
+			//VE SO LUOT HIEN
+			x += (spaceX + 200);
+			sprintf_s(temp, "%d", planeList.data[a[i]]->flyTimes);
+			drawText(preX, preY, x, temp);
+			preX = x;
+
+			
+
+			preY += spaceY;
+
+		}
+	
+	}
+
+
+
+
+	
 
 };
 

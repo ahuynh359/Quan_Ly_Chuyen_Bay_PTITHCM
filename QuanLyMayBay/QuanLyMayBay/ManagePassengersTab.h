@@ -65,7 +65,24 @@ public:
 
 	
 	void drawShowMenu() {
+
+		int y = SUBWINDOW_TOP + 5 ;
+
+		char s[40] = "LIST OF PASSENGERS ON FLIGHT ";
+		strcat_s(s, flightTemp->info.idFlight);
+		int x = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(s)) / 2 ;
+		 
+		drawTitle(x, y, s);
+
+		strcpy_s(s,"Date time: ");
+		strcat_s(s, getDateString(flightTemp->info.date));
+		y += textheight(s) + 10;
+		drawTitle(x- 10, y, s);
+		x += textwidth(s) + 10;
+		strcpy_s(s, "Arrive: ");
+		strcat_s(s, flightTemp->info.arrive);
 		
+		drawTitle(x, y, s);
 		drawPassengerData(5, flightTemp, d->passengerList);
 	
 		button[BACK].onAction();

@@ -13,8 +13,8 @@ struct Plane {
 	int seats; //So cho >= 20
 
 	// CHI SO PHU
-	int flyTimes = 0; 
-	bool isAvai = true; 
+	int flyTimes = 0;
+	bool isAvai = true;
 	//Dang ranh
 
 
@@ -27,11 +27,11 @@ struct PlaneList {
 
 };
 
-void deletePlaneList(PlaneList &t) {
-		for (int i = 0; i < t.size; i++) {
-			delete t.data[i];
-		}
-	
+void deletePlaneList(PlaneList& t) {
+	for (int i = 0; i < t.size; i++) {
+		delete t.data[i];
+	}
+
 }
 bool isEmpty(PlaneList& list) {
 	return (list.size == 0 ? true : false);
@@ -62,12 +62,12 @@ int findPlane(PlaneList& list, char idPlane[MAX_ID_PLANE + 1]) {
 }
 
 void removePlane(PlaneList& list, int index) {
-	
+
 	for (int i = index; i < list.size - 1; i++) {
 		list.data[i] = list.data[i + 1];
 	}
 	list.size--;
-	
+
 
 }
 
@@ -82,13 +82,29 @@ bool checkDupIDPlane(PlaneList& list, char id[MAX_ID_PLANE + 1]) {
 bool checkSeat(int seat) {
 	return (seat <= 50 && seat >= 20);
 }
-bool isGreaterSeat(int oldSeat,int newSeat) {
+bool isGreaterSeat(int oldSeat, int newSeat) {
 	return (newSeat >= oldSeat);
 }
-void adjustPlane(PlaneList& list, Plane& plane,int index) {
+void adjustPlane(PlaneList& list, Plane& plane, int index) {
 	if (index < 0 || index > list.size - 1)
 		return;
 	*list.data[index] = plane;
+}
+
+void swap(int& A, int& B) {
+
+	int temp;
+	temp = A;
+	A = B;
+	B = temp;
+}
+void bubbleSortPlane(PlaneList& list, int A[]) {
+	for (int i = 0; i < list.size - 1; i++)
+		for (int j = i + 1; j < list.size; j++)
+			if (list.data[A[i]]->flyTimes < list.data[A[j ]]->flyTimes)
+			{
+				swap(A[i], A[j]);
+			}
 }
 
 void writeFilePlane(PlaneList& planeList) {
@@ -126,7 +142,7 @@ void readFilePlane(PlaneList& planeList) {
 
 }
 
-void partition(int low, int high,PlaneList &list) {
+void partition(int low, int high, PlaneList& list) {
 	int i = low, j = high;
 	Plane* plane;
 	int pivot = list.data[(low + high) / 2]->flyTimes;
@@ -141,13 +157,13 @@ void partition(int low, int high,PlaneList &list) {
 		}
 	} while (i <= j);
 
-	if (low < j) partition(low, j,list);
-	if (i < high) partition(i, high,list);
+	if (low < j) partition(low, j, list);
+	if (i < high) partition(i, high, list);
 }
-void sort(PlaneList &list) {
+void sort(PlaneList& list) {
 	// Sap xep theo thu tu cnt giam dan
 	// Su dung QuickSort
-	partition(0, list.size-1,list);
+	partition(0, list.size - 1, list);
 }
 
 #endif

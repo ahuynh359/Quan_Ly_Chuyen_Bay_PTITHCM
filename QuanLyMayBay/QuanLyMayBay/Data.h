@@ -17,6 +17,7 @@ private:
 	friend class ManageFlightsTab;
 	friend class ManagePassengersTab;
 	friend class TicketTab;
+	friend class StatictisTab;
 public:
 	Data() {
 		readFilePlane(planeList);

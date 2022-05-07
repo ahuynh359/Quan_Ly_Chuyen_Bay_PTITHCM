@@ -158,6 +158,7 @@ void initTicketList(PlaneList& planeList, Flight& flight) {
 	flight.status = HAVE_TICKET;
 
 	Plane *p = planeList.data[findPlane(planeList, flight.idPlane)];
+	(p->flyTimes)++;
 	flight.totalTicket = p->seats;
 	char s[MAX_ID_PASS + 1] = "0";
 	p->isAvai = false;

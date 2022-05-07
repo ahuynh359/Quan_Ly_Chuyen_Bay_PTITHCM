@@ -21,7 +21,7 @@ private:
 	ManageFlightsTab manageFlightTab;
 	ManagePassengersTab managePassengerTab;
 	TicketTab ticketTab;
-	//StatictisTab* statictisTab;
+	StatictisTab statictisTab;
 	
 	Tab* temp;
 	Button closeButton;
@@ -54,7 +54,7 @@ public:
 		manageFlightTab =  ManageFlightsTab(data);
 		ticketTab = TicketTab(data);
 		managePassengerTab = ManagePassengersTab(data);
-
+		statictisTab = StatictisTab(data);
 	}
 
 	
@@ -116,6 +116,7 @@ public:
 			managePlaneTab.reset();
 			manageFlightTab.reset();
 			ticketTab.reset();
+			statictisTab.drawUI();
 		}
 
 		closeButton.onAction();

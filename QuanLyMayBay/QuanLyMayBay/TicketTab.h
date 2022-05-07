@@ -287,8 +287,8 @@ public:
 
 				}
 				else if (edittextPointer == &edittext[FIRST_NAME] || edittextPointer == &edittext[LAST_NAME]) {
-					if (c <= 90 && c >= 65 || c == ' ')
-						edittextPointer->addChar((char)c);
+					if (c <= 90 && c >= 65 || c == ' ' || c <= 122 && c >= 97)
+						edittextPointer->addCharName((char)c);
 
 				}
 

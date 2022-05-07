@@ -10,6 +10,14 @@ struct Date {
 	char minute[3];
 };
 
+char* getDateString(Date &date) {
+	char  s[50];
+	//VE TIME
+	sprintf_s(s, "%s%s%s%s%s%s%s%s%s", date.day, "/", date.month, "/",
+		date.year, " ", date.hour, ":", date.minute);
+	return s;
+}
+
 
 void format(Date& d) {
 	char temp[5] = "0";

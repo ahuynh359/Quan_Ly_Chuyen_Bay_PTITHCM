@@ -354,6 +354,10 @@ public:
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
 		strcpy_s(a, " Right click to edit item");
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 40, a);
+		
+
+		strcpy_s(a, "LIST OF PLANE");
+		drawTitle((SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(a)) / 2, SUBWINDOW_TOP + 20, a);
 
 
 		int s = FunctionTab::drawPlaneData(4, d->planeList, indexID);
