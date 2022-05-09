@@ -2,14 +2,13 @@
 #include"ManagePlanesTab.h"
 #include"FunctionTab.h"
 #include"Data.h"
-class StatictisTab :FunctionTab {
+class StatictisTab :public FunctionTab {
 private:
 	Data* d;
 
 public:
-	StatictisTab() {
-
-	}
+	
+	
 	StatictisTab(Data* d) {
 		this->d = d;
 	}

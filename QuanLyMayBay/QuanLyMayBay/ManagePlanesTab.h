@@ -16,7 +16,7 @@ class ManagePlanesTab :public FunctionTab {
 private:
 
 	EditText* adjustEditextPointer;
-	Data *d;
+	Data* d;
 	int indexID = -1;
 	int currentSeats = 0;
 public:
@@ -28,13 +28,13 @@ public:
 		initEdittext();
 
 		edittextPointer = &edittext[ID_PLANE];
-		
+
 
 
 	}
 	~ManagePlanesTab() {
 		//delete adjustEditextPointer;
-		
+
 	}
 
 	void initEdittext() {
@@ -95,10 +95,10 @@ public:
 		edittextPointer = &edittext[ID_PLANE];
 		edittext[ID_PLANE].setActive(true);
 		edittext[TYPE].setActive(true);
-		
+
 	}
 
-	
+
 
 	//Lay du lieu may bay tu edittext
 	Plane getPlaneData() {
@@ -165,7 +165,7 @@ public:
 					drawAnounce(EMPTY);
 					return false;
 				}
-				if (checkDupIDPlane(d->planeList, edittextPointer->getCharData())) {
+				if (findPlane(d->planeList, edittextPointer->getCharData()) != -1) {
 					drawAnounce(DUP);
 					return false;
 				}
@@ -212,7 +212,7 @@ public:
 				return false;
 			}
 
-			if (checkDupIDPlane(d->planeList, edittext[ID_PLANE].getCharData())) {
+			if (findPlane(d->planeList, edittext[ID_PLANE].getCharData()) != -1) {
 				drawAnounce(DUP);
 				edittextPointer = &edittext[ID_PLANE];
 				return false;
@@ -241,13 +241,13 @@ public:
 			edittextPointer = &edittext[SEATS];
 			return false;
 		}
-
+		/*
 		if (!isGreaterSeat(currentSeats, edittext[SEATS].getIntData())) {
 			drawAnounce(GREATER_SEAT);
 			edittextPointer = &edittext[SEATS];
 			return false;
 		}
-
+		*/
 
 
 		return true;
@@ -354,11 +354,9 @@ public:
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
 		strcpy_s(a, " Right click to edit item");
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 40, a);
+
+
 		
-
-		strcpy_s(a, "LIST OF PLANE");
-		drawTitle((SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(a)) / 2, SUBWINDOW_TOP + 20, a);
-
 
 		int s = FunctionTab::drawPlaneData(4, d->planeList, indexID);
 		if (s == 1) {
@@ -380,10 +378,10 @@ public:
 
 			currentSeats = d->planeList.data[indexID]->seats;
 
-			initAdjustMenu(d->planeList.data[indexID], d->planeList.data[indexID]->isAvai);
+			//initAdjustMenu(d->planeList.data[indexID], d->planeList.data[indexID]->isAvai);
 			currentMenu = ADJUST_MENU;
 			return;
-			
+
 		}
 
 
@@ -498,11 +496,6 @@ public:
 	}
 
 
-
-		
-
-
-	
 
 };
 #endif

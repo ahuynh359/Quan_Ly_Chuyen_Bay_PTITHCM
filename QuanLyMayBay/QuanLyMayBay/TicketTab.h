@@ -19,9 +19,7 @@ private:
 	AVLTree temp;
 	Data* d;
 public:
-	TicketTab() {
-
-	}
+	
 
 	TicketTab(Data* d) {
 		this->d = d;

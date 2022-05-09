@@ -21,6 +21,7 @@ private:
 public:
 	Data() {
 		readFilePlane(planeList);
+
 		initializeList(flightList);
 		readFileFlight(flightList);
 

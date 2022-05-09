@@ -7,7 +7,7 @@
     <ClInclude Include="Button.h">
       <Filter>UI</Filter>
     </ClInclude>
-    <ClInclude Include="define.h">
+    <ClInclude Include="DefineConst.h">
       <Filter>UI</Filter>
     </ClInclude>
     <ClInclude Include="EditText.h">
@@ -26,9 +26,6 @@
       <Filter>CTDL</Filter>
     </ClInclude>
     <ClInclude Include="Flights.h">
-      <Filter>CTDL</Filter>
-    </ClInclude>
-    <ClInclude Include="DataConst.h">
       <Filter>CTDL</Filter>
     </ClInclude>
     <ClInclude Include="ManageFlightsTab.h">

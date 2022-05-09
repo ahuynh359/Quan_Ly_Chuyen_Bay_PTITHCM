@@ -35,6 +35,11 @@ public:
 
 	}
 
+	void setClick(bool s) {
+		this->cliked = s;
+
+	}
+
 
 
 
@@ -89,7 +94,7 @@ public:
 			currentBackground = TICKET_AVAI;
 			currentTextColor = textOnPointedColor;
 		}
-			
+
 
 
 		UI::drawUI();
@@ -123,6 +128,8 @@ public:
 		drawUI();
 	}
 
+
+
 	//Viet cho button chon 1 lan
 
 	void onAction(Button*& button) {
@@ -141,29 +148,42 @@ public:
 		}
 		drawUI();
 	}
+	//Viet cho button click hoai
+	void onActionFor() {
+		if (isLeftMouseClicked(mousex(), mousey()) &&  active || cliked) {
+			currentBackground = onSelectedBackgroundColor;
+			currentTextColor = textColor;
+			cliked = true;
+			
+		}
+		else {
+			cliked = false;
+		}
+		drawUI();
+	}
 
 	bool getIsChoosen() {
 		return isChoosen;
 	}
 
 	void setChoosen(bool s) {
-		this -> isChoosen = s;
+		this->isChoosen = s;
 
 	}
 	//Viet cho button ghe
-	void onActionSeatButton(Button *&button) {
+	void onActionSeatButton(Button*& button) {
 
 		if (isChoosen == false && button == this || isLeftMouseClicked(mousex(), mousey())) {
-			
+
 			cliked = true;
-			
+
 			button = this;
 			isLeftClick = true;
 			isRightClick = false;
 
 		}
 		else if (isChoosen == true && button == this || isRightMouseClicked(mousex(), mousey())) {
-			
+
 			cliked = true;
 			button = this;
 			isLeftClick = false;
@@ -176,7 +196,7 @@ public:
 			isRightClick = false;
 
 		}
-		
+
 
 
 		drawSeatUI();

@@ -2,12 +2,12 @@
 #include"UI.h"
 
 
-using namespace std;
 #ifndef EDITTEXT_H
 #define EDITTEXT_H
+
 class EditText :public UI {
 private:
-	
+
 	char hint[30], title[30], content[50];
 	unsigned int maxChar;
 	int index;
@@ -44,7 +44,9 @@ public:
 
 
 	}
-
+	unsigned int getSpace() {
+		return space;
+	}
 
 	void setBackground(int background) {
 		this->backgroundColor = background;
@@ -66,12 +68,12 @@ public:
 
 		if (!active) {
 			this->currentBackground = EDITTEXT_DISABLE_COLOR;
-			
-		} 
+
+		}
 
 		UI::drawUI();
 
-		if ( strlen(content) == 0 ) {
+		if (strlen(content) == 0) {
 			if (active)
 				setcolor(EDITEXT_HINT_COLOR);
 			else setcolor(BLACK);
@@ -79,7 +81,7 @@ public:
 			outtextxy(left + 5, (top + bottom - h) / 2, hint);
 
 		}
-		else if(strlen(content) > 0) {
+		else if (strlen(content) > 0) {
 			setbkcolor(currentBackground);
 			setcolor(BLACK);
 			int h = textheight(content);
@@ -112,8 +114,8 @@ public:
 
 
 	void onAction(EditText*& editext) {
-		
-		if (editext == this && active) {
+
+		if (editext == this) {
 			isCliked = true;
 			editext = this;
 			currentBackground = onSelectedBackgroundColor;
@@ -122,10 +124,11 @@ public:
 			if (strlen(content) == 0 || !isExistDash(content) && strlen(content) < maxChar) {
 				content[index++] = '_';
 				content[index] = '\0';
-				cout << content[0];
+
 
 			}
-			
+		
+
 
 		}
 
@@ -140,7 +143,11 @@ public:
 
 
 
+
 		}
+
+
+
 
 		drawUI();
 
@@ -172,6 +179,8 @@ public:
 	}
 
 	void addChar(char c) {
+		if (content[0] == '_' && c == ' ') //Khong cho nhap ky tu dau la ky tu trang
+			return;
 		if (isMaxChar())
 			return;
 		if (content[index - 2] == ' ' && c == ' ')
@@ -182,7 +191,7 @@ public:
 
 
 	}
-	
+
 	void addCharName(char c) {
 		if (isMaxChar())
 			return;
@@ -192,10 +201,10 @@ public:
 		if (content[0] == '_' && (c <= 'z' && c >= 'a'))
 			c -= 32;
 		else
-		if (index >= 2 && content[index - 2] == ' ' && (c <= 'z' && c >= 'a'))
-			c -= 32;
-		else if (index >= 2  && content[index - 2] != ' ' && (c <= 'Z' && c >= 'A'))
-			c += 32;
+			if (index >= 2 && content[index - 2] == ' ' && (c <= 'z' && c >= 'a'))
+				c -= 32;
+			else if (index >= 2 && content[index - 2] != ' ' && (c <= 'Z' && c >= 'A'))
+				c += 32;
 
 		content[index - 1] = c;
 		content[index] = '_';
@@ -206,35 +215,34 @@ public:
 
 	void deleteChar(char s[40], int index)
 	{
-		
+
 		int n = strlen(s);
-		for (int i = index; i < n-1; i++)
+		for (int i = index; i < n - 1; i++)
 			s[i] = s[i + 1];
 		s[n - 1] = '\0';
 		(this->index)--;
 
 	}
 	void standarContent() {
-		//if (checkSpace()) {
-		//	clearText();
-		//	//return;
-		//}
+
 		while (content[0] == ' ')
 			deleteChar(content, 0);
-		
-			while (content[index-1] == ' ')
-				deleteChar(content, index-1);
-		while (content[index-1] == ' ')
-				deleteChar(content, index-1);
-		
-		for (int i = 0; i < strlen(content) - 1; i++)
-			
-				if (content[i] == ' ' && content[i + 1] == ' ')
-				{
-					deleteChar(content, i);
-					i--;
-				}
-		
+
+		while (content[index - 1] == ' ')
+			deleteChar(content, index - 1);
+
+		if (strlen(content) < 2)
+			return;
+
+		for (int i = 1; i < strlen(content) - 1; i++)
+
+			if (content[i] == ' ' && content[i + 1] == ' ')
+			{
+				deleteChar(content, i);
+				i--;
+			}
+		drawUI();
+
 	}
 
 
@@ -282,13 +290,13 @@ public:
 			content[--index] = '\0';
 	}
 	char* getCharData() {
-	
+
 		return content;
 	}
-	
+
 	char* getDate() {
-		if(content != NULL)
-		return content;
+		if (strlen(content) > 0 && content != NULL)
+			return content;
 		char s[3] = "00";
 		return s;
 	}

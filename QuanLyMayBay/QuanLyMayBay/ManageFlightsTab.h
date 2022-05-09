@@ -38,61 +38,9 @@ public:
 	}
 
 
-	~ManageFlightsTab() {
-		//delete addPointer;
-
-	}
 
 	void initEdittext() {
 
-		int left = LEFT_BORDER;
-		int top = SUBWINDOW_TOP + 5;
-		int right = left + 150;
-		int bottom = top + EDITTEXT_HEIGHT;
-
-		char hint[30] = "";
-		char title[30] = "FLIGHT ID";
-		char content[30] = "";
-
-		//------------EDITTEXT ID FLIGHT
-		edittext[ID_FLIGHT] = EditText(hint, title, content, left, top, right, bottom, 15);
-
-
-		//------------EDITTEXT DAY
-		strcpy_s(title, "TIME");
-		strcpy_s(hint, "dd");
-		left = right + EDITTEXT_SPACE;
-		right = left + 70;
-		edittext[DAY] = EditText(hint, title, content, left, top, right, bottom, 2, 40);
-
-		//------------EDITTEXT MONTH
-		strcpy_s(title, "/");
-		strcpy_s(hint, "mm");
-		left = right + 30;
-		right = left + 70;
-		edittext[MONTH] = EditText(hint, title, content, left, top, right, bottom, 2, 15);
-
-		//------------EDITTEXT YEAR
-		strcpy_s(title, "/");
-		strcpy_s(hint, "yyyy");
-		left = right + 30;
-		right = left + 70;
-		edittext[YEAR] = EditText(hint, title, content, left, top, right, bottom, 4, 15);
-
-
-		//------------EDITTEXT ARRIVE
-		strcpy_s(title, "ARRIVE");
-		strcpy_s(hint, "");
-		left = right + EDITTEXT_SPACE;
-		right = RIGHT_BORDER;
-		edittext[ARRIVE] = EditText(hint, title, content, left, top, right, bottom, 40, 55);
-
-
-		initCompoAddFlight();
-
-
-	}
-	void initCompoAddFlight() {
 		int left = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - EDITTEXT_WIDTH + 90) / 2;
 		int top = SUBWINDOW_TOP + 70;
 		int right = left + EDITTEXT_WIDTH;
@@ -175,11 +123,9 @@ public:
 
 
 
-		customEdittext();
-
-
 
 	}
+
 	void initAdjustScreen() {
 		addPointer = &addEdittext[DAY];
 
@@ -300,17 +246,22 @@ public:
 	}
 
 
-	Date getDate(EditText*& addEdittext) {
+	Date getDate() {
+
 		Date d;
-		strcpy_s(d.day, addEdittext[DAY].getDate());
-		strcpy_s(d.month, addEdittext[MONTH].getDate());
-		strcpy_s(d.year, addEdittext[YEAR].getDate());
-		strcpy_s(d.hour, addEdittext[HOUR].getDate());
-		strcpy_s(d.minute, addEdittext[MINUTE].getDate());
+
+		strcpy_s(d.day, addEdittext[DAY].getCharData());
+		strcpy_s(d.month, addEdittext[MONTH].getCharData());
+		strcpy_s(d.year, addEdittext[YEAR].getCharData());
+		strcpy_s(d.hour, addEdittext[HOUR].getCharData());
+		strcpy_s(d.minute, addEdittext[MINUTE].getCharData());
 
 		format(d);
 
+
+
 		return d;
+
 	}
 	Flight getFlight() {
 		Flight f;
@@ -320,7 +271,7 @@ public:
 
 		f.status = 1;
 
-		Date date = getDate(addPointer);
+		Date date = getDate();
 		f.date = date;
 		initTicketList(d->planeList, f);
 
@@ -432,7 +383,7 @@ public:
 
 
 
-		if (!checkFutureTime(getDate(addPointer))) {
+		if (!checkFutureTime(getDate())) {
 			drawAnounce(TIME_ERROR);
 			return false;
 		}
@@ -603,59 +554,7 @@ public:
 		}
 
 	}
-	void inputMainMenuHandel() {
 
-		if (edittext[ID_FLIGHT].getIsCliked())
-			edittextPointer = &edittext[ID_FLIGHT];
-		else if (edittext[ID_FLIGHT].getIsCliked())
-			edittextPointer = &edittext[ID_FLIGHT];
-		else if (edittext[DAY].getIsCliked())
-			edittextPointer = &edittext[DAY];
-		else if (edittext[MONTH].getIsCliked())
-			edittextPointer = &edittext[MONTH];
-		else if (edittext[YEAR].getIsCliked())
-			edittextPointer = &edittext[YEAR];
-		else if (edittext[ARRIVE].getIsCliked())
-			edittextPointer = &edittext[ARRIVE];
-
-		int c = FunctionTab::getInput();
-
-		if (edittextPointer != NULL) {
-			switch (c) {
-			case -1: {
-				edittextPointer->deleteChar();
-				break;
-			}
-
-			default: {
-
-
-				if (edittextPointer == &edittext[ID_FLIGHT]) {
-					if ((c <= 90 && c >= 65) || (c <= 57 && c >= 48))
-						edittextPointer->addChar((char)c);
-
-				}
-				else if (edittextPointer == &edittext[ARRIVE]) {
-					if (c <= 90 && c >= 65 || c == ' ')
-						edittextPointer->addChar((char)c);
-
-				}
-				else if (edittextPointer == &edittext[DAY]
-					|| edittextPointer == &edittext[MONTH] || edittextPointer == &edittext[YEAR]) {
-					if (c <= 57 && c >= 48)
-						edittextPointer->addChar((char)c);
-
-				}
-
-
-
-				break;
-
-
-			}
-			}
-		}
-	}
 
 
 	void  drawUI() {
@@ -671,7 +570,7 @@ public:
 			drawAddMenu();
 			break;
 		}
-		case FIND_PLANE: {
+		case FIND_PLANE_MENU: {
 
 			drawFindPlane();
 			break;
@@ -686,135 +585,8 @@ public:
 		}
 	}
 
-	void handelFilter(EditText*& edittextPointer) {
-
-
-		edittext[ID_FLIGHT].clearCursor();
-		edittext[DAY].clearCursor();
-		edittext[MONTH].clearCursor();
-		edittext[YEAR].clearCursor();
-		edittext[ARRIVE].clearCursor();
-		Date date = getDate(edittextPointer);
-		format(date);
-
-		setbkcolor(SUBWINDOW_BACKGROUND);
-
-		setcolor(COLOR(50, 45, 188));
-
-		button[LEFT].onAction();
-		button[RIGHT].onAction();
-
-		if (button[LEFT].isClicked()) {
-			onButtonPage(currentPage, true, maxPage);
-		}
-		if (button[RIGHT].isClicked()) {
-			onButtonPage(currentPage, false, maxPage);
-
-		}
-
-		dataPerPage(size(d->flightList));
-		showPage(SCREEN_WIDTH / 2 - 35, BOTTOM_BORDER + 35, currentPage, maxPage);
-
-		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / (7);
-		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
-		int preY = TOP_BORDER + 60;
-
-		drawBorder(6, spaceX, 1);
-
-		int cnt = 1;
-		
-
-		setbkcolor(SUBWINDOW_BACKGROUND);
-		int i = 0;
-		for (PTR k = d->flightList; k != NULL; k = k->next)
-			if (
-				(strlen(edittext[ID_FLIGHT].getCharData()) == 0 || strcmp(edittext[ID_FLIGHT].getCharData(), k->info.idFlight) == 0)
-				&& (strcmp(edittext[DAY].getDate(),"00") == 0 || strcmp(edittext[DAY].getCharData(), k->info.date.day) == 0)
-				&& (strcmp(edittext[MONTH].getDate(), "00") == 0 || strcmp(edittext[MONTH].getCharData(), k->info.date.month) == 0)
-				&& (strcmp(edittext[YEAR].getDate(), "00") == 0 || strcmp(edittext[YEAR].getCharData(), k->info.date.year) == 0)
-				&& (strlen(edittext[ARRIVE].getCharData()) == 0 || strcmp(edittext[ARRIVE].getCharData(), k->info.arrive) == 0)
-				)
-			{
-				
-				int preX = LEFT_BORDER;
-
-
-				setcolor(BLACK);
-
-			
-				i++;
-				//VE STT
-				char temp[40];
-				sprintf_s(temp, "%d", i);
-				int x = preX + 100;
-				drawText(preX, preY, x, temp);
-				preX = x;
-
-				//VE ID FLIGHT
-
-				x = preX + spaceX;
-				drawText(preX, preY, x, k->info.idFlight);
-				preX = x;
-
-				//VE ID PLANE
-				x = preX + spaceX;
-				drawText(preX, preY, x, k->info.idPlane);
-				preX = x;
-
-
-				//VE TIME
-				sprintf_s(temp, "%s%s%s%s%s%s%s%s%s", k->info.date.day, "/", k->info.date.month, "/",
-					k->info.date.year, " ", k->info.date.hour, ":", k->info.date.minute);
-				x = preX + spaceX;
-				drawText(preX, preY, x, temp);
-				preX = x;
-
-
-				//VE ARRIVE
-				x = preX + spaceX;
-				drawText(preX, preY, x, k->info.arrive);
-				preX = x;
-
-
-				switch (k->info.status) {
-				case 0: {
-					strcpy_s(temp, "CANCLED");
-					break;
-				}
-				case 1: {
-					strcpy_s(temp, "HAVE TICKET");
-					break;
-				}
-				case 2: {
-					strcpy_s(temp, "SOLD OUT");
-					break;
-				}
-				case 3: {
-					strcpy_s(temp, "COMPLETED");
-					break;
-				}
-				default:
-					break;
-				}
-
-
-				x = RIGHT_BORDER;
-				drawText(preX, preY, x, temp);
-
-				preY += spaceY;
-
-				k = k->next;
-
-			}
-	
-		
 	
 
-
-
-
-
-	}
 	void drawMainMenu() {
 		drawBackground();
 
@@ -828,7 +600,9 @@ public:
 		button[LEFT].onAction();
 		button[RIGHT].onAction();
 
-		//handelFilter(edittextPointer);
+		
+
+
 		int s = drawFlightData(6, d->flightList, tempFlight);
 
 		if (s == 1) {
@@ -843,8 +617,12 @@ public:
 			currentMenu = ADJUST_MENU;
 			return;
 		}
-		if (tempFlight != NULL)
-			inputMainMenuHandel();
+
+
+
+
+
+
 
 
 		//-----------------VE HUONG DAN TEXT
@@ -908,7 +686,7 @@ public:
 		if (button[FIND].isClicked()) {
 
 			delay(50);
-			currentMenu = FIND_PLANE;
+			currentMenu = FIND_PLANE_MENU;
 
 		}
 
@@ -949,7 +727,7 @@ public:
 
 				}
 
-				adjustFlight(tempFlight, getDate(addPointer));
+				adjustFlight(tempFlight, getDate());
 
 				drawAnounce(SUCCESS);
 				currentMenu = MAIN_MENU;

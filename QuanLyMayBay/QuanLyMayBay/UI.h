@@ -1,4 +1,5 @@
-#include"define.h"
+
+#include"DefineConst.h"
 #include"graphics.h"
 #pragma comment(lib,"graphics.lib")
 
@@ -10,6 +11,7 @@ protected:
 	int left, top;
 	int right, bottom;
 	int backgroundColor, onSelectedBackgroundColor, currentBackground;
+
 public:
 	UI(int left, int top, int right, int bottom, int backgroundColor, int onSelectedBackgroundColor) {
 		this->left = left;
@@ -29,6 +31,13 @@ public:
 		currentBackground = -1;
 	}
 protected:
+
+	bool virtual isPointed(int xMouse, int yMouse) {
+		if (xMouse <= right && xMouse >= left && yMouse <= bottom && yMouse >= top) {
+			return true;
+		}
+		return false;
+	}
 
 	bool virtual isLeftMouseClicked(int xMouse, int yMouse) {
 		if (isPointed(xMouse, yMouse) && GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
@@ -52,12 +61,7 @@ protected:
 
 	}
 
-	bool virtual isPointed(int xMouse, int yMouse) {
-		if (xMouse <= right && xMouse >= left && yMouse <= bottom && yMouse >= top) {
-			return true;
-		}
-		return false;
-	}
+	
 
 
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
-#include"DataConst.h"
+
+#include"DefineConst.h"
 using namespace std;
 #ifndef PASSENGER_H
 #define PASSENGER_H

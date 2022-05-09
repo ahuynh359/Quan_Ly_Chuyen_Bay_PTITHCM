@@ -146,13 +146,12 @@
   <ItemGroup>
     <ClInclude Include="Data.h" />
     <ClInclude Include="TicketTab.h" />
-    <ClInclude Include="DataConst.h" />
     <ClInclude Include="Day.h" />
     <ClInclude Include="FunctionTab.h" />
     <ClInclude Include="ManagePassengersTab.h" />
     <ClInclude Include="Planes.h" />
     <ClInclude Include="Button.h" />
-    <ClInclude Include="define.h" />
+    <ClInclude Include="DefineConst.h" />
     <ClInclude Include="EditText.h" />
     <ClInclude Include="Flights.h" />
     <ClInclude Include="ManageFlightsTab.h" />

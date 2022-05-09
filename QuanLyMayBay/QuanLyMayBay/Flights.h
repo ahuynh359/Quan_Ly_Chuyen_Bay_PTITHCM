@@ -1,10 +1,10 @@
 #pragma once
 
-#include"DataConst.h"
+#include"DefineConst.h"
 #include<fstream>
 #include"Day.h"
 #include"Planes.h"
-
+#include<iostream>
 
 #ifndef FLIGHT_H
 #define FLIGHT_H
@@ -38,7 +38,6 @@ typedef FlightNode* PTR;
 
 void initializeList(PTR& first)
 {
-	if(first != NULL)
 	first = NULL;
 }
 
@@ -127,7 +126,7 @@ bool checkDupIDFlight(PTR& first, char id[MAX_ID_FLIGHT+1]) {
 	return false;
 }
 
-PTR searchByIDFlight(PTR &first, char  id[MAX_ID_FLIGHT + 1])
+PTR findFlight(PTR &first, char  id[MAX_ID_FLIGHT + 1])
 {
 	for (PTR p = first; p != NULL; p = p->next)
 		if (strcmp(p->info.idFlight, id) == 0)
@@ -135,12 +134,12 @@ PTR searchByIDFlight(PTR &first, char  id[MAX_ID_FLIGHT + 1])
 	return NULL;
 }
 
-bool searchByIDPlane(PTR& first, char id[MAX_ID_PLANE + 1]) {
+PTR findFlightByIdPlane(PTR& first, char id[MAX_ID_PLANE + 1]) {
 	for (PTR k = first; k != NULL; k = k->next) {
 		if (strcmp(k->info.idPlane, id) == 0)
-			return true;
+			return k;
 	}
-	return false;
+	return NULL;
 }
 
 //Huy ve khi chua hoan tat
@@ -161,7 +160,6 @@ void initTicketList(PlaneList& planeList, Flight& flight) {
 	(p->flyTimes)++;
 	flight.totalTicket = p->seats;
 	char s[MAX_ID_PASS + 1] = "0";
-	p->isAvai = false;
 	flight.ticketList = new char* [flight.totalTicket + 1];
 	for (int i = 0; i < flight.totalTicket; i++) {
 		flight.ticketList[i] = new char[MAX_ID_PASS+1];

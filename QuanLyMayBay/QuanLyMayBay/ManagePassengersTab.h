@@ -16,9 +16,7 @@ private:
 	int size = 0;
 
 public:
-	ManagePassengersTab() {
-
-	}
+	
 	//Khoi tao cac tham so
 	ManagePassengersTab(Data* d) {
 		this->d = d;
