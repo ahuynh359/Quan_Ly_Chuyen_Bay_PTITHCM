@@ -15,7 +15,7 @@ struct Plane {
 
 	//So luot thuc hien chuyen bay
 	int flyTimes = 0;
-
+	bool isAvai = true;
 
 
 };
@@ -77,6 +77,7 @@ bool isGreaterSeat(int oldSeat, int newSeat) {
 void adjustPlane(PlaneList& list, Plane& plane, int& index) {
 	*list.data[index] = plane;
 }
+
 
 void swap(int& A, int& B) {
 

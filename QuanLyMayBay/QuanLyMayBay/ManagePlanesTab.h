@@ -18,24 +18,21 @@ private:
 	EditText* adjustEditextPointer;
 	Data* d;
 	int indexID = -1;
-	int currentSeats = 0;
-public:
-	ManagePlanesTab() {
 
-	}
+public:
+
 	ManagePlanesTab(Data* d) {
+
 		this->d = d;
+
 		initEdittext();
 
-		edittextPointer = &edittext[ID_PLANE];
+		edittextPointer = NULL;
 
 
 
 	}
-	~ManagePlanesTab() {
-		//delete adjustEditextPointer;
 
-	}
 
 	void initEdittext() {
 
@@ -44,8 +41,8 @@ public:
 		char title[30] = "ID";
 		char content[30] = "";
 
-		int left = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - EDITTEXT_WIDTH + 90) / 2;
-		int top = SUBWINDOW_TOP + 100;
+		int left = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - EDITTEXT_WIDTH + EDITTEXT_SPACE) / 2;
+		int top = SUBWINDOW_TOP + 150;
 		int right = left + EDITTEXT_WIDTH;
 		int bottom = top + EDITTEXT_HEIGHT;
 
@@ -69,14 +66,15 @@ public:
 
 
 	}
-	void initAdjustMenu(Plane* p, bool isAvai) {
+	void initAdjustMenu(Plane* p) {
 
+		
 
-		//Neu da thanh lap chuyen bay nhung chua bay
 		edittext[ID_PLANE].setActive(false);
 
+		//Da thanh lap chuyen bay
+		if (!p->isAvai) {
 
-		if (!isAvai) {
 			edittext[TYPE].setActive(false);
 			adjustEditextPointer = &edittext[SEATS];
 
@@ -92,6 +90,7 @@ public:
 
 	}
 	void initAddMenu() {
+
 		edittextPointer = &edittext[ID_PLANE];
 		edittext[ID_PLANE].setActive(true);
 		edittext[TYPE].setActive(true);
@@ -104,13 +103,9 @@ public:
 	Plane getPlaneData() {
 		Plane p;
 
-		edittext[ID_PLANE].clearCursor();
+
 		strcpy_s(p.idPlane, edittext[ID_PLANE].getCharData());
-
-		edittext[TYPE].clearCursor();
 		strcpy_s(p.type, edittext[TYPE].getCharData());
-
-		edittext[SEATS].clearCursor();
 		p.seats = edittext[SEATS].getIntData();
 
 		return p;
@@ -119,17 +114,19 @@ public:
 
 	//Xoa  het du lieu 3 edittext
 	void resetEdittext() {
+
 		edittext[ID_PLANE].clearText();
 		edittext[TYPE].clearText();
 		edittext[SEATS].clearText();
 
+		edittextPointer = NULL;
+		adjustEditextPointer = NULL;
+
 	}
 	void reset() {
 		FunctionTab::reset();
-
+		resetEdittext();
 	}
-
-
 
 
 	void moveEdittextDown(EditText*& edittextPointer) {
@@ -157,6 +154,7 @@ public:
 
 	//Neu adjust = 1 thi ap dung cho adjust screen ko check plane ID
 	bool checkEdittextError(EditText*& edittextPointer, bool adjust = false) {
+
 		edittextPointer->clearCursor();
 
 		if (!adjust) {
@@ -169,10 +167,11 @@ public:
 					drawAnounce(DUP);
 					return false;
 				}
+
 			}
+
+
 		}
-
-
 
 		if (edittextPointer == &edittext[TYPE]) {
 			if (edittextPointer->isEmpty()) {
@@ -195,7 +194,13 @@ public:
 		}
 
 
-
+		if (adjust && !d->planeList.data[indexID]->isAvai) {
+			if (!isGreaterSeat(d->planeList.data[indexID]->seats, edittext[SEATS].getIntData())) {
+				drawAnounce(GREATER_SEAT);
+				edittextPointer = &edittext[SEATS];
+				return false;
+			}
+		}
 
 		return true;
 	}
@@ -217,6 +222,8 @@ public:
 				edittextPointer = &edittext[ID_PLANE];
 				return false;
 			}
+
+
 		}
 
 
@@ -241,13 +248,16 @@ public:
 			edittextPointer = &edittext[SEATS];
 			return false;
 		}
-		/*
-		if (!isGreaterSeat(currentSeats, edittext[SEATS].getIntData())) {
-			drawAnounce(GREATER_SEAT);
-			edittextPointer = &edittext[SEATS];
-			return false;
+		if (adjust && !d->planeList.data[indexID]->isAvai) {
+			if (!isGreaterSeat(d->planeList.data[indexID]->seats, edittext[SEATS].getIntData())) {
+				drawAnounce(GREATER_SEAT);
+				edittextPointer = &edittext[SEATS];
+				return false;
+			}
 		}
-		*/
+
+
+
 
 
 		return true;
@@ -356,14 +366,18 @@ public:
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 40, a);
 
 
-		
+
 
 		int s = FunctionTab::drawPlaneData(4, d->planeList, indexID);
+
 		if (s == 1) {
-			int s = drawAnounce(DELETE);
+			int s = drawAnounce(REMOVE_CONFIRM);
 			switch (s) {
 			case IDOK: {
-				removePlane(d->planeList, indexID);
+				if (d->planeList.data[indexID]->isAvai)
+					removePlane(d->planeList, indexID);
+				else
+					drawAnounce(REMOVE_ERROR);
 				break;
 			}
 			case IDCANCEL: {
@@ -375,12 +389,14 @@ public:
 
 		}
 		else if (s == 2) {
-
-			currentSeats = d->planeList.data[indexID]->seats;
-
-			//initAdjustMenu(d->planeList.data[indexID], d->planeList.data[indexID]->isAvai);
-			currentMenu = ADJUST_MENU;
-			return;
+			if (!d->planeList.data[indexID]->isAvai && findFlightByIdPlane(d->flightList, d->planeList.data[indexID]->idPlane)->info.status == 3)
+				drawAnounce(ADJUST_ERROR);
+			else {
+				initAdjustMenu(d->planeList.data[indexID]);
+				currentMenu = ADJUST_MENU;
+				return;
+			}
+			
 
 		}
 
@@ -400,6 +416,9 @@ public:
 		//-----------------VE HUONG DAN TEXT
 		char a[30] = "*Use Up/Down/Enter button";
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
+
+		strcpy_s(a, "ADD PLANE");
+		drawTitle(a);
 
 		button[BACK].onAction();
 		button[SAVE].onAction();
@@ -436,7 +455,7 @@ public:
 				addPlane(d->planeList, p);
 				drawAnounce(SUCCESS);
 				resetEdittext();
-				edittextPointer = &edittext[ID_PLANE];
+				initAddMenu();
 
 
 			}
@@ -452,6 +471,10 @@ public:
 		char a[30] = "*Use Up/Down/Enter button";
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
 
+		strcpy_s(a, "ADJUST PLANE");
+		drawTitle(a);
+
+
 		button[BACK].onAction();
 		button[SAVE].onAction();
 
@@ -459,7 +482,23 @@ public:
 		edittext[TYPE].onAction(adjustEditextPointer);
 		edittext[SEATS].onAction(adjustEditextPointer);
 
+
+
+
+
+
 		inputHandel(adjustEditextPointer, 1);
+		char ss[30] = "Current seats: ";
+		char aa[3];
+		sprintf_s(aa, "%d", d->planeList.data[indexID]->seats);
+		strcat_s(ss, aa);
+		drawTextWithColor(430, 460, ss, RED);
+		if (!d->planeList.data[indexID]->isAvai) {
+			strcpy_s(ss, "Must >= current seats");
+			drawTextWithColor(SUBWINDOW_RIGHT - 300, 500, ss, RED);
+
+		}
+
 
 		if (button[BACK].isClicked()) {
 			int s = drawAnounce(PREVIOUS);

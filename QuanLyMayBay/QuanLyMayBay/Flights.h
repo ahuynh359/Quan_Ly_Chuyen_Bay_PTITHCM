@@ -1,10 +1,10 @@
 #pragma once
 
-#include"DefineConst.h"
+
 #include<fstream>
 #include"Day.h"
-#include"Planes.h"
-#include<iostream>
+
+
 
 #ifndef FLIGHT_H
 #define FLIGHT_H
@@ -158,6 +158,7 @@ void initTicketList(PlaneList& planeList, Flight& flight) {
 
 	Plane *p = planeList.data[findPlane(planeList, flight.idPlane)];
 	(p->flyTimes)++;
+	p->isAvai = false;
 	flight.totalTicket = p->seats;
 	char s[MAX_ID_PASS + 1] = "0";
 	flight.ticketList = new char* [flight.totalTicket + 1];
@@ -193,7 +194,7 @@ void writeFileFlight(PTR& first) {
 	ofstream out("FlightData.txt", ios::trunc,ios::binary);
 
 	if (out.fail()) {
-		cout << "Khong mo duoc file DSCB\n";
+		printf("Cant open file Flight Data\n") ;
 		return;
 	}
 
@@ -212,7 +213,7 @@ void readFileFlight(PTR& first) {
 	ifstream inp("FlightData.txt",ios::binary);
 	
 	if (inp.fail()) {
-		cout << "Khong mo duoc file DSCB\n";
+		printf("Cant open file Flight Data\n");
 		return;
 	}
 	Flight flight;

@@ -125,7 +125,6 @@ public:
 
 
 	}
-
 	void initAdjustScreen() {
 		addPointer = &addEdittext[DAY];
 
@@ -269,10 +268,10 @@ public:
 		strcpy_s(f.idPlane, addEdittext[ID_PLANE].getCharData());
 		strcpy_s(f.arrive, addEdittext[ARRIVE].getCharData());
 
-		f.status = 1;
-
+	
 		Date date = getDate();
 		f.date = date;
+
 		initTicketList(d->planeList, f);
 
 		return f;
@@ -585,7 +584,7 @@ public:
 		}
 	}
 
-	
+
 
 	void drawMainMenu() {
 		drawBackground();
@@ -600,14 +599,20 @@ public:
 		button[LEFT].onAction();
 		button[RIGHT].onAction();
 
-		
-
 
 		int s = drawFlightData(6, d->flightList, tempFlight);
 
 		if (s == 1) {
 			if (checkCancleFlight(tempFlight)) {
-				drawAnounce(SUCCESS);
+				int d = drawAnounce(REMOVE_CONFIRM);
+				switch (d) {
+				case IDOK: {
+					drawAnounce(SUCCESS);
+					break;
+				}
+				default:
+					break;
+				}
 			}
 			else
 				drawAnounce(CANCLE_FLIGHT_ERROR);
@@ -671,7 +676,6 @@ public:
 				insertAfter(d->flightList, p);
 				drawAnounce(SUCCESS);
 				resetAddEdittext();
-				cout << p.ticketList[0] << "FLIGHT\n";
 				customEdittext();
 
 

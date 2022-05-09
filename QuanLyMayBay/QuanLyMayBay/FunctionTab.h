@@ -148,7 +148,7 @@ public:
 	void drawTitle(char text[30]) {
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(COLOR(3, 53, 252));
-		outtextxy((SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(text)) / 2, SUBWINDOW_TOP + 30, text);
+		outtextxy((SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(text)) / 2, SUBWINDOW_TOP + 50, text);
 
 
 	}
@@ -302,7 +302,7 @@ public:
 			);
 			break;
 		}
-		case DELETE: {
+		case REMOVE_CONFIRM: {
 			msgboxID = MessageBox(
 				GetForegroundWindow(),
 				(LPCWSTR)L"Do you want to delete?",
@@ -490,6 +490,24 @@ public:
 				MB_ICONEXCLAMATION | MB_OK
 			);
 			break;
+		}	
+		case REMOVE_ERROR: {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"Has been established flight, can't delete it",
+				(LPCWSTR)L"Error",
+				MB_ICONERROR | MB_OK
+			);
+			break;
+		}
+		case ADJUST_ERROR: {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"Flight is completed, can't adjust it",
+				(LPCWSTR)L"Error",
+				MB_ICONERROR | MB_OK
+			);
+			break;
 		}
 		default:
 			break;
@@ -528,6 +546,13 @@ public:
 		//Toi da 10 du lieu 1 trang
 		endPage = min(startPage + 9, size);
 	}
+
+	void drawTextWithColor(int x, int y, char s[30], int color) {
+		setbkcolor(SUBWINDOW_BACKGROUND);
+		setcolor(color);
+		outtextxy(x,y,s);
+	}
+
 
 	void drawText(int x, int y, int w, char s[40]) {
 		int width = textwidth(s);
