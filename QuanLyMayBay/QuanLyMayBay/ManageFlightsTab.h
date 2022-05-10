@@ -41,8 +41,8 @@ public:
 
 	void initEdittext() {
 
-		int left = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - EDITTEXT_WIDTH + 90) / 2;
-		int top = SUBWINDOW_TOP + 70;
+		int left = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - EDITTEXT_WIDTH + EDITTEXT_SPACE) / 2;
+		int top = SUBWINDOW_TOP + 100;
 		int right = left + EDITTEXT_WIDTH;
 		int bottom = top + EDITTEXT_HEIGHT;
 
@@ -111,7 +111,7 @@ public:
 		strcpy_s(title, "AT");
 		left = right + 70;
 		right = left + 70;
-		addEdittext[HOUR] = EditText(hint, title, content, left, top, right, bottom, 4, 25);
+		addEdittext[HOUR] = EditText(hint, title, content, left, top, right, bottom, 2, 25);
 
 
 		//------------EDITTEXT MINUTE
@@ -119,7 +119,7 @@ public:
 		strcpy_s(title, ":");
 		left = right + 15;
 		right = left + 70;
-		addEdittext[MINUTE] = EditText(hint, title, content, left, top, right, bottom, 4, 10);
+		addEdittext[MINUTE] = EditText(hint, title, content, left, top, right, bottom, 2, 10);
 
 
 
@@ -206,8 +206,11 @@ public:
 			addPointer = &addEdittext[ID_PLANE];
 		else if (addPointer == &addEdittext[ID_PLANE])
 			addPointer = &addEdittext[ARRIVE];
-		else if (addPointer = &addEdittext[ARRIVE])
+		else if (addPointer = &addEdittext[ARRIVE]) {
+			addEdittext[ARRIVE].standarContent();
 			addPointer = &addEdittext[DAY];
+
+		}
 
 
 
@@ -215,8 +218,11 @@ public:
 	void moveEdittextUp() {
 		if (addPointer == &addEdittext[ID_PLANE])
 			addPointer = &addEdittext[ID_FLIGHT];
-		else if (addPointer == &addEdittext[ARRIVE])
+		else if (addPointer == &addEdittext[ARRIVE]) {
+			addEdittext[ARRIVE].standarContent();
 			addPointer = &addEdittext[ID_PLANE];
+
+		}
 		else if (addPointer = &addEdittext[DAY])
 			addPointer = &addEdittext[ARRIVE];
 
@@ -268,7 +274,7 @@ public:
 		strcpy_s(f.idPlane, addEdittext[ID_PLANE].getCharData());
 		strcpy_s(f.arrive, addEdittext[ARRIVE].getCharData());
 
-	
+
 		Date date = getDate();
 		f.date = date;
 
@@ -319,6 +325,7 @@ public:
 				return false;
 			}
 		}
+		addEdittext[ARRIVE].standarContent();
 		if (addEdittext[DAY].isEmpty()) {
 			drawAnounce(EMPTY);
 			addPointer = &addEdittext[DAY];
@@ -380,17 +387,38 @@ public:
 			return false;
 		}
 
-
-
-		if (!checkFutureTime(getDate())) {
-			drawAnounce(TIME_ERROR);
+		//Thoi gian khoi hanh >= 30 tu hien tai
+		Date date = getDate();
+		if (!checkTimeBeforeMinute(date, 30)) {
+			drawAnounce(THIRTY_MINUTE);
 			return false;
+		}
+
+		for (PTR k = d->flightList; k != NULL; k = k->next) {
+			if ((!inThreeHour(date, k->info.date) && strcmp(k->info.idFlight, addEdittext[ID_FLIGHT].getCharData()) != 0
+				&& strcmp(k->info.idPlane, addEdittext[ID_PLANE].getCharData()) == 0 && k->info.status != 0)
+				) {
+				char mess[200] = "Unable to establish flight\n Because there is other flight\n ID: ";
+				strcat_s(mess, k->info.idFlight);
+				strcat_s(mess, "\n Time: ");
+				strcat_s(mess, getDateString(k->info.date));
+				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
+				return false;
+
+			}
 		}
 
 
 
 
 		return true;
+	}
+
+	wchar_t* convertCharArrayToLPCWSTR(const char* charArray)
+	{
+		wchar_t* wString = new wchar_t[4096];
+		MultiByteToWideChar(CP_ACP, 0, charArray, -1, wString, 4096);
+		return wString;
 	}
 	bool checkEdittextError() {
 		addPointer->clearCursor();
@@ -603,28 +631,38 @@ public:
 		int s = drawFlightData(6, d->flightList, tempFlight);
 
 		if (s == 1) {
-			if (checkCancleFlight(tempFlight)) {
-				int d = drawAnounce(REMOVE_CONFIRM);
-				switch (d) {
-				case IDOK: {
+
+			int d = drawAnounce(CANCEL_CONFIRM);
+			switch (d) {
+			case IDOK: {
+				if (!checkCancleFlight(tempFlight)) {
+					drawAnounce(CANCLE_FLIGHT_ERROR);
+
+				}
+				else
+
 					drawAnounce(SUCCESS);
-					break;
-				}
-				default:
-					break;
-				}
+				break;
 			}
-			else
-				drawAnounce(CANCLE_FLIGHT_ERROR);
-		}
-		else  if (s == 2) {
-			initAdjustScreen();
-			currentMenu = ADJUST_MENU;
+			default:
+				break;
+			}
 			return;
 		}
 
+		if (s == 2) {
+			//Khong cho chinh sua neu bi huy hoăc hoan tat
+			if (tempFlight->info.status == 0 || tempFlight->info.status == 3) {
+				drawAnounce(ADJUST_ERROR);
+				return;
+			}
+			initAdjustScreen();
+			currentMenu = ADJUST_MENU;
+			return;
 
 
+
+		}
 
 
 
@@ -635,8 +673,6 @@ public:
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
 		strcpy_s(a, " Right click to edit time flight");
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 40, a);
-		strcpy_s(a, " Use left/right/enter button");
-		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 60, a);
 
 
 
@@ -663,6 +699,16 @@ public:
 		button[SAVE].onAction();
 		button[BACK].onAction();
 		button[FIND].onAction();
+		char s[30] = "Time >= haft an hour from now";
+		drawTextWithColor(addEdittext[DAY].getLeft(),
+			addEdittext[DAY].getTop() - textheight(s) - 10, s, RED);
+
+		strcpy_s(s, "ADD FLIGHT");
+		drawTitle(s);
+
+		//-----------------VE HUONG DAN TEXT
+		strcpy_s(s, "*Use Up/Down/Enter button");
+		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, s);
 
 		inputHandel();
 
@@ -751,7 +797,8 @@ public:
 
 		}
 		if (button[BACK].isClicked()) {
-			currentMenu = MAIN_MENU;
+			delay(50);
+			currentMenu = ADD_MENU;
 		}
 
 	}

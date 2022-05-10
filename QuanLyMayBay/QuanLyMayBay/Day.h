@@ -1,7 +1,10 @@
 #pragma once
 
 #include<ctime>
-
+#include<iostream>
+#include<string.h>
+#include <stdio.h>
+int DAY_MONTH[13] = { 0,31,28,31,30,31,30,31,31,30,31,30,31 };
 struct Date {
 	char day[3];
 	char month[3];
@@ -10,13 +13,15 @@ struct Date {
 	char minute[3];
 };
 
-char* getDateString(Date &date) {
+char* getDateString(Date& date) {
 	char  s[50];
 	//VE TIME
 	sprintf_s(s, "%s%s%s%s%s%s%s%s%s", date.day, "/", date.month, "/",
-		date.year, " ", date.hour, ":", date.minute);
+		date.year, "  ", date.hour, ":", date.minute);
 	return s;
 }
+
+
 
 
 void format(Date& d) {
@@ -26,28 +31,28 @@ void format(Date& d) {
 		sprintf_s(d.day, "%s", temp);
 		strcpy_s(temp, "0");
 	}
-		
+
 	if (strlen(d.month) == 1) {
 		strcat_s(temp, d.month);
 		sprintf_s(d.month, "%s", temp);
 		strcpy_s(temp, "0");
 	}
-	
 
-	
+
+
 	if (strlen(d.hour) == 1) {
 		strcat_s(temp, d.hour);
 		sprintf_s(d.hour, "%s", temp);
 		strcpy_s(temp, "0");
 	}
-		
-	
+
+
 	if (strlen(d.minute) == 1) {
 		strcat_s(temp, d.minute);
 		sprintf_s(d.minute, "%s", temp);
-	
+
 	}
-	
+
 
 }
 Date getCurTime() {
@@ -57,12 +62,12 @@ Date getCurTime() {
 
 	Date date;
 
-	sprintf_s(date.day,"%d", newTime.tm_mday);
-	sprintf_s(date.month,"%d", 1 + newTime.tm_mon);
-	sprintf_s(date.year,"%d", 1900 + newTime.tm_year);
-	sprintf_s(date.hour,"%d", newTime.tm_hour);
-	sprintf_s(date.minute,"%d", newTime.tm_min);
-	
+	sprintf_s(date.day, "%d", newTime.tm_mday);
+	sprintf_s(date.month, "%d", 1 + newTime.tm_mon);
+	sprintf_s(date.year, "%d", 1900 + newTime.tm_year);
+	sprintf_s(date.hour, "%d", newTime.tm_hour);
+	sprintf_s(date.minute, "%d", newTime.tm_min);
+
 	format(date);
 	return date;
 }
@@ -75,14 +80,16 @@ bool isLeapYear(int year) {
 	return false;
 }
 
-bool checkTime(Date &d) {
-	
+
+
+bool checkTime(Date& d) {
+
 	int month = stoi(d.month);
 	int day = stoi(d.day);
 	int year = stoi(d.year);
 
 	switch (month) {
-	case 1: case 3: case 5: case 7: case 8: case 10: case 12: 
+	case 1: case 3: case 5: case 7: case 8: case 10: case 12:
 	{
 		if (day > 31)
 			return false;
@@ -192,3 +199,57 @@ bool checkMinute(char minute[3]) {
 
 }
 
+unsigned long int calDateToday(Date& d) {
+	int year = stoi(d.year);
+	int month = stoi(d.month);
+	int day = stoi(d.day);
+
+	unsigned long int dayOfYear = 365 * (year - 1) + (year - 1) / 4 - (year - 1) / 100 + (year - 1) / 400;
+	unsigned long int dayOfMonth = 0;
+	for (int i = 0; i < month; i++) {
+		dayOfMonth += DAY_MONTH[i];
+	}
+	if (isLeapYear(year) && month > 2) {
+		dayOfMonth++;
+	}
+
+	return  dayOfYear + dayOfMonth + day - 1;
+}
+
+
+bool checkTimeBeforeMinute(Date& d, int min) {
+	Date now = getCurTime();
+	int hour = stoi(d.hour);
+	int minute = stoi(d.minute);
+
+	unsigned long int minute1 = calDateToday(d) * 24 * 60 + hour * 60 + minute;
+
+	hour = stoi(now.hour);
+	minute = stoi(now.minute);
+
+	unsigned long int currMinute = calDateToday(now) * 24 * 60 + hour * 60 + minute;
+
+	if ((minute1 > currMinute) && (minute1 - currMinute) >= min)
+		return true;
+
+	return false;
+}
+
+
+bool inThreeHour(Date& d1, Date& d2) {
+	int hour = stoi(d1.hour);
+	int minute = stoi(d1.minute);
+
+	long long  minute1 = calDateToday(d1) * 24 * 60 + hour * 60 + minute;
+
+	hour = stoi(d2.hour);
+	minute = stoi(d2.minute);
+
+	long long minute2 = calDateToday(d2) * 24 * 60 + hour * 60 + minute;
+	cout << minute2 << " " << minute1 << "\n";
+	if (abs(minute1 - minute2) >= 180)
+		return true;
+	return false;
+
+
+}

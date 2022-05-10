@@ -30,6 +30,16 @@ public:
 
 	}
 
+	
+
+	int getLeft() {
+		return left;
+	}
+
+	int getTop() {
+		return top;
+	}
+
 	void setActive(bool s) {
 		this->active = s;
 

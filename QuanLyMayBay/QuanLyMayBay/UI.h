@@ -32,6 +32,8 @@ public:
 	}
 protected:
 
+	
+
 	bool virtual isPointed(int xMouse, int yMouse) {
 		if (xMouse <= right && xMouse >= left && yMouse <= bottom && yMouse >= top) {
 			return true;

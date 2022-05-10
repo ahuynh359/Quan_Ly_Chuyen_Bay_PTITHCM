@@ -322,21 +322,12 @@ public:
 
 			break;
 		}
-		case CANCLE_FLIGHT_SUCCESS: {
-			msgboxID = MessageBox(
-				GetForegroundWindow(),
-				(LPCWSTR)L"Do you want to cancel this flight?",
-				(LPCWSTR)L"Warning",
-				MB_ICONEXCLAMATION | MB_OKCANCEL
-			);
-
-			break;
-		}
+	
 
 		case CANCLE_FLIGHT_ERROR: {
 			msgboxID = MessageBox(
 				GetForegroundWindow(),
-				(LPCWSTR)L"This flight has been cancelled!",
+				(LPCWSTR)L"Can't not cancle this flight",
 				(LPCWSTR)L"Error",
 				MB_ICONERROR | MB_OK
 			);
@@ -503,9 +494,27 @@ public:
 		case ADJUST_ERROR: {
 			msgboxID = MessageBox(
 				GetForegroundWindow(),
-				(LPCWSTR)L"Flight is completed, can't adjust it",
+				(LPCWSTR)L"Can't adjust",
 				(LPCWSTR)L"Error",
 				MB_ICONERROR | MB_OK
+			);
+			break;
+		}
+		case THIRTY_MINUTE: {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"Time must >= half an hour from now",
+				(LPCWSTR)L"Warning",
+				MB_ICONEXCLAMATION | MB_OK
+			);
+			break;
+		}
+		case CANCEL_CONFIRM: {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"Cancle confirm?",
+				(LPCWSTR)L"Warning",
+				MB_ICONEXCLAMATION | MB_OKCANCEL
 			);
 			break;
 		}
@@ -605,11 +614,11 @@ public:
 		for (int i = 0; k != NULL && i < 10; i++)
 		{
 			if (
-				(strlen(edittext[ID_FLIGHT].getCharData()) == 0 || strcmp(edittext[ID_FLIGHT].getCharData(), k->info.idFlight) == 0)
-				&& (strlen(edittext[DAY].getCharData()) == 0 || strcmp(edittext[DAY].getCharData(), k->info.date.day) == 0)
-				&& (strlen(edittext[MONTH].getCharData()) == 0 || strcmp(edittext[MONTH].getCharData(), k->info.date.month) == 0)
-				&& (strlen(edittext[YEAR].getCharData()) == 0 || strcmp(edittext[YEAR].getCharData(), k->info.date.year) == 0)
-				&& (strlen(edittext[ARRIVE].getCharData()) == 0 || strcmp(edittext[ARRIVE].getCharData(), k->info.arrive) == 0)
+				(strlen(edittext[ID_FLIGHT].getCharData()) == 0 || isPrefix(edittext[ID_FLIGHT].getCharData(), k->info.idFlight))
+				&& (strlen(edittext[DAY].getCharData()) == 0 || isPrefix(date.day, k->info.date.day) || isPrefix(edittext[DAY].getCharData(), k->info.date.day))
+				&& (strlen(edittext[MONTH].getCharData()) == 0 || isPrefix(date.month, k->info.date.month) || isPrefix(edittext[MONTH].getCharData(), k->info.date.month))
+				&& (strlen(edittext[YEAR].getCharData()) == 0 || isPrefix(date.year, k->info.date.year) || isPrefix(edittext[YEAR].getCharData(), k->info.date.year))
+				&& (strlen(edittext[ARRIVE].getCharData()) == 0 || isPrefix(edittext[ARRIVE].getCharData(), k->info.arrive))
 				)
 			{
 

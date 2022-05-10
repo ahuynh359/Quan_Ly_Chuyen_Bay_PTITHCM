@@ -153,6 +153,21 @@ public:
 
 
 	}
+
+	int getLeft() {
+		return left;
+	}
+
+	int getTop() {
+		return top;
+	}
+
+	int getRight() {
+		return right;
+	}	
+	int getBottom() {
+		return bottom;
+	}
 	bool isExistDash(char content[30]) {
 		for (int i = 0; i < strlen(content); i++) {
 			if (content[i] == '_')
