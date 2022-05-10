@@ -117,59 +117,6 @@ bool checkTime(Date& d) {
 }
 
 
-bool checkPassTime(Date pass) {
-	Date now = getCurTime();
-	if (!checkTime(pass))
-		return false;
-	if (now.year < pass.year)
-		return false;
-	if (now.year >= pass.year)
-		return true;
-	if (now.month < pass.month)
-		return false;
-	if (now.month >= pass.month)
-		return true;
-	if (now.day < pass.day)
-		return false;
-	if (now.day >= pass.day)
-		return true;
-	if (now.hour < pass.hour)
-		return false;
-	if (now.hour >= pass.hour)
-		return true;
-	if (now.minute < pass.minute)
-		return false;
-	if (now.minute >= pass.minute)
-		return true;
-	return true;
-
-}
-bool checkFutureTime(Date pass) {
-	Date now = getCurTime();
-	if (!checkTime(pass))
-		return false;
-	if (now.year > pass.year)
-		return false;
-	if (now.year <= pass.year)
-		return true;
-	if (now.month > pass.month)
-		return false;
-	if (now.month <= pass.month)
-		return true;
-	if (now.day > pass.day)
-		return false;
-	if (now.day <= pass.day)
-		return true;
-	if (now.hour > pass.hour)
-		return false;
-	if (now.hour <= pass.hour)
-		return true;
-	if (now.minute > pass.minute)
-		return false;
-	if (now.minute <= pass.minute)
-		return true;
-	return true;
-}
 
 bool checkDay(char day[3]) {
 	int d = stoi(day);
@@ -198,14 +145,13 @@ bool checkMinute(char minute[3]) {
 	return (d <= 59 && d >= 0);
 
 }
-
-unsigned long int calDateToday(Date& d) {
+long long  calDateToday(Date& d) {
 	int year = stoi(d.year);
 	int month = stoi(d.month);
 	int day = stoi(d.day);
 
-	unsigned long int dayOfYear = 365 * (year - 1) + (year - 1) / 4 - (year - 1) / 100 + (year - 1) / 400;
-	unsigned long int dayOfMonth = 0;
+	long long dayOfYear = 365 * (year - 1) + (year - 1) / 4 - (year - 1) / 100 + (year - 1) / 400;
+	long long dayOfMonth = 0;
 	for (int i = 0; i < month; i++) {
 		dayOfMonth += DAY_MONTH[i];
 	}
@@ -216,27 +162,7 @@ unsigned long int calDateToday(Date& d) {
 	return  dayOfYear + dayOfMonth + day - 1;
 }
 
-
-bool checkTimeBeforeMinute(Date& d, int min) {
-	Date now = getCurTime();
-	int hour = stoi(d.hour);
-	int minute = stoi(d.minute);
-
-	unsigned long int minute1 = calDateToday(d) * 24 * 60 + hour * 60 + minute;
-
-	hour = stoi(now.hour);
-	minute = stoi(now.minute);
-
-	unsigned long int currMinute = calDateToday(now) * 24 * 60 + hour * 60 + minute;
-
-	if ((minute1 > currMinute) && (minute1 - currMinute) >= min)
-		return true;
-
-	return false;
-}
-
-
-bool inThreeHour(Date& d1, Date& d2) {
+long long calSpaceTime(Date& d1, Date& d2) {
 	int hour = stoi(d1.hour);
 	int minute = stoi(d1.minute);
 
@@ -246,8 +172,26 @@ bool inThreeHour(Date& d1, Date& d2) {
 	minute = stoi(d2.minute);
 
 	long long minute2 = calDateToday(d2) * 24 * 60 + hour * 60 + minute;
-	cout << minute2 << " " << minute1 << "\n";
-	if (abs(minute1 - minute2) >= 180)
+	return minute1 - minute2;
+}
+
+
+
+
+bool checkTimeBeforeMinute(Date& d, int min) {
+	Date now = getCurTime();
+
+
+	if (calSpaceTime(d, now) >= min)
+		return true;
+
+	return false;
+}
+
+
+bool inThreeHour(Date& d1, Date& d2) {
+
+	if (abs(calSpaceTime(d1, d2)) >= 180)
 		return true;
 	return false;
 

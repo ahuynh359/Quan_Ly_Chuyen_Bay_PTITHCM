@@ -32,7 +32,7 @@ public:
 		initEdittext();
 
 		edittextPointer = NULL;
-		addPointer = &addEdittext[ID_FLIGHT];
+		addPointer = NULL;
 
 
 	}
@@ -142,7 +142,7 @@ public:
 
 
 		addEdittext[STATUS].customInitChar(tempFlight->info.arrive);
-
+		addEdittext[STATUS].setActive(false);
 
 		addEdittext[DAY].customInitChar(tempFlight->info.date.day);
 
@@ -301,7 +301,7 @@ public:
 				return false;
 			}
 
-			if (checkDupIDFlight(d->flightList, addEdittext[ID_FLIGHT].getCharData())) {
+			if (findFlight(d->flightList, addPointer->getCharData()) != NULL) {
 				drawAnounce(DUP);
 				addPointer = &addEdittext[ID_FLIGHT];
 				return false;
@@ -430,7 +430,7 @@ public:
 
 		if (addPointer == &addEdittext[ID_FLIGHT]) {
 
-			if (checkDupIDFlight(d->flightList, addPointer->getCharData())) {
+			if (findFlight(d->flightList, addPointer->getCharData()) != NULL) {
 				drawAnounce(DUP);
 				return false;
 			}
@@ -627,8 +627,10 @@ public:
 		button[LEFT].onAction();
 		button[RIGHT].onAction();
 
+		checkCompletedAll(d->flightList, d->planeList);
 
 		int s = drawFlightData(6, d->flightList, tempFlight);
+
 
 		if (s == 1) {
 
@@ -651,11 +653,22 @@ public:
 		}
 
 		if (s == 2) {
+
 			//Khong cho chinh sua neu bi huy hoăc hoan tat
 			if (tempFlight->info.status == 0 || tempFlight->info.status == 3) {
 				drawAnounce(ADJUST_ERROR);
 				return;
 			}
+			if (!checkTimeBeforeMinute(tempFlight->info.date, 15)) {
+				char mess[200];
+				Date date = getCurTime();
+				sprintf_s(mess, "%lld", calSpaceTime(tempFlight->info.date, date));
+				strcat_s(mess, " minutes left to take off");
+				strcat_s(mess, "\n Can't ajust it");
+				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
+				return;
+			}
+
 			initAdjustScreen();
 			currentMenu = ADJUST_MENU;
 			return;
@@ -743,6 +756,10 @@ public:
 
 	}
 	void drawAjustScreen() {
+
+		char s[30] = "ADJUST FLIGHT";
+		drawTitle(s);
+
 		addEdittext[ID_FLIGHT].onAction(addPointer);
 		addEdittext[ID_PLANE].onAction(addPointer);
 		addEdittext[ARRIVE].onAction(addPointer);

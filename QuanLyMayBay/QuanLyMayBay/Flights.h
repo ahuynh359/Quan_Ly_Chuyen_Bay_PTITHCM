@@ -9,22 +9,22 @@
 #ifndef FLIGHT_H
 #define FLIGHT_H
 struct Flight {
-	char idFlight[MAX_ID_FLIGHT+1];
+	char idFlight[MAX_ID_FLIGHT + 1];
 	Date date;
-	char arrive[MAX_ARRIVE+1];
-	char idPlane[MAX_ID_PLANE+1];
+	char arrive[MAX_ARRIVE + 1];
+	char idPlane[MAX_ID_PLANE + 1];
 	/*
 	* 0 huy chuyen
 	* 1 con ve
 	* 2 het ve
-	* 3 hoan tat 
+	* 3 hoan tat
 	*/
-	int status; 
+	int status;
 
 	//-----CHI SO PHU
 	char** ticketList;
 	int totalTicket = 0;
-	
+
 
 };
 
@@ -56,7 +56,7 @@ bool isEmpty(PTR& first)
 	return(first == NULL ? true : false);
 }
 
-void insertAfter(PTR& first, Flight &flight)
+void insertAfter(PTR& first, Flight& flight)
 {
 	PTR temp = newNode(flight);
 	if (first == NULL) {
@@ -99,34 +99,11 @@ bool isPrefix(const char* pre, const char* str) {
 	return true;
 }
 
-/*
- * Loc danh sach cac chuyen bay id bat dau la: strFind
- * Luu vi tri cua cac chuyen bay vao 1 mang: listIndexDauSachSearch[]
- * Size cua list se duoc luu vao bien: m
- */
-void getListFlight(PTR& first, const char* strFind, int& m,PTR listFlight[MAX_FLIGHT] ) {
-	m = 0;
-	PTR k = first;
-	while (k != NULL) {
-		if (isPrefix(strFind, k->info.idFlight)){
-			listFlight[m++] = k;
-		}
-		k = k->next;
-	}
-	
-}
 
 
-bool checkDupIDFlight(PTR& first, char id[MAX_ID_FLIGHT+1]) {
-	for (PTR p = first; p != NULL; p = p->next) {
-		if (strcmp(p->info.idFlight, id) == 0) {
-			return true;
-		}
-	}
-	return false;
-}
 
-PTR findFlight(PTR &first, char  id[MAX_ID_FLIGHT + 1])
+
+PTR findFlight(PTR& first, char  id[MAX_ID_FLIGHT + 1])
 {
 	for (PTR p = first; p != NULL; p = p->next)
 		if (strcmp(p->info.idFlight, id) == 0)
@@ -151,27 +128,45 @@ int checkCancleFlight(PTR& first) {
 	return 0;
 }
 
+void checkCompleted(PlaneList& planeList, PTR& temp) {
+	if (temp->info.status == HAVE_TICKET || temp->info.status == OUT_OF_TICKET) {
+		Date now = getCurTime();
+		if (calSpaceTime(now,temp->info.date) >= 0) {
+			temp->info.status = COMPLETE_TICKET;
+			planeList.data[findPlane(planeList, temp->info.idPlane)]->flyTimes++;
+		}
+	}
+}
+
+void checkCompletedAll(PTR &flightList,PlaneList &planeList) {
+	for (PTR k = flightList; k != NULL; k = k->next) {
+		checkCompleted(planeList, k);
+	}
+}
+
 
 //-------------TICKET
 void initTicketList(PlaneList& planeList, Flight& flight) {
 	flight.status = HAVE_TICKET;
 
-	Plane *p = planeList.data[findPlane(planeList, flight.idPlane)];
-	(p->flyTimes)++;
+	Plane* p = planeList.data[findPlane(planeList, flight.idPlane)];
+
 	p->isAvai = false;
+
 	flight.totalTicket = p->seats;
+
 	char s[MAX_ID_PASS + 1] = "0";
 	flight.ticketList = new char* [flight.totalTicket + 1];
 	for (int i = 0; i < flight.totalTicket; i++) {
-		flight.ticketList[i] = new char[MAX_ID_PASS+1];
-		strcpy_s(flight.ticketList[i], 2,s);
+		flight.ticketList[i] = new char[MAX_ID_PASS + 1];
+		strcpy_s(flight.ticketList[i], 2, s);
 	}
 
 }
 
 //kiem tra CMND trung tren 1 chuyen bay
 bool ableToBook(PTR& flightList, char id[MAX_ID_PASS + 1]) {
-	for (int i = 0; i < flightList->info.totalTicket;i++) {
+	for (int i = 0; i < flightList->info.totalTicket; i++) {
 		if (strcmp(flightList->info.ticketList[i], id) == 0) {
 			return false;
 		}
@@ -179,22 +174,22 @@ bool ableToBook(PTR& flightList, char id[MAX_ID_PASS + 1]) {
 	return true;
 }
 
-void bookTicket(PTR &first,int index, char id[MAX_ID_PASS+1]) {
+void bookTicket(PTR& first, int index, char id[MAX_ID_PASS + 1]) {
 	strcpy_s(first->info.ticketList[index], MAX_ID_PASS + 1, id);
 }
 
 void cancleTicket(PTR& first, int index, char id[MAX_ID_PASS + 1]) {
 	char s[MAX_ID_PASS + 1] = "0";
-	strcpy_s(first->info.ticketList[index], 2,s);
+	strcpy_s(first->info.ticketList[index], 2, s);
 
 
 }
 
 void writeFileFlight(PTR& first) {
-	ofstream out("FlightData.txt", ios::trunc,ios::binary);
+	ofstream out("FlightData.txt", ios::trunc, ios::binary);
 
 	if (out.fail()) {
-		printf("Cant open file Flight Data\n") ;
+		printf("Cant open file Flight Data\n");
 		return;
 	}
 
@@ -205,28 +200,28 @@ void writeFileFlight(PTR& first) {
 		}
 	}
 
-	
+
 	out.close();
 }
 
 void readFileFlight(PTR& first) {
-	ifstream inp("FlightData.txt",ios::binary);
-	
+	ifstream inp("FlightData.txt", ios::binary);
+
 	if (inp.fail()) {
 		printf("Cant open file Flight Data\n");
 		return;
 	}
 	Flight flight;
 
-	while(inp.read(reinterpret_cast<char*>(&flight), sizeof(flight))){
+	while (inp.read(reinterpret_cast<char*>(&flight), sizeof(flight))) {
 		flight.ticketList = new char* [flight.totalTicket + 1];
 		for (int i = 0; i < flight.totalTicket; i++) {
-			flight.ticketList[i] = new char[MAX_ID_PASS+1];
+			flight.ticketList[i] = new char[MAX_ID_PASS + 1];
 		}
 		for (int i = 0; i < flight.totalTicket; i++) {
 			inp.read(reinterpret_cast<char*>(&*(flight.ticketList[i])), sizeof(char[MAX_ID_PASS + 1]));
 		}
-		
+
 		insertAfter(first, flight);
 	}
 	inp.close();
@@ -240,9 +235,9 @@ void deleteFlightList(PTR& first)
 		PTR t = temp;
 		temp = temp->next;
 		for (int i = 0; i < t->info.totalTicket; i++) {
-			delete[] t->info.ticketList[i];
+			delete t->info.ticketList[i];
 		}
-		delete[] t->info.ticketList;
+		delete t->info.ticketList;
 		delete t;
 	}
 }
