@@ -9,7 +9,7 @@
 #include"Passengers.h"
 #include"FunctionTab.h"
 #include"Data.h"
-using namespace std;
+
 class ManagePlanesTab :public FunctionTab {
 
 
@@ -17,10 +17,14 @@ private:
 
 	EditText* adjustEditextPointer;
 	Data* d;
-	int indexID = -1;
+	int indexID;
+
+	friend class ManageFlightsTab;
 
 public:
-
+	ManagePlanesTab() {
+		
+	}
 	ManagePlanesTab(Data* d) {
 
 		this->d = d;
@@ -29,7 +33,7 @@ public:
 
 		edittextPointer = NULL;
 
-
+		indexID = -1;
 
 	}
 
@@ -68,7 +72,7 @@ public:
 	}
 	void initAdjustMenu(Plane* p) {
 
-		
+
 
 		edittext[ID_PLANE].setActive(false);
 
@@ -133,7 +137,6 @@ public:
 		if (edittextPointer == &edittext[ID_PLANE])
 			edittextPointer = &edittext[TYPE];
 		else if (edittextPointer == &edittext[TYPE]) {
-			edittextPointer->standarContent();
 			edittextPointer = &edittext[SEATS];
 
 		}
@@ -141,7 +144,6 @@ public:
 	}
 	void moveEdittextUp(EditText*& edittextPointer) {
 		if (edittextPointer == &edittext[TYPE]) {
-			edittextPointer->standarContent();
 			if (edittext[ID_PLANE].isActive())
 				edittextPointer = &edittext[ID_PLANE];
 
@@ -180,7 +182,7 @@ public:
 			}
 		}
 
-
+		edittext[TYPE].standarContent();
 
 		if (edittextPointer == &edittext[SEATS]) {
 			if (edittextPointer->isEmpty()) {
@@ -368,8 +370,7 @@ public:
 
 
 
-		int s = FunctionTab::drawPlaneData(4, d->planeList, indexID);
-
+		int s = drawPlaneData(indexID);
 		if (s == 1) {
 			int s = drawAnounce(REMOVE_CONFIRM);
 			switch (s) {
@@ -386,7 +387,6 @@ public:
 			default:
 				break;
 			}
-
 		}
 		else if (s == 2) {
 			if (!d->planeList.data[indexID]->isAvai && findFlightByIdPlane(d->flightList, d->planeList.data[indexID]->idPlane)->info.status == 3)
@@ -394,11 +394,10 @@ public:
 			else {
 				initAdjustMenu(d->planeList.data[indexID]);
 				currentMenu = ADJUST_MENU;
-				return;
-			}
-			
 
+			}
 		}
+
 
 
 		if (button[ADD].isClicked()) {
@@ -436,7 +435,6 @@ public:
 			switch (s) {
 			case IDOK: {
 				resetEdittext();
-				edittextPointer = &edittext[ID_PLANE];
 				currentMenu = MAIN_MENU;
 				break;
 			}
@@ -451,6 +449,8 @@ public:
 
 			}
 			else {
+
+
 				Plane p = getPlaneData();
 				addPlane(d->planeList, p);
 				drawAnounce(SUCCESS);
@@ -483,19 +483,13 @@ public:
 		edittext[SEATS].onAction(adjustEditextPointer);
 
 
-
-
-
-
 		inputHandel(adjustEditextPointer, 1);
-		char ss[30] = "Current seats: ";
-		char aa[3];
-		sprintf_s(aa, "%d", d->planeList.data[indexID]->seats);
-		strcat_s(ss, aa);
-		drawTextWithColor(430, 460, ss, RED);
+
+
 		if (!d->planeList.data[indexID]->isAvai) {
-			strcpy_s(ss, "Must >= current seats");
-			drawTextWithColor(SUBWINDOW_RIGHT - 300, 500, ss, RED);
+			char ss[30] = "Must >= current seats";
+			drawText(edittext[SEATS].getRight() + 10,
+				(edittext[SEATS].getTop() + edittext[SEATS].getBottom() - textheight(ss)) / 2, ss, RED);
 
 		}
 
@@ -520,6 +514,7 @@ public:
 
 			}
 			else {
+
 				Plane p = getPlaneData();
 				adjustPlane(d->planeList, p, this->indexID);
 				drawAnounce(SUCCESS);
@@ -533,6 +528,87 @@ public:
 
 
 	}
+
+
+	//----------------------DATA -----------------
+	void drawOnePlane(int preX, int preY, int i) {
+		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / 5;
+
+		//VE STT
+		char temp[3];
+		sprintf_s(temp, "%d", i + 1);
+		int x = preX + 100;
+		drawText(preX, preY, x, temp);
+		preX = x;
+
+		//VE ID PLANE
+		x = preX + spaceX;
+		drawText(preX, preY, x, d->planeList.data[i]->idPlane);
+		preX = x;
+
+		//VE TYPE
+		x += (spaceX + 200);
+		drawText(preX, preY, x, d->planeList.data[i]->type);
+		preX = x;
+
+		//VE SEATS
+		sprintf_s(temp, "%d", d->planeList.data[i]->seats);
+		x = RIGHT_BORDER;
+		drawText(preX, preY, x, temp);
+
+
+
+
+	}
+	int  drawPlaneData(int& indexID) {
+
+		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20;
+		int preY = TOP_BORDER + 60;
+
+		drawBorder(4, 0, isEmpty(d->planeList)); //Draw border va title
+
+		onButtonPage(d->planeList.size); //Su kien nut left / right
+		showPage(); //Hien thi trang
+
+
+
+		for (int i = startPage; i < min(d->planeList.size, (startPage + 10)); i++) {
+
+
+			indexID = i;
+
+			int preX = LEFT_BORDER;
+			setcolor(BLACK);
+
+
+			if (isPointed(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
+				setcolor(ON_SELECTED_DATA_COLOR);
+			}
+
+
+			drawOnePlane(preX, preY, i);
+
+			if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
+				return 1;
+
+			}
+
+			else if (isRightMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY))
+			{
+				return 2;
+
+			}
+
+
+			preY += spaceY;
+
+		}
+		indexID = -1;
+		return -1;
+
+
+	}
+
 
 
 

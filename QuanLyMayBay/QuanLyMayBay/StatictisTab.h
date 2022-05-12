@@ -7,8 +7,8 @@ private:
 	Data* d;
 
 public:
-	
-	
+
+
 	StatictisTab(Data* d) {
 		this->d = d;
 	}
@@ -19,7 +19,7 @@ public:
 
 
 	void drawUI() {
-		
+
 		char a[70] = "STATISTICS THE NUMBER FLYTIMES IN DESCENDING ORDER";
 		int x = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(a)) / 2;
 		int y = SUBWINDOW_TOP + 20;
@@ -34,10 +34,50 @@ public:
 			sortedPlane[i] = i;
 		bubbleSortPlane(d->planeList, sortedPlane);
 
-		drawStatictisData(sortedPlane, 3, d->planeList);
+		drawStatictisData(sortedPlane);
 
 
 	}
+	void drawStatictisData(int* a) {
 
+		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / 4;
+		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
+		int preY = TOP_BORDER + 60;
+
+		drawBorder(3, 4, isEmpty(d->planeList));
+
+
+		setbkcolor(SUBWINDOW_BACKGROUND);
+
+		for (int i = startPage - 1; i < endPage; i++) {
+
+			int preX = LEFT_BORDER;
+			setcolor(BLACK);
+
+			//VE STT
+			char temp[3];
+			sprintf_s(temp, "%d", i + 1);
+			int x = preX + 100;
+			drawText(preX, preY, x, temp);
+			preX = x;
+
+			//VE ID PLANE
+			x = preX + spaceX;
+			drawText(preX, preY, x, d->planeList.data[a[i]]->idPlane);
+			preX = x;
+
+			//VE SO LUOT HIEN
+			x = RIGHT_BORDER;
+			sprintf_s(temp, "%d", d->planeList.data[a[i]]->flyTimes);
+			drawText(preX, preY, x, temp);
+			preX = x;
+
+
+
+			preY += spaceY;
+
+		}
+
+	}
 
 };

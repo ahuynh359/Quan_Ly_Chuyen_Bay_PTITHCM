@@ -11,7 +11,6 @@ int SCREEN_HEIGHT = GetSystemMetrics(SM_CYSCREEN);
 
 //-----------------BACKGROUND COLOR
 #define BACKGROUND_COLOR COLOR(255, 246, 245)
-#define FOREGROUND_COLOR COLOR(167, 206, 225)
 
 
 //--------------SUBWINDOW---------------
@@ -39,7 +38,6 @@ char TAB_TEXT[MAX_TAB][30] = {
 
 };
 //------------BUTTON-----
-
 #define BUTTON_PAGE COLOR(190, 193, 196)
 #define BUTTON_BACKGROUND COLOR(167, 206, 225)
 #define BUTTON_TEXT_COLOR COLOR(52, 113, 235)
@@ -70,20 +68,7 @@ int BOTTOM_BORDER = SUBWINDOW_BOTTOM - 120;
 #define MAX_ID_FLIGHT 15
 #define MAX_ARRIVE 100
 #define MAX_FLIGHT 50
-
 enum STATUS { CANCEL_TICKET, HAVE_TICKET, OUT_OF_TICKET, COMPLETE_TICKET };
-
-
-
-//---------------MANAGE PLANE TAB-------------
-char PLANE_TITLE[5][20]{
-	"NUMBER",
-	"PLANE ID",
-	"TYPE",
-	"SEATS"
-};
-
-
 
 
 
@@ -101,15 +86,16 @@ char PLANE_TITLE[5][20]{
 #define EDITTEXT_MIN_SPACE 50
 
 
+//---------------MANAGE PLANE TAB-------------
+char PLANE_TITLE[5][20]{
+	"NUMBER",
+	"PLANE ID",
+	"TYPE",
+	"SEATS"
+};
 
-//--------------KEY
-#define ENTER 13
-#define BACK_SPACE 8
-#define SPACE 32
 
 //---------------MANAGE FLIGHT TAB-------------
-#define FLIGHT_MAX_BUTTON 8
-#define FLIGHT_TEXT_COLOR COLOR(0, 133, 190)
 char FLIGHT_TITLE[7][20]{
 	"Number",
 	"ID Flight",
@@ -119,11 +105,27 @@ char FLIGHT_TITLE[7][20]{
 	"Status"
 };
 
+// PASSENGER TAB
+char PASS_TITLE[6][20]{
+	"Number",
+	"Ticket",
+	"First Name",
+	"Last Name",
+	"ID Passenger",
+	"Gender"
+};
 
 //TICKET TAB
 #define TICKET_AVAI COLOR(144,151,155)
-#define TICKET_CHOOSEN COLOR(0,247,16)
 #define TICKET_NOT_AVAI COLOR(255,136,136)
+char TICKET_TAB[7][20]{
+	"Number",
+	"ID Flight",
+	"ID Plane",
+	"Date",
+	"Arrive",
+	"Ticket left"
+};
 
 // STATICTIS TAB
 char STATICITS_TITLE[4][20]{
@@ -132,14 +134,7 @@ char STATICITS_TITLE[4][20]{
 	"Fly times"
 };
 
-// STATICTIS TAB
-char PASS_TITLE[6][20]{
-	"Number",
-	"Ticket",
-	"First Name",
-	"Last Name",
-	"ID Passenger"
-};
+
 
 //-----ENUM BUTTON EDITTEXT NAME
 enum EIDT_NAME { ID_PLANE, ID_FLIGHT, TYPE, SEATS, DAY, MONTH, HOUR, ARRIVE, YEAR, MINUTE, STATUS, FIRST_NAME, LAST_NAME, ID_PASS, GENDER };
@@ -149,8 +144,8 @@ enum EDITTEXT_MESS {
 	EMPTY, SEAT_ERROR, DUP, SUCCESS, PREVIOUS,
 	CANCLE_FLIGHT_ERROR, FLIGHT_IS_DONE, CANCLE_TICKET,
 	PLANE_NOT_EXIST, DAY_ERROR, MONTH_ERROR, TIME_ERROR, YEAR_ERROR, MINUTE_ERROR, HOUR_ERROR, GREATER_SEAT, ID_PASS_ERROR,
-	GENDER_ERROR, DUP_ID_PASS, FULL_PLANE,
-	REMOVE_CONFIRM, REMOVE_ERROR, ADJUST_ERROR, THIRTY_MINUTE, CANCEL_CONFIRM
+	GENDER_ERROR, FULL_PLANE,
+	REMOVE_CONFIRM, REMOVE_ERROR, ADJUST_ERROR, BEFORE_ONE_HOUR, CANCEL_CONFIRM, THIRTY_MINUTE
 };
 #define MAX_BUTTON 15
 #define MAX_EDITTEXT 17

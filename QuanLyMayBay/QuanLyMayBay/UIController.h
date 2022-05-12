@@ -96,6 +96,7 @@ public:
 		int id = currentTab->getID();
 
 		resetTab(id);
+	
 		manageTab[id]->drawUI();
 
 		if (closeButton.isClicked()) {

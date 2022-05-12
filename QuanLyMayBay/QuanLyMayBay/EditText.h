@@ -112,12 +112,14 @@ public:
 		return isCliked;
 	}
 
+	/*
+	* mouse click for handel flight data
+	*/
+	void onAction(EditText*& edittext, bool mouseClick = false) {
 
-	void onAction(EditText*& editext) {
-
-		if (editext == this) {
+		if (edittext == this || (mouseClick && isLeftMouseClicked(mousex(),mousey()))) {
 			isCliked = true;
-			editext = this;
+			edittext = this;
 			currentBackground = onSelectedBackgroundColor;
 
 			//Them con tro
@@ -132,7 +134,7 @@ public:
 
 		}
 
-		else if (editext != this) {
+		else if (edittext != this) {
 			isCliked = false;
 			currentBackground = backgroundColor;
 			//Xoa con tro
@@ -154,20 +156,7 @@ public:
 
 	}
 
-	int getLeft() {
-		return left;
-	}
-
-	int getTop() {
-		return top;
-	}
-
-	int getRight() {
-		return right;
-	}	
-	int getBottom() {
-		return bottom;
-	}
+	
 	bool isExistDash(char content[30]) {
 		for (int i = 0; i < strlen(content); i++) {
 			if (content[i] == '_')

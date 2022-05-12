@@ -189,9 +189,9 @@ bool checkTimeBeforeMinute(Date& d, int min) {
 }
 
 
-bool inThreeHour(Date& d1, Date& d2) {
+bool in12Hour(Date& d1, Date& d2) {
 
-	if (abs(calSpaceTime(d1, d2)) >= 180)
+	if (abs(calSpaceTime(d1, d2)) >= 720)
 		return true;
 	return false;
 

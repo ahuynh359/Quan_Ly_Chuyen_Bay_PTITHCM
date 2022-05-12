@@ -1,68 +1,41 @@
 #pragma once
 
-
-
 #include"Planes.h"
 #include"Flights.h"
 #include"Passengers.h"
 #include"Data.h"
-#include"FunctionTab.h"
+#include"ManageFlightsTab.h"
 
-class TicketTab :public FunctionTab {
+class TicketTab :public ManageFlightsTab {
 private:
 	PTR flightTemp;
+	Button* buttonTicket, * closeButton, * genderButton, * ticketPointer;
+	EditText* addEdittextPointer;
 
-
-	Button* buttonTicket, * filterButton, * closeButton, * genderButton, * ticketPointer;
-
-	PlaneList planeList;
-	AVLTree temp;
 	Data* d;
 public:
-	
 
+	TicketTab() {
+		initSearchEdittext();
+		initEdittext();
+
+		buttonTicket = new Button[51]; //Khoi tao so ghe
+		closeButton = &button[CLOSE];
+		addEdittextPointer = NULL;
+		genderButton = NULL;
+		ticketPointer = NULL;
+	}
 	TicketTab(Data* d) {
 		this->d = d;
 
 		initEdittext();
-		initButton();
 
 		buttonTicket = new Button[51]; //Khoi tao so ghe
-
-		genderButton = &button[FEMALE];
 		closeButton = &button[CLOSE];
-
+		addEdittextPointer = NULL;
+		genderButton = NULL;
 		ticketPointer = NULL;
 
-	}
-	void customEdittext(AVLTree& pass) {
-		edittext[FIRST_NAME].customInitChar(pass->data.firstName);
-		edittext[LAST_NAME].customInitChar(pass->data.lastName);
-		if (pass->data.gender == 0)
-			genderButton = &button[MALE];
-		else genderButton = &button[FEMALE];
-	}
-	Passenger getPassenger() {
-		Passenger p;
-
-		strcpy_s(p.idPass, edittext[ID_PASS].getCharData());
-		strcpy_s(p.firstName, edittext[FIRST_NAME].getCharData());
-		strcpy_s(p.lastName, edittext[LAST_NAME].getCharData());
-
-		if (genderButton == &button[FEMALE])
-			p.gender = true;
-		else if (genderButton == &button[MALE])
-			p.gender = false;
-		return p;
-
-	}
-
-
-	void clearEditext() {
-		edittext[ID_PASS].clearText();
-		edittext[LAST_NAME].clearText();
-		edittext[FIRST_NAME].clearText();
-		genderButton = NULL;
 
 	}
 	void initEdittext() {
@@ -104,6 +77,7 @@ public:
 		strcpy_s(title, "FE");
 		button[FEMALE] = Button(left, top, left + 30, top + 30, EDITEXT_BACKGROUND_COLOR, COLOR(214, 131, 191), title, BLACK);
 
+
 		left += 50;
 		strcpy_s(title, "M");
 		button[MALE] = Button(left, top, left + 30, top + 30, EDITEXT_BACKGROUND_COLOR, COLOR(135, 206, 222), title, BLACK);
@@ -113,47 +87,47 @@ public:
 
 
 	}
-	void initButton() {
 
-		//-----BUTTON LOC THEM CON VE
-		char a[10] = "TICKET";
-		button[HAVE_TICKET] = Button(RIGHT_BORDER - 110, SUBWINDOW_TOP + 2, RIGHT_BORDER - 60, SUBWINDOW_TOP + 48,
-			BUTTON_PAGE, WHITE, a, BUTTON_TEXT_COLOR);
+	void customEdittext(AVLTree& pass) {
+		edittext[FIRST_NAME].customInitChar(pass->data.firstName);
+		edittext[LAST_NAME].customInitChar(pass->data.lastName);
+		if (pass->data.gender == 0)
+			genderButton = &button[MALE];
+		else genderButton = &button[FEMALE];
+	}
+	Passenger getPassenger() {
+		Passenger p;
 
-		filterButton = &button[HAVE_TICKET];
+		strcpy_s(p.idPass, edittext[ID_PASS].getCharData());
+		strcpy_s(p.firstName, edittext[FIRST_NAME].getCharData());
+		strcpy_s(p.lastName, edittext[LAST_NAME].getCharData());
 
-		//-----BUTTON LOC HET CHUYEN BAY
-		strcpy_s(a, "ALL");
-		button[ALL] = Button(RIGHT_BORDER - 50, SUBWINDOW_TOP + 2, RIGHT_BORDER, SUBWINDOW_TOP + 48,
-			BUTTON_PAGE, WHITE, a, BUTTON_TEXT_COLOR);
-
-
-
-
-
-
-
-
+		if (genderButton == &button[FEMALE])
+			p.gender = true;
+		else if (genderButton == &button[MALE])
+			p.gender = false;
+		return p;
 
 	}
-	void initAdjustMenu(bool s) {
 
 
-		if (!s) {
-			edittext[FIRST_NAME].setActive(false);
-			edittext[LAST_NAME].setActive(false);
-			edittext[FIRST_NAME].setActive(false);
-			button[FEMALE].setActive(false);
-			button[MALE].setActive(false);
+	void clearEditext() {
+		edittext[ID_PASS].clearText();
+		edittext[LAST_NAME].clearText();
+		edittext[FIRST_NAME].clearText();
+		addEdittextPointer = NULL;
+		genderButton = NULL;
 
-		}
-		else {
-			edittext[FIRST_NAME].setActive(true);
-			edittext[LAST_NAME].setActive(true);
-			edittext[FIRST_NAME].setActive(true);
-			button[FEMALE].setActive(true);
-			button[MALE].setActive(true);
-		}
+	}
+
+
+	void initAddMenu(bool s) {
+		edittext[FIRST_NAME].setActive(s);
+		edittext[LAST_NAME].setActive(s);
+		edittext[FIRST_NAME].setActive(s);
+		button[FEMALE].setActive(s);
+		button[MALE].setActive(s);
+
 	}
 	void initTicketList(PTR& flight) {
 
@@ -181,35 +155,38 @@ public:
 	}
 	void reset() {
 		FunctionTab::reset();
+		clearEditext();
 	}
 
 
 	void moveEdittextUp() {
-		if (edittextPointer == &edittext[LAST_NAME]) {
-			edittextPointer = &edittext[FIRST_NAME];
+		if (addEdittextPointer == &edittext[LAST_NAME]) {
+			addEdittextPointer = &edittext[FIRST_NAME];
 		}
-		else if (edittextPointer == &edittext[FIRST_NAME])
-			edittextPointer = &edittext[ID_PASS];
+		else if (addEdittextPointer == &edittext[FIRST_NAME]) {
+			addEdittextPointer = &edittext[ID_PASS];
+
+		}
 	}
 	void moveEdittextDown() {
-		if (edittextPointer == &edittext[ID_PASS]) {
+		if (addEdittextPointer == &edittext[ID_PASS]) {
 			AVLTree passenger = findPassenger(d->passengerList, edittext[ID_PASS].getCharData());
 			if (passenger != NULL) {
 				customEdittext(passenger);
 
 			}
-			edittextPointer = &edittext[FIRST_NAME];
+			addEdittextPointer = &edittext[FIRST_NAME];
 		}
-		else if (edittextPointer == &edittext[FIRST_NAME]) {
-			edittextPointer = &edittext[LAST_NAME];
+		else if (addEdittextPointer == &edittext[FIRST_NAME]) {
+			addEdittextPointer = &edittext[LAST_NAME];
 		}
 
 	}
 	bool checkEdittextError() {
-		edittextPointer->clearCursor();
+		addEdittextPointer->clearCursor();
 
-		if (edittextPointer == &edittext[ID_PASS]) {
-			if (edittextPointer->isEmpty()) {
+		if (addEdittextPointer == &edittext[ID_PASS]) {
+			if (addEdittextPointer->isEmpty()) {
 				drawAnounce(EMPTY);
 				return false;
 			}
@@ -217,32 +194,37 @@ public:
 				drawAnounce(ID_PASS_ERROR);
 				return false;
 			}
-			if (!ableToBook(flightTemp, edittext[ID_PASS].getCharData())) {
-				drawAnounce(DUP_ID_PASS);
+			int s = checkDupIDOnFlight(flightTemp, edittext[ID_PASS].getCharData());
+			if (s != -1) {
+				char mess[200] = "Duplicate ID in seat number ";
+				char a[3];
+				sprintf_s(a, "%d", s);
+				strcat_s(mess, a);
+				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
 				return false;
 			}
-			initAdjustMenu(true);
+			initAddMenu(true);
 		}
 
 
 
-		if (edittextPointer == &edittext[FIRST_NAME]) {
-			if (edittextPointer->isEmpty()) {
+		if (addEdittextPointer == &edittext[FIRST_NAME]) {
+			if (addEdittextPointer->isEmpty()) {
 				drawAnounce(EMPTY);
 				return false;
 			}
 		}
 
+		edittext[FIRST_NAME].standarContent();
 
-
-		if (edittextPointer == &edittext[LAST_NAME]) {
-			if (edittextPointer->isEmpty()) {
+		if (addEdittextPointer == &edittext[LAST_NAME]) {
+			if (addEdittextPointer->isEmpty()) {
 				drawAnounce(EMPTY);
 				return false;
 			}
 
 		}
-
+		edittext[LAST_NAME].standarContent();
 		return true;
 
 
@@ -251,10 +233,10 @@ public:
 	void inputHandel() {
 		int c = FunctionTab::getInput();
 
-		if (edittextPointer != NULL) {
+		if (addEdittextPointer != NULL) {
 			switch (c) {
 			case -1: {
-				edittextPointer->deleteChar();
+				addEdittextPointer->deleteChar();
 				break;
 			}
 			case 1: {
@@ -279,14 +261,14 @@ public:
 			default: {
 
 
-				if (edittextPointer == &edittext[ID_PASS]) {
+				if (addEdittextPointer == &edittext[ID_PASS]) {
 					if (c <= 57 && c >= 48)
-						edittextPointer->addChar((char)c);
+						addEdittextPointer->addChar((char)c);
 
 				}
-				else if (edittextPointer == &edittext[FIRST_NAME] || edittextPointer == &edittext[LAST_NAME]) {
+				else if (addEdittextPointer == &edittext[FIRST_NAME] || addEdittextPointer == &edittext[LAST_NAME]) {
 					if (c <= 90 && c >= 65 || c == ' ' || c <= 122 && c >= 97)
-						edittextPointer->addCharName((char)c);
+						addEdittextPointer->addCharName((char)c);
 
 				}
 
@@ -309,38 +291,43 @@ public:
 
 		if (edittext[ID_PASS].isEmpty()) {
 			drawAnounce(EMPTY);
-			edittextPointer = &edittext[ID_PASS];
+			addEdittextPointer = &edittext[ID_PASS];
 			return false;
 		}
 
 		if (!checkIDPassenger(edittext[ID_PASS].getCharData())) {
 			drawAnounce(ID_PASS_ERROR);
-			edittextPointer = &edittext[ID_PASS];
+			addEdittextPointer = &edittext[ID_PASS];
 			return false;
 		}
 
-
-		if (!ableToBook(flightTemp, edittext[ID_PASS].getCharData())) {
-			drawAnounce(DUP_ID_PASS);
-			edittextPointer = &edittext[ID_PASS];
+		int s = checkDupIDOnFlight(flightTemp, edittext[ID_PASS].getCharData());
+		if (s != -1) {
+			char mess[200] = "Duplicate ID in seat number ";
+			char a[3];
+			sprintf_s(a, "%d", s);
+			strcat_s(mess, a);
+			MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
+			addEdittextPointer = &edittext[ID_PASS];
 			return false;
 		}
-
-
+		initAddMenu(true);
 
 		if (edittext[FIRST_NAME].isEmpty()) {
 			drawAnounce(EMPTY);
-			edittextPointer = &edittext[FIRST_NAME];
+			addEdittextPointer = &edittext[FIRST_NAME];
 			return false;
 		}
 
+		edittext[FIRST_NAME].standarContent();
 
 
 		if (edittext[LAST_NAME].isEmpty()) {
 			drawAnounce(EMPTY);
-			edittextPointer = &edittext[LAST_NAME];
+			addEdittextPointer = &edittext[LAST_NAME];
 			return false;
 		}
+		edittext[LAST_NAME].standarContent();
 
 		if (genderButton == NULL) {
 			drawAnounce(GENDER_ERROR);
@@ -354,7 +341,7 @@ public:
 	//-------------------------UI--------------------------
 	void drawUI() {
 
-
+		FunctionTab::drawBackground();
 		switch (currentMenu) {
 		case MAIN_MENU: {
 			drawMainMenu();
@@ -365,8 +352,8 @@ public:
 			break;
 		}
 
-		case ADJUST_MENU: {
-			drawAdjustMenu();
+		case ADD_MENU: {
+			drawAddMenu();
 			break;
 		}
 
@@ -377,22 +364,29 @@ public:
 	}
 	void drawMainMenu() {
 
+
+		inputMainMenuHandel();
 		//-----------------VE HUONG DAN TEXT
 		char a[40] = "*Left click to book/cancel ticket";
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
+		int s;
 
-		int s = drawFlightData(6, d->flightList, flightTemp);
-
-
-		button[HAVE_TICKET].onAction(filterButton);
-		button[ALL].onAction(filterButton);
+		s = drawFlightData(flightTemp, d->flightList, true);
 
 		if (s == 1) {
+			Date d = flightTemp->info.date;
+
+
+
+			//Khong cho dat ve 30 phut cuoi
+			if (!checkTimeBeforeMinute(d, 30)) {
+				drawAnounce(THIRTY_MINUTE);
+				return;
+			}
 			initTicketList(flightTemp);
 			delay(50);
 			currentMenu = TICKET_MENU;
 		}
-
 
 	}
 
@@ -406,31 +400,35 @@ public:
 
 		if (ticketPointer != NULL) {
 			if (!ticketPointer->getIsChoosen() && ticketPointer->getIsLeftClick()) {
-				edittextPointer = &edittext[ID_PASS];
-				initAdjustMenu(false);
+				addEdittextPointer = &edittext[ID_PASS];
+				initAddMenu(false);
 
 				delay(50);
-				currentMenu = ADJUST_MENU;
+				currentMenu = ADD_MENU;
 				return;
 
 			}
 			else
 				if (ticketPointer->getIsChoosen() && ticketPointer->getIsRightClick()) {
-					cout << "AHIHI RIGHT CLICK\n";
 
 					int s = drawAnounce(CANCLE_TICKET);
-					if (s == IDOK) {
+					switch (s) {
+					case IDOK: {
 						ticketPointer->setChoosen(false);
 						ticketPointer->drawSeatUI();
 						char a[MAX_ID_PASS + 1] = "0";
 						bookTicket(flightTemp, ticketPointer->getIntData() - 1, a);
 						ticketPointer = NULL;
+						break;
+					}
+					default:
+						break;
 					}
 					delay(50);
 
 				}
 		}
-	
+
 
 		button[BACK].onAction();
 
@@ -453,7 +451,7 @@ public:
 		char a[30] = "GENDER";
 		drawText(left, top, left + textwidth(a), a);
 	}
-	void drawAdjustMenu() {
+	void drawAddMenu() {
 
 		button[BACK].onAction();
 		button[SAVE].onAction();
@@ -462,9 +460,9 @@ public:
 
 		drawGenderText();
 
-		edittext[ID_PASS].onAction(edittextPointer);
-		edittext[FIRST_NAME].onAction(edittextPointer);
-		edittext[LAST_NAME].onAction(edittextPointer);
+		edittext[ID_PASS].onAction(addEdittextPointer);
+		edittext[FIRST_NAME].onAction(addEdittextPointer);
+		edittext[LAST_NAME].onAction(addEdittextPointer);
 
 
 		inputHandel();
@@ -483,7 +481,6 @@ public:
 				traverse(d->passengerList);
 				d->passengerList = addPassenger(d->passengerList, p);
 				ticketPointer->setChoosen(true);
-				
 				drawAnounce(SUCCESS);
 				clearEditext();
 				bookTicket(flightTemp, ticketPointer->getIntData() - 1, p.idPass);
@@ -510,9 +507,7 @@ public:
 		strcpy_s(s, "Not available");
 		drawSmallBox(left, top, 20, 20, TICKET_NOT_AVAI, s);
 
-		top += 30;
-		strcpy_s(s, "Is Choosen");
-		drawSmallBox(left, top, 20, 20, TICKET_CHOOSEN, s);
+
 	}
 	void drawSmallBox(int x, int y, int width, int height, int color, char title[20]) {
 

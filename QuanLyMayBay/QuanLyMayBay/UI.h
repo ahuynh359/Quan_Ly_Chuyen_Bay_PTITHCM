@@ -30,9 +30,25 @@ public:
 		onSelectedBackgroundColor = -1;
 		currentBackground = -1;
 	}
+
+	int getLeft() {
+		return left;
+	}
+
+	int getRight() {
+		return right;
+	}
+
+	int getTop() {
+		return top;
+	}
+
+	int getBottom() {
+		return bottom;
+	}
 protected:
 
-	
+
 
 	bool virtual isPointed(int xMouse, int yMouse) {
 		if (xMouse <= right && xMouse >= left && yMouse <= bottom && yMouse >= top) {
@@ -63,7 +79,7 @@ protected:
 
 	}
 
-	
+
 
 
 

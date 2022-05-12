@@ -131,14 +131,23 @@ int checkCancleFlight(PTR& first) {
 void checkCompleted(PlaneList& planeList, PTR& temp) {
 	if (temp->info.status == HAVE_TICKET || temp->info.status == OUT_OF_TICKET) {
 		Date now = getCurTime();
-		if (calSpaceTime(now,temp->info.date) >= 0) {
+		if (calSpaceTime(now, temp->info.date) >= 0) {
 			temp->info.status = COMPLETE_TICKET;
 			planeList.data[findPlane(planeList, temp->info.idPlane)]->flyTimes++;
 		}
 	}
 }
 
-void checkCompletedAll(PTR &flightList,PlaneList &planeList) {
+int countTicketLeft(PTR& flightList) {
+	int cnt = 0;
+	for (int i = 0; i < flightList->info.totalTicket; i++) {
+		if (strcmp(flightList->info.ticketList[i], "0") == 0)
+			cnt++;
+	}
+	return cnt;
+}
+
+void checkCompletedAll(PTR& flightList, PlaneList& planeList) {
 	for (PTR k = flightList; k != NULL; k = k->next) {
 		checkCompleted(planeList, k);
 	}
@@ -164,14 +173,14 @@ void initTicketList(PlaneList& planeList, Flight& flight) {
 
 }
 
-//kiem tra CMND trung tren 1 chuyen bay
-bool ableToBook(PTR& flightList, char id[MAX_ID_PASS + 1]) {
+//kiem tra CMND trung tren 1 chuyen bay, tra ve so ghe bi trung
+int checkDupIDOnFlight(PTR& flightList, char id[MAX_ID_PASS + 1]) {
 	for (int i = 0; i < flightList->info.totalTicket; i++) {
 		if (strcmp(flightList->info.ticketList[i], id) == 0) {
-			return false;
+			return i + 1;
 		}
 	}
-	return true;
+	return -1;
 }
 
 void bookTicket(PTR& first, int index, char id[MAX_ID_PASS + 1]) {
