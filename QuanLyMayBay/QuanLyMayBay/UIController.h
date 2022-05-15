@@ -56,15 +56,12 @@ public:
 	}
 
 	~UIController() {
+	
 		delete tab;
-		delete currentTab;
 		delete data;
-
-		for (int i = 0; i < MAX_TAB; i++) {
-			delete manageTab[i];
-		}
-
-		delete  manageTab;
+		
+	
+	
 	}
 
 
@@ -99,19 +96,18 @@ public:
 	
 		manageTab[id]->drawUI();
 
-		if (closeButton.isClicked()) {
-			onCloseButtonClicked();
-		}
+		
 
 	}
 
-	void onCloseButtonClicked() {
-
-		data->writeFile();
-		data->freeMemory();
-		closegraph();
-		DestroyWindow(GetForegroundWindow());
-		PostQuitMessage(0);
+	void onCloseButtonClicked(bool &isActive) {
+		if (closeButton.isClicked()) {
+			data->writeFile();
+			data->freeMemory();
+			isActive = false;
+		}
+		
+		
 
 
 	}

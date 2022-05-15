@@ -23,10 +23,15 @@ public:
 		initSearchEdittext();
 
 	}
-
+	~ManagePassengersTab() {
+		delete d;
+		delete tempFlight;
+	}
 	void reset() {
-		FunctionTab::reset();
-		ManageFlightsTab::resetEdittext();
+		ManageFlightsTab::reset();
+		currentMenu = MAIN_MENU;
+		currentPage = 1;
+
 	}
 
 	void drawUI() {
@@ -63,13 +68,14 @@ public:
 
 		int s;
 		if (checkAllEdittextIsEmpty()) {
-			s = drawFlightData(tempFlight, d->flightList);
+			s = drawFlightData(tempFlight, d->flightList, d->planeList);
 			if (s == 1)
 				currentMenu = SHOW_MENU;
 
 		}
 
 		else {
+			currentPage = 1;
 			clearSearchEdittextCursor();
 			s = drawFilterData(tempFlight,d->flightList);
 
@@ -168,8 +174,8 @@ public:
 			if (strcmp(flightList->info.ticketList[i], "0") != 0)
 				cnt++;
 
-		onButtonPage(cnt);
-		showPage();
+		onButtonPage(cnt, currentPage);
+		showPage(currentPage);
 
 
 		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;

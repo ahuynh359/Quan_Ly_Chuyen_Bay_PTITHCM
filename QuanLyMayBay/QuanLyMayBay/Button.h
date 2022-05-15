@@ -64,10 +64,14 @@ public:
 	}
 
 	bool getIsLeftClick() {
-		return isLeftClick;
+		if (isLeftMouseClicked(mousex(), mousey()))
+			return true;
+		return false;
 	}
 	bool getIsRightClick() {
-		return isRightClick;
+		if (isRightMouseClicked(mousex(), mousey()))
+			return true;
+		return false;
 	}
 	void drawUI() {
 
@@ -188,19 +192,16 @@ public:
 		}
 		else if (isChoosen == true && button == this || isRightMouseClicked(mousex(), mousey())) {
 
-			cliked = true;
+			cliked = false;
 			button = this;
 			isLeftClick = false;
 			isRightClick = true;
 
 		}
 		else {
-			cliked = false;
 			isLeftClick = false;
 			isRightClick = false;
-
 		}
-
 
 
 		drawSeatUI();

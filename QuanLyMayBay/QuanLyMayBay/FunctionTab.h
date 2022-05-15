@@ -16,7 +16,7 @@ using namespace std;
 
 class FunctionTab {
 protected:
-	int currentMenu, currentPage;
+	int currentMenu, currentPage,currentFilterPage;
 	int startPage, endPage;
 
 
@@ -30,12 +30,16 @@ public:
 
 	FunctionTab() {
 		currentMenu = 0;
-		currentPage = startPage = endPage = 1;
+		currentPage = startPage = currentFilterPage =  endPage = 1;
 
 
 		initButton();
 
 
+	}
+	virtual ~FunctionTab() {
+		delete buttonPointer;
+		delete edittextPointer;
 	}
 
 	//------------KHOI TAO
@@ -63,6 +67,11 @@ public:
 		//-----------BUTTON LUU
 		strcpy_s(a, "SAVE");
 		button[SAVE] = Button(SUBWINDOW_RIGHT - 100, SUBWINDOW_BOTTOM - 100, SUBWINDOW_RIGHT - 30,
+			SUBWINDOW_BOTTOM - 50, BUTTON_BACKGROUND, WHITE, a, BUTTON_TEXT_COLOR);
+
+		//-----------BUTTON CANCLE TICKET
+		strcpy_s(a, "CANCLE");
+		button[CANCLE] = Button(SUBWINDOW_RIGHT - 100, SUBWINDOW_BOTTOM - 100, SUBWINDOW_RIGHT - 30,
 			SUBWINDOW_BOTTOM - 50, BUTTON_BACKGROUND, WHITE, a, BUTTON_TEXT_COLOR);
 
 		//-------------BUTTON THEM
@@ -123,13 +132,15 @@ public:
 	}
 
 	//-------HAM XU LI SO TRANG
-	void  onButtonPage(int size) {
+	void  onButtonPage(int size,int &currentPage) {
 		button[LEFT].onAction();
 		button[RIGHT].onAction();
 
 		endPage = ceil((size + 0.0) / 10);
 		endPage = max(1, endPage);
+
 		startPage = (currentPage - 1) * 10;
+		
 
 		//Xu li khi xoa 
 		if (currentPage > endPage) {
@@ -149,7 +160,7 @@ public:
 
 		}
 	}
-	void  showPage()
+	void  showPage(int &currentPage)
 	{
 		setcolor(PAGE_COLOR);
 		setbkcolor(SUBWINDOW_BACKGROUND);
@@ -485,10 +496,7 @@ public:
 
 	}
 
-	void  reset() {
-		currentMenu = MAIN_MENU;
-		currentPage = 1;
-	}
+	
 
 
 	/*
@@ -586,12 +594,7 @@ public:
 
 
 	void virtual drawUI() = 0;
-
-	void virtual freeMemory() {
-		delete buttonPointer;
-		delete edittextPointer;
-
-	}
+	void virtual reset() = 0;
 
 
 };

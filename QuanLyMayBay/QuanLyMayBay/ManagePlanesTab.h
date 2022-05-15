@@ -128,7 +128,8 @@ public:
 
 	}
 	void reset() {
-		FunctionTab::reset();
+		currentMenu = MAIN_MENU;
+		currentPage = 1;
 		resetEdittext();
 	}
 
@@ -370,7 +371,7 @@ public:
 
 
 
-		int s = drawPlaneData(indexID);
+		int s = drawPlaneData(d->planeList,indexID);
 		if (s == 1) {
 			int s = drawAnounce(REMOVE_CONFIRM);
 			switch (s) {
@@ -531,7 +532,7 @@ public:
 
 
 	//----------------------DATA -----------------
-	void drawOnePlane(int preX, int preY, int i) {
+	void drawOnePlane(PlaneList &planeList,int preX, int preY, int i) {
 		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / 5;
 
 		//VE STT
@@ -543,16 +544,16 @@ public:
 
 		//VE ID PLANE
 		x = preX + spaceX;
-		drawText(preX, preY, x, d->planeList.data[i]->idPlane);
+		drawText(preX, preY, x, planeList.data[i]->idPlane);
 		preX = x;
 
 		//VE TYPE
 		x += (spaceX + 200);
-		drawText(preX, preY, x, d->planeList.data[i]->type);
+		drawText(preX, preY, x, planeList.data[i]->type);
 		preX = x;
 
 		//VE SEATS
-		sprintf_s(temp, "%d", d->planeList.data[i]->seats);
+		sprintf_s(temp, "%d", planeList.data[i]->seats);
 		x = RIGHT_BORDER;
 		drawText(preX, preY, x, temp);
 
@@ -560,19 +561,19 @@ public:
 
 
 	}
-	int  drawPlaneData(int& indexID) {
+	int  drawPlaneData(PlaneList &planeList,int& indexID) {
 
 		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20;
 		int preY = TOP_BORDER + 60;
 
-		drawBorder(4, 0, isEmpty(d->planeList)); //Draw border va title
+		drawBorder(4, 0, isEmpty(planeList)); //Draw border va title
 
-		onButtonPage(d->planeList.size); //Su kien nut left / right
-		showPage(); //Hien thi trang
+		onButtonPage(planeList.size,currentPage); //Su kien nut left / right
+		showPage(currentPage); //Hien thi trang
 
 
 
-		for (int i = startPage; i < min(d->planeList.size, (startPage + 10)); i++) {
+		for (int i = startPage; i < min(planeList.size, (startPage + 10)); i++) {
 
 
 			indexID = i;
@@ -586,7 +587,7 @@ public:
 			}
 
 
-			drawOnePlane(preX, preY, i);
+			drawOnePlane(planeList,preX, preY, i);
 
 			if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
 				return 1;

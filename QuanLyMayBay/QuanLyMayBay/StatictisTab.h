@@ -1,22 +1,23 @@
 #pragma once
-#include"ManagePlanesTab.h"
+
 #include"FunctionTab.h"
 #include"Data.h"
+
 class StatictisTab :public FunctionTab {
 private:
 	Data* d;
 
 public:
-
-
 	StatictisTab(Data* d) {
 		this->d = d;
 	}
 	~StatictisTab() {
-
+		delete d;
 	}
 
+	void reset() {
 
+	}
 
 	void drawUI() {
 
@@ -44,16 +45,19 @@ public:
 		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
 		int preY = TOP_BORDER + 60;
 
+		checkCompletedAll(d->flightList, d->planeList);
+		onButtonPage(d->planeList.size, currentPage);
+		showPage(currentPage);
 		drawBorder(3, 4, isEmpty(d->planeList));
 
 
 		setbkcolor(SUBWINDOW_BACKGROUND);
 
-		for (int i = startPage - 1; i < endPage; i++) {
+		for (int i = startPage ; i < d->planeList.size && i < 10; i++) {
 
 			int preX = LEFT_BORDER;
 			setcolor(BLACK);
-
+			cout << i;
 			//VE STT
 			char temp[3];
 			sprintf_s(temp, "%d", i + 1);

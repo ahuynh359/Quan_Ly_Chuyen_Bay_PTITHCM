@@ -8,7 +8,7 @@
 
 
 class ManageFlightsTab :public FunctionTab {
-private:
+protected:
 	EditText addEdittext[MAX_EDITTEXT];
 	EditText* addPointer;
 
@@ -26,8 +26,15 @@ private:
 
 public:
 	ManageFlightsTab() {
+		addPointer = NULL;
 		beginPage = new PTR[0];
 		beginPageSize = 1;
+	}
+	~ManageFlightsTab() {
+		delete addEdittext;
+		delete d;
+		delete[MAX_EDITTEXT] addEdittext;
+		delete beginPage;
 	}
 
 	ManageFlightsTab(Data* data) {
@@ -221,9 +228,10 @@ public:
 
 	//-------------RESET
 	void reset() {
-		FunctionTab::reset();
-		resetEdittext();
+		currentMenu = MAIN_MENU;
+		currentPage = 1;
 		resetAddEdittext();
+		resetEdittext();
 	}
 	void resetAddEdittext() {
 		addEdittext[ID_FLIGHT].clearText();
@@ -751,7 +759,7 @@ public:
 
 		button[ADD].onAction();
 
-		
+
 		//Xu li ban phim cho loc thong tin
 		inputMainMenuHandel();
 
@@ -759,10 +767,12 @@ public:
 		//Neu tat ca cac truong loc thong tin trong thi ve du lieu bth
 		int s;
 		if (checkAllEdittextIsEmpty())
-			s = drawFlightData(tempFlight, d->flightList);
+			s = drawFlightData(tempFlight, d->flightList, d->planeList);
 
 		else {
+			currentPage = 1;
 			clearSearchEdittextCursor();
+
 			s = drawFilterData(tempFlight, d->flightList);
 
 		}
@@ -947,7 +957,7 @@ public:
 	}
 	void drawFindPlane() {
 
-		int s = manage.drawPlaneData(indexID);
+		int s = manage.drawPlaneData(d->planeList, indexID);
 		if (s == 1) {
 			addEdittext[ID_PLANE].customInitChar(d->planeList.data[indexID]->idPlane);
 			currentMenu = ADD_MENU;
@@ -973,12 +983,15 @@ public:
 	}
 
 	//---------------DRAW DATA
-	void drawOneFlight(int preY, int i, PTR& k,bool seat) {
+
+
+	void drawOneFlight(int preY, int i, PTR& k, bool seat = false) {
+		setbkcolor(SUBWINDOW_BACKGROUND);
 
 		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / 7;
 		int preX = LEFT_BORDER;
 		//VE STT
-		char temp[40];
+		char temp[200];
 		sprintf_s(temp, "%d", i + 1);
 		int x = preX + 100;
 		drawText(preX, preY, x, temp);
@@ -1011,6 +1024,15 @@ public:
 		x = RIGHT_BORDER;
 		if (seat) {
 			sprintf_s(temp, "%d", countTicketLeft(k));
+
+			strcat_s(temp, " / ");
+			char a[200];
+
+			sprintf_s(a, "%d", k->info.totalTicket);
+			strcat_s(temp, a);
+			drawText(preX, preY, x, temp);
+
+
 		}
 		else {
 			switch (k->info.status) {
@@ -1033,29 +1055,27 @@ public:
 			default:
 				break;
 			}
+			drawText(preX, preY, x, temp);
 		}
 
 
-		drawText(preX, preY, x, temp);
+
 
 	}
-	int drawFlightData(PTR& tempFlight, PTR& flightList, bool seat = false) {
+	int drawFlightData(PTR& tempFlight, PTR& flightList, PlaneList& planeList) {
 
 		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
 		int preY = TOP_BORDER + 60;
 
-		if (seat)
 
-			drawBorder(6, 3, isEmpty(flightList)); //Draw border va title
-		else
+		drawBorder(6, 1, isEmpty(flightList));
 
-			drawBorder(6, 1, isEmpty(flightList));
-
-		onButtonPage(size(flightList)); //Su kien nut left / right
-		showPage(); //Hien thi trang
+		checkCompletedAll(flightList, planeList);
+		onButtonPage(size(flightList),currentPage); //Su kien nut left / right
+		showPage(currentPage); //Hien thi trang
 
 
-		int cnt = 1;
+		int cnt = 0;
 		PTR k = flightList;
 
 
@@ -1077,7 +1097,7 @@ public:
 			}
 
 
-			drawOneFlight(preY, i, k,seat);
+			drawOneFlight(preY, i, k);
 
 			if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
 				return 1;
@@ -1098,10 +1118,10 @@ public:
 
 
 	}
-	int countSizeFilterData(PTR& flightList) {
+	int countSizeFilterData(PTR& flightList, bool seat) {
 		beginPageSize = 1;
 
-
+		clearSearchEdittextCursor();
 		Date date = getDateFromSearch();
 
 		int size = 0;
@@ -1117,41 +1137,50 @@ public:
 				&& (strlen(edittext[ARRIVE].getCharData()) == 0 || isPrefix(edittext[ARRIVE].getCharData(), k->info.arrive))
 				)
 			{
-				if (cnt % 10 == 1) {
-					beginPage[beginPageSize] = new FlightNode;
-					beginPage[beginPageSize] = k;
-					beginPageSize++;
-					if (beginPageSize > 9)
-						return size;
-					cnt = 1;
+				if (!seat || (seat && k->info.status == 2 || k->info.status == 1)) {
+					if (cnt % 10 == 1) {
+						beginPage[beginPageSize] = new FlightNode;
+						beginPage[beginPageSize] = k;
+						beginPageSize++;
+
+						cnt = 1;
+					}
+					cnt++;
+					size++;
 				}
-				size++;
+
+
 			}
 		}
+
 		return size;
 	}
-	int drawFilterData(PTR& tempFlight, PTR& flightList,bool seat = false) {
+	int drawFilterData(PTR& tempFlight, PTR& flightList, bool seat = false) {
 
 		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
 		int preY = TOP_BORDER + 60;
-		int size = countSizeFilterData(flightList);
+		clearSearchEdittextCursor();
 
+		int size = countSizeFilterData(flightList, seat);
+		//cout << size << "\n\n";
 		if (!seat) {
 			drawBorder(6, 1, size == 0); //Draw border va title
 
-		} else 
+		}
+		else
 			drawBorder(6, 3, size == 0); //Draw border va title
 
-		onButtonPage(size); //Su kien nut left / right
-		showPage(); //Hien thi trang
+		onButtonPage(size,currentFilterPage); //Su kien nut left / right
+		showPage(currentFilterPage); //Hien thi trang
+		clearSearchEdittextCursor();
 
 		Date date = getDateFromSearch();
 
 		PTR k = beginPage[currentPage];
 
-		size = 0;
-		for (int i = startPage; k != NULL && i < (startPage + 10); i++) {
-
+		int i = startPage;
+		while (k != NULL && i < (startPage + 10)) {
+			tempFlight = NULL;
 			if (
 				(strlen(edittext[ID_FLIGHT].getCharData()) == 0 || isPrefix(edittext[ID_FLIGHT].getCharData(), k->info.idFlight))
 				&& (strlen(edittext[DAY].getCharData()) == 0 || /*isPrefix(date.day, k->info.date.day) ||*/ strcmp(date.day, k->info.date.day) == 0)
@@ -1160,37 +1189,38 @@ public:
 				&& (strlen(edittext[ARRIVE].getCharData()) == 0 || isPrefix(edittext[ARRIVE].getCharData(), k->info.arrive))
 				)
 			{
-				tempFlight = k;
-				int preX = LEFT_BORDER;
+				if (!seat || (seat && k->info.status == 2 || k->info.status == 1)) {
+					tempFlight = k;
+					int preX = LEFT_BORDER;
 
-				setcolor(BLACK);
+					setcolor(BLACK);
 
 
-				if (isPointed(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
-					setcolor(ON_SELECTED_DATA_COLOR);
+					if (isPointed(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
+						setcolor(ON_SELECTED_DATA_COLOR);
+					}
+
+
+					drawOneFlight(preY, i, k, seat);
+
+					if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
+						return 1;
+
+					}
+
+					else if (isRightMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY))
+					{
+						return 2;
+
+					}
+					preY += spaceY;
+					i++;
 				}
-
-
-				drawOneFlight(preY, size, k,seat);
-				size++;
-
-				if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
-					return 1;
-
-				}
-
-				else if (isRightMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY))
-				{
-					return 2;
-
-				}
-				preY += spaceY;
-
 			}
 			k = k->next;
 		}
 
-		tempFlight = NULL;
+	
 		return -1;
 
 
