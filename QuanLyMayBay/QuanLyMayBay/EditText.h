@@ -12,7 +12,7 @@ private:
 	unsigned int maxChar;
 	int index;
 	bool active, isCliked;
-	unsigned int space;
+	unsigned int space;//khoang cach giua title va edittext
 
 
 
@@ -23,8 +23,10 @@ public:
 		strcpy_s(this->hint, hint);
 		strcpy_s(this->title, title);
 		strcpy_s(this->content, "");
+
 		this->backgroundColor = EDITEXT_BACKGROUND_COLOR;
 		this->onSelectedBackgroundColor = EDITEXT_ON_SELECTED_COLOR;
+
 		this->maxChar = maxChar + 1;
 		this->index = 0;
 		this->active = true;
@@ -266,7 +268,7 @@ public:
 
 
 	bool isEmpty() {
-		return strlen(content) == 0 || checkSpace();
+		return strlen(content) == 0 || checkSpace() ;
 	}
 	bool checkInt() {
 		for (int i = 0; i < strlen(content); i++) {

@@ -58,12 +58,13 @@ protected:
 	}
 
 	bool virtual isLeftMouseClicked(int xMouse, int yMouse) {
+		
 		if (isPointed(xMouse, yMouse) && GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
 			return true;
 		}
 		return false;
 	}
-
+	
 	bool virtual isRightMouseClicked(int xMouse, int yMouse) {
 		if (isPointed(xMouse, yMouse) && GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
 			return true;

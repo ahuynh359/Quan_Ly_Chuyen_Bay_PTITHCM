@@ -1,7 +1,5 @@
 
 #pragma once
-#ifndef CONTROLLER_H
-#define CONTROLLER_H
 
 #include"Tab.h"
 #include"Button.h"
@@ -12,13 +10,10 @@
 #include"StatictisTab.h"
 #include"Data.h"
 
-
-using namespace std;
 class UIController {
 private:
 
 	Tab* tab, * currentTab;
-
 	Data* data;
 	FunctionTab** manageTab;
 
@@ -56,19 +51,8 @@ public:
 	}
 
 	~UIController() {
-	
-		delete tab;
+		delete tab; //Xoa luon current tab
 		delete data;
-		
-	
-	
-	}
-
-
-	void drawSubMenu() {
-		setbkcolor(TAB_ON_SELECTED_BACKGROUND);
-		setfillstyle(SOLID_FILL, SUBWINDOW_BACKGROUND);
-		bar(SUBWINDOW_LEFT, SUBWINDOW_TOP, SUBWINDOW_RIGHT, SUBWINDOW_BOTTOM);
 	}
 
 	void drawBackground() {
@@ -81,7 +65,7 @@ public:
 	void onUpdate() {
 
 		drawBackground();
-		drawSubMenu();
+	
 
 		for (int i = 0; i < MAX_TAB; i++) {
 			tab[i].onAction(currentTab);
@@ -89,11 +73,9 @@ public:
 
 		closeButton.onAction();
 
-
+		//reset tat cac cac tab khong duoc chon,ve tab duoc chon
 		int id = currentTab->getID();
-
 		resetTab(id);
-	
 		manageTab[id]->drawUI();
 
 		
@@ -125,4 +107,3 @@ public:
 };
 
 
-#endif

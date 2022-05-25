@@ -69,8 +69,7 @@ public:
 		int s;
 		if (checkAllEdittextIsEmpty()) {
 			s = drawFlightData(tempFlight, d->flightList, d->planeList);
-			if (s == 1)
-				currentMenu = SHOW_MENU;
+			
 
 		}
 
@@ -80,7 +79,8 @@ public:
 			s = drawFilterData(tempFlight,d->flightList);
 
 		}
-
+		if (s == 1)
+			currentMenu = SHOW_MENU;
 
 	}
 

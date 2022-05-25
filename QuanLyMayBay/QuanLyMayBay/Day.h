@@ -1,10 +1,9 @@
 #pragma once
 
 #include<ctime>
-#include<iostream>
-#include<string.h>
-#include <stdio.h>
-int DAY_MONTH[13] = { 0,31,28,31,30,31,30,31,31,30,31,30,31 };
+
+const int DAY_MONTH[13] = { 0,31,28,31,30,31,30,31,31,30,31,30,31 };
+
 struct Date {
 	char day[3];
 	char month[3];
@@ -23,13 +22,13 @@ char* getDateString(Date& date) {
 
 
 
-
 void format(Date& d) {
 	char temp[5] = "0";
 	if (strlen(d.day) == 1) {
 		strcat_s(temp, d.day);
 		sprintf_s(d.day, "%s", temp);
 		strcpy_s(temp, "0");
+
 	}
 
 	if (strlen(d.month) == 1) {
@@ -58,6 +57,7 @@ void format(Date& d) {
 Date getCurTime() {
 	tm newTime;
 	time_t now = time(0);
+
 	localtime_s(&newTime, &now);
 
 	Date date;
@@ -180,7 +180,6 @@ long long calSpaceTime(Date& d1, Date& d2) {
 
 bool checkTimeBeforeMinute(Date& d, int min) {
 	Date now = getCurTime();
-
 
 	if (calSpaceTime(d, now) >= min)
 		return true;

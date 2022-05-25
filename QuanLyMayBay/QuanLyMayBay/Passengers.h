@@ -1,18 +1,15 @@
 
-
 #include<fstream>
-#include"Day.h"
-
+#include<iostream>
 
 #ifndef PASS_H
 #define PASS_H
 
 
-
-
 struct Passenger {
     char lastName[MAX_LAST_NAME + 1];
     char firstName[MAX_FIRST_NAME + 1];
+
     /*
     * 0 NAM
     * 1 NU
@@ -23,10 +20,9 @@ struct Passenger {
 
 struct NodePass {
     Passenger data;
-    //2. pointer
     NodePass* pleft;
     NodePass* pright;
-    int height;    // chieu cao cua cay
+    int height;    
 };
 
 typedef struct NodePass* AVLTree;
@@ -36,7 +32,6 @@ void createPassengerList(AVLTree& root) {
 }
 
 
-// TAO CAY
 AVLTree createTree(Passenger& data) {
     AVLTree newPass = new NodePass;
     newPass->data = data;
@@ -55,9 +50,6 @@ bool checkIDPassenger(char s[MAX_ID_PASS]) {
 
 
 
-
-
-// TIM CHIEU CAO CUA CAY
 int findHeight(AVLTree& root) {
     if (root == NULL)
         return 0;
@@ -65,7 +57,6 @@ int findHeight(AVLTree& root) {
 
 }
 
-// XOAY PHAI
 AVLTree rotateRight(AVLTree& y) {
     AVLTree x = y->pleft;
     AVLTree T2 = x->pright;
@@ -78,12 +69,12 @@ AVLTree rotateRight(AVLTree& y) {
     y->height = max(findHeight(y->pleft), findHeight(y->pright)) + 1;
     x->height = max(findHeight(x->pleft), findHeight(x->pright)) + 1;
 
-    // Tra ve node moi
+
     return x;
 }
 
 
-// XOAY TRAI
+
 AVLTree rotateLeft(AVLTree& x) {
     AVLTree y = x->pright;
     AVLTree T2 = y->pleft;
@@ -97,12 +88,12 @@ AVLTree rotateLeft(AVLTree& x) {
     y->height = max(findHeight(y->pleft), findHeight(y->pright)) + 1;
 
 
-    // Tra ve node moi
+  
     return y;
 }
 
 
-// LAY HE SO CAN BANG
+
 int getBalanceFactor(AVLTree& root) {
     if (root == NULL)
         return 0;
@@ -139,7 +130,7 @@ void adjustPassenger(Passenger &p,AVLTree &temp) {
 }
 
 
-// CHEN NUT
+
 AVLTree addPassenger(AVLTree& root, Passenger& data) {
     // Tim vi tri thich hop de them nut
 
@@ -185,6 +176,95 @@ AVLTree addPassenger(AVLTree& root, Passenger& data) {
     return root;
 }
 
+AVLTree findMin(AVLTree &root)
+{
+    AVLTree current = root;
+    if (current->pleft != NULL)
+    {
+        current = current->pleft;
+    }
+    return current;
+}
+
+AVLTree deletePassenger(AVLTree& root, Passenger& data)
+{
+    // B1 tim vi tri ung voi cai node can xoa
+    if (root == NULL)
+    {
+        return root;
+    }
+
+    if (strcmp(data.idPass , root->data.idPass) < 0)
+    {
+        root->pleft = deletePassenger(root->pleft, data);
+    }
+    else if (strcmp(data.idPass, root->data.idPass) > 0)
+    {
+        root->pright = deletePassenger(root->pright, data);
+    }
+    // neu da tim ra CMND bang dung CMND co trong cay AVL,thi no la node can xoa
+    else
+    {
+        // TH1: ID co 1 cay con hoac khong co cay con nao
+        if ((root->pleft == NULL) || (root->pright == NULL))
+        {
+            AVLTree tempo = root->pleft ? root->pleft : root->pright;
+
+            // TH khong co nhanh con
+            if (tempo == NULL)
+            {
+                tempo = root;
+                root = NULL;
+            }
+            // TH co 1 nhanh con TRAI hoac PHAI
+            else
+            {
+                *root = *tempo;/*TRUYEN DIA CHI CUA *TEMPO cho *ROOT*/
+                free(tempo);/*GIAI PHONG VUNG NHO TEMPO DO khong dung toi nua*/
+            }
+        }
+        // TH2 :node can xoa co 2 nhanh con
+        else
+        {
+            /*Node thay the la node trai nhat cua nhanh ben PHAI*/
+            /*Vi no lon hon tat ca node ben o nhanh ben trai va nho hon tat
+            ca node o nhanh ben phai*/
+            AVLTree tempo = findMin(root->pright);
+            /*tim duoc thi chep noi dung cua node thay the vao vi tri node can
+            xoa*/
+            root->data = tempo->data;
+            /*xoa node thay the o vi tri cu di*/
+            root->pright = deletePassenger(root->pright, tempo->data);
+        }
+        // B2: cap nhat do cao cua node
+        root->height = max(findHeight(root->pleft), findHeight(root->pright)) + 1;
+
+        // Cap nhat lai he so can bang
+        int balance = getBalanceFactor(root);
+
+        // Neu cay mat can bang -> Co 4 truong hop
+        // 1. Trai - Trai
+        if (balance > 1 && strcmp(data.idPass, root->pleft->data.idPass) < 0)
+            return rotateRight(root);
+
+        //2. Phai - Phai
+        if (balance < -1 && strcmp(data.idPass, root->pright->data.idPass) > 0)
+            return rotateLeft(root);
+
+        //3. Trai - Phai
+        if (balance > 1 && strcmp(data.idPass, root->pleft->data.idPass) > 0) {
+            root->pleft = rotateLeft(root->pleft);
+            return rotateRight(root);
+        }
+
+        //4. Phai - Trai
+        if (balance < -1 && strcmp(data.idPass, root->pright->data.idPass) < 0) {
+            root->pright = rotateRight(root->pright);
+            return rotateLeft(root);
+        }
+    }
+}
+
 
 void savePassengerData(AVLTree& passengerList, ofstream& out) {
     if (passengerList == NULL) {
@@ -200,7 +280,7 @@ void writeFilePassenger(AVLTree& passengerList) {
 
 
     if (out.fail()) {
-        cout << "Passenger Data File cannot be opened!";
+        printf("Passenger Data File cannot be opened!");
         return;
     }
 
@@ -216,7 +296,7 @@ void readFilePassenger(AVLTree& passengerList) {
     ifstream inp("PassData.txt", ios::binary);
 
     if (inp.fail()) {
-        cout << "Passenger Data File cannot be opened!";
+       printf("Passenger Data File cannot be opened!");
         return;
 
     }

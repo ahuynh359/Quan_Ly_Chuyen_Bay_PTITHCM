@@ -1,13 +1,11 @@
 #pragma once
 
-
 #include<fstream>
 #include"Day.h"
 
-
-
 #ifndef FLIGHT_H
 #define FLIGHT_H
+
 struct Flight {
 	char idFlight[MAX_ID_FLIGHT + 1];
 	Date date;
@@ -36,7 +34,7 @@ struct FlightNode
 typedef FlightNode* PTR;
 
 
-void initializeList(PTR& first)
+void createFlightList(PTR& first)
 {
 	first = NULL;
 }
@@ -59,6 +57,7 @@ bool isEmpty(PTR& first)
 void insertAfter(PTR& first, Flight& flight)
 {
 	PTR temp = newNode(flight);
+
 	if (first == NULL) {
 		first = temp;
 		first->next = NULL;
@@ -74,28 +73,29 @@ void insertAfter(PTR& first, Flight& flight)
 }
 
 int size(PTR& first) {
+
 	int cnt = 0;
+
 	if (first == NULL)
 		return cnt;
+
 	for (PTR k = first; k != NULL; k = k->next) {
 		cnt++;
 	}
 	return cnt;
 }
 
-bool adjustFlight(PTR& flight, Date date) {
-	if (checkTime(date)) {
-		flight->info.date = date;
-		return true;
-	}
-	return false;
+void adjustFlight(PTR& flight, Date& date) {
+	flight->info.date = date;
 }
 
 bool isPrefix(const char* pre, const char* str) {
-	if (strlen(pre) > strlen(str)) return false;
-	for (int i = 0; i < strlen(pre); i++) {
-		if (pre[i] != str[i]) return false;
-	}
+	if (strlen(pre) > strlen(str))
+		return false;
+	for (int i = 0; i < strlen(pre); i++)
+		if (pre[i] != str[i])
+			return false;
+
 	return true;
 }
 
@@ -119,18 +119,20 @@ PTR findFlightByIdPlane(PTR& first, char id[MAX_ID_PLANE + 1]) {
 	return NULL;
 }
 
-//Huy ve khi chua hoan tat
-int checkCancleFlight(PTR& first) {
+
+bool checkCancleFlight(PTR& first) {
 	if (first->info.status == HAVE_TICKET || first->info.status == OUT_OF_TICKET) {
 		first->info.status = CANCEL_TICKET;
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 void checkCompleted(PlaneList& planeList, PTR& temp) {
 	if (temp->info.status == HAVE_TICKET || temp->info.status == OUT_OF_TICKET) {
+
 		Date now = getCurTime();
+
 		if (calSpaceTime(now, temp->info.date) >= 0) {
 			temp->info.status = COMPLETE_TICKET;
 			planeList.data[findPlane(planeList, temp->info.idPlane)]->flyTimes++;
@@ -138,17 +140,17 @@ void checkCompleted(PlaneList& planeList, PTR& temp) {
 	}
 }
 
-int countTicketLeft(PTR& flightList) {
+int countTicketLeft(PTR& first) {
 	int cnt = 0;
-	for (int i = 0; i < flightList->info.totalTicket; i++) {
-		if (strcmp(flightList->info.ticketList[i], "0") == 0)
+	for (int i = 0; i < first->info.totalTicket; i++) {
+		if (strcmp(first->info.ticketList[i], "0") == 0)
 			cnt++;
 	}
 	return cnt;
 }
 
-void checkCompletedAll(PTR& flightList, PlaneList& planeList) {
-	for (PTR k = flightList; k != NULL; k = k->next) {
+void checkCompletedAll(PTR& first, PlaneList& planeList) {
+	for (PTR k = first; k != NULL; k = k->next) {
 		checkCompleted(planeList, k);
 	}
 }
@@ -174,9 +176,9 @@ void initTicketList(PlaneList& planeList, Flight& flight) {
 }
 
 //kiem tra CMND trung tren 1 chuyen bay, tra ve so ghe bi trung
-int checkDupIDOnFlight(PTR& flightList, char id[MAX_ID_PASS + 1]) {
-	for (int i = 0; i < flightList->info.totalTicket; i++) {
-		if (strcmp(flightList->info.ticketList[i], id) == 0) {
+int checkDupIDOnFlight(PTR& first, char id[MAX_ID_PASS + 1]) {
+	for (int i = 0; i < first->info.totalTicket; i++) {
+		if (strcmp(first->info.ticketList[i], id) == 0) {
 			return i + 1;
 		}
 	}
@@ -187,15 +189,10 @@ void bookTicket(PTR& first, int index, char id[MAX_ID_PASS + 1]) {
 	strcpy_s(first->info.ticketList[index], MAX_ID_PASS + 1, id);
 }
 
-void cancleTicket(PTR& first, int index, char id[MAX_ID_PASS + 1]) {
-	char s[MAX_ID_PASS + 1] = "0";
-	strcpy_s(first->info.ticketList[index], 2, s);
 
-
-}
 
 void writeFileFlight(PTR& first) {
-	ofstream out("FlightData.txt", ios::trunc, ios::binary);
+	ofstream out("FlightData.txt", ios::binary);
 
 	if (out.fail()) {
 		printf("Cant open file Flight Data\n");
@@ -244,9 +241,9 @@ void deleteFlightList(PTR& first)
 		PTR t = temp;
 		temp = temp->next;
 		for (int i = 0; i < t->info.totalTicket; i++) {
-			delete t->info.ticketList[i];
+			delete  t->info.ticketList[i];
 		}
-		delete t->info.ticketList;
+		delete[] t->info.ticketList;
 		delete t;
 	}
 }

@@ -37,7 +37,7 @@ public:
 
 
 	}
-	virtual ~FunctionTab() {
+	 ~FunctionTab() {
 		delete buttonPointer;
 		delete edittextPointer;
 	}
@@ -224,19 +224,14 @@ public:
 		return false;
 	}
 	bool  isLeftMouseClicked(int left, int top, int right, int bottom) {
-		if (isPointed(left, top, right, bottom) && GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
+		if (isPointed(left, top, right, bottom) && GetAsyncKeyState(VK_LBUTTON) & 1) {
 			return true;
 		}
 		return false;
 	}
-	bool  isDoubleClick(int left, int top, int right, int bottom) {
-		if (isPointed(left, top, right, bottom) && GetAsyncKeyState(WM_LBUTTONDBLCLK) & 0x8000) {
-			return true;
-		}
-		return false;
-	}
+	
 	bool  isRightMouseClicked(int left, int top, int right, int bottom) {
-		if (isPointed(left, top, right, bottom) && GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
+		if (isPointed(left, top, right, bottom) && GetAsyncKeyState(VK_RBUTTON) & 1) {
 			return true;
 		}
 		return false;
@@ -302,7 +297,7 @@ public:
 		case CANCLE_FLIGHT_ERROR: {
 			msgboxID = MessageBox(
 				GetForegroundWindow(),
-				(LPCWSTR)L"Can't not cancle this flight",
+				(LPCWSTR)L"This flight is completed or cancled,can't be cancled",
 				(LPCWSTR)L"Error",
 				MB_ICONERROR | MB_OK
 			);
@@ -452,7 +447,7 @@ public:
 		case ADJUST_ERROR: {
 			msgboxID = MessageBox(
 				GetForegroundWindow(),
-				(LPCWSTR)L"Can't adjust",
+				(LPCWSTR)L"This flight is completed or cancled,can't be adjusted",
 				(LPCWSTR)L"Error",
 				MB_ICONERROR | MB_OK
 			);
@@ -482,6 +477,17 @@ public:
 				(LPCWSTR)L"Flight takes off in 30 minute, can't adjust any information",
 				(LPCWSTR)L"Warning",
 				MB_ICONEXCLAMATION | MB_OKCANCEL
+			);
+			break;
+		}
+
+		case ID_PASS_ERROR: {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"ID must have 12 letters",
+				(LPCWSTR)L"Warning",
+				MB_ICONEXCLAMATION | MB_OK
+
 			);
 			break;
 		}

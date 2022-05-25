@@ -8,48 +8,39 @@
 
 
 class ManageFlightsTab :public FunctionTab {
+
 protected:
 	EditText addEdittext[MAX_EDITTEXT];
-	EditText* addPointer;
+	EditText* addPointer = NULL;
 
 	int indexID = -1;
-	PTR tempFlight;
+	PTR tempFlight = NULL;
 
-	Data* d;
+	Data* d = NULL;
 
 	ManagePlanesTab manage;
 
-	PTR* beginPage;
-	int beginPageSize;
+	PTR* beginPage = new PTR[0];
+	int beginPageSize = 1;
 
 
 
 public:
 	ManageFlightsTab() {
-		addPointer = NULL;
-		beginPage = new PTR[0];
-		beginPageSize = 1;
+		
 	}
 	~ManageFlightsTab() {
-		delete addEdittext;
+		
 		delete d;
-		delete[MAX_EDITTEXT] addEdittext;
 		delete beginPage;
 	}
 
 	ManageFlightsTab(Data* data) {
 		d = data;
 
-
 		initEdittext();
 		initSearchEdittext();
-		edittextPointer = NULL;
-		beginPage = new PTR[0];
-
-		addPointer = NULL;
-		indexID = -1;
-		tempFlight = NULL;
-		beginPageSize = 1;
+		
 
 
 	}
@@ -142,7 +133,7 @@ public:
 
 
 	}
-	void initSearchEdittext() {
+	void  initSearchEdittext() {
 		int left = LEFT_BORDER;
 		int top = SUBWINDOW_TOP + 5;
 		int right = left + 150;
@@ -185,8 +176,26 @@ public:
 		right = RIGHT_BORDER;
 		edittext[ARRIVE] = EditText(hint, title, content, left, top, right, bottom, 40, 55);
 	}
+	void initAddMenu() {
+		addPointer = &addEdittext[ID_FLIGHT];
+		char s[30] = "HAVE TICKET";
+
+		addEdittext[ID_FLIGHT].setActive(true);
+		addEdittext[ID_PLANE].setActive(true);
+		addEdittext[ARRIVE].setActive(true);
+
+		addEdittext[STATUS].customInitChar(s);
+		addEdittext[STATUS].setActive(false);
+		addEdittext[MINUTE].customInitChar(getCurTime().minute);
+		addEdittext[HOUR].customInitChar(getCurTime().hour);
+		addEdittext[YEAR].customInitChar(getCurTime().year);
+		addEdittext[MONTH].customInitChar(getCurTime().month);
+		addEdittext[DAY].customInitChar(getCurTime().day);
+
+	}
 	void initAdjustScreen() {
 		addPointer = &addEdittext[DAY];
+
 		addEdittext[ID_FLIGHT].customInitChar(tempFlight->info.idFlight);
 		addEdittext[ID_FLIGHT].setActive(false);
 		addEdittext[ID_PLANE].customInitChar(tempFlight->info.idPlane);
@@ -206,24 +215,7 @@ public:
 		addEdittext[HOUR].customInitChar(tempFlight->info.date.hour);
 		addEdittext[MINUTE].customInitChar(tempFlight->info.date.minute);
 	}
-	void initAddMenu() {
-		addPointer = &addEdittext[ID_FLIGHT];
-		char s[30] = "HAVE TICKET";
-
-		addEdittext[ID_FLIGHT].setActive(true);
-		addEdittext[ID_PLANE].setActive(true);
-		addEdittext[ARRIVE].setActive(true);
-
-		addEdittext[STATUS].customInitChar(s);
-		addEdittext[STATUS].setActive(false);
-		addEdittext[MINUTE].customInitChar(getCurTime().minute);
-		addEdittext[HOUR].customInitChar(getCurTime().hour);
-		addEdittext[YEAR].customInitChar(getCurTime().year);
-		addEdittext[MONTH].customInitChar(getCurTime().month);
-		addEdittext[DAY].customInitChar(getCurTime().day);
-
-	}
-
+	
 
 
 	//-------------RESET
@@ -248,7 +240,7 @@ public:
 
 
 	}
-	void resetEdittext() {
+	void  resetEdittext() {
 		edittext[ID_FLIGHT].clearText();
 		edittext[DAY].clearText();
 		edittext[MONTH].clearText();
@@ -258,7 +250,7 @@ public:
 	}
 
 	//-------------HAM EDITTEXT
-	bool checkAllEdittextIsEmpty() {
+	bool  checkAllEdittextIsEmpty() {
 		if (edittext[ID_FLIGHT].isEmpty() &&
 			edittext[DAY].isEmpty() &&
 			edittext[MONTH].isEmpty() &&
@@ -324,29 +316,25 @@ public:
 		addEdittext[MINUTE].clearCursor();
 		addEdittext[ARRIVE].clearCursor();
 	}
-	void clearSearchEdittextCursor() {
+	void  clearSearchEdittextCursor() {
 		edittext[ID_FLIGHT].clearCursor();
 		edittext[DAY].clearCursor();
 		edittext[MONTH].clearCursor();
 		edittext[YEAR].clearCursor();
 		edittext[ARRIVE].clearCursor();
-		if (!edittext[ARRIVE].isEmpty()) {
-			edittext[ARRIVE].standarContent();
-		}
+		
 	}
 
 
 	//-------------GET DATA
-	Date getDate() {
+	Date   getDate() {
 
 		Date d;
-
 		strcpy_s(d.day, addEdittext[DAY].getCharData());
 		strcpy_s(d.month, addEdittext[MONTH].getCharData());
 		strcpy_s(d.year, addEdittext[YEAR].getCharData());
 		strcpy_s(d.hour, addEdittext[HOUR].getCharData());
 		strcpy_s(d.minute, addEdittext[MINUTE].getCharData());
-
 		format(d);
 
 
@@ -354,7 +342,7 @@ public:
 		return d;
 
 	}
-	Date getDateFromSearch() {
+	Date  getDateFromSearch() {
 		Date date;
 		strcpy_s(date.day, edittext[DAY].getCharData());
 		strcpy_s(date.month, edittext[MONTH].getCharData());
@@ -505,6 +493,7 @@ public:
 				strcat_s(mess, k->info.idFlight);
 				strcat_s(mess, "\n Time: ");
 				strcat_s(mess, getDateString(k->info.date));
+				strcat_s(mess, "\n Time must >= 12 hours from this flight");
 				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
 				return false;
 
@@ -675,7 +664,7 @@ public:
 		}
 
 	}
-	void inputMainMenuHandel() {
+	void  inputMainMenuHandel() {
 
 		edittext[ID_FLIGHT].onAction(edittextPointer, true);
 		edittext[DAY].onAction(edittextPointer, true);
@@ -899,11 +888,15 @@ public:
 	}
 	void drawAjustScreen() {
 
-		char s[50] = "ADJUST FLIGHT";
+		char s[200] = "ADJUST FLIGHT";
 		drawTitle(s);
 
 		strcpy_s(s, "*Use left/right key to navigate");
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, s);
+
+		strcpy_s(s,"Time >= an hour from now");
+		drawText(addEdittext[DAY].getLeft(),
+			addEdittext[DAY].getTop() - textheight(s) - 10, s, RED);
 
 		addEdittext[ID_FLIGHT].onAction(addPointer);
 		addEdittext[ID_PLANE].onAction(addPointer);
@@ -943,8 +936,8 @@ public:
 			}
 			else
 			{
-
-				adjustFlight(tempFlight, getDate());
+				Date date = getDate();
+				adjustFlight(tempFlight, date);
 				resetEdittext();
 				resetAddEdittext();
 				drawAnounce(SUCCESS);
@@ -1084,6 +1077,8 @@ public:
 			cnt++;
 		}
 
+		int res = -1;
+		tempFlight = NULL;
 		for (int i = startPage; k != NULL && i < (startPage + 10); i++) {
 
 			tempFlight = k;
@@ -1104,7 +1099,7 @@ public:
 
 			}
 
-			else if (isRightMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY))
+			if (isRightMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY))
 			{
 				return 2;
 
@@ -1113,7 +1108,7 @@ public:
 			k = k->next;
 		}
 
-		tempFlight = NULL;
+		
 		return -1;
 
 
@@ -1130,11 +1125,11 @@ public:
 
 		for (PTR k = flightList; k != NULL; k = k->next) {
 			if (
-				(strlen(edittext[ID_FLIGHT].getCharData()) == 0 || isPrefix(edittext[ID_FLIGHT].getCharData(), k->info.idFlight))
-				&& (strlen(edittext[DAY].getCharData()) == 0 || strcmp(date.day, k->info.date.day) == 0)
-				&& (strlen(edittext[MONTH].getCharData()) == 0 || strcmp(date.month, k->info.date.month) == 0)
-				&& (strlen(edittext[YEAR].getCharData()) == 0 || isPrefix(date.year, k->info.date.year))
-				&& (strlen(edittext[ARRIVE].getCharData()) == 0 || isPrefix(edittext[ARRIVE].getCharData(), k->info.arrive))
+				(edittext[ID_FLIGHT].isEmpty() || isPrefix(edittext[ID_FLIGHT].getCharData(), k->info.idFlight))
+				&& (edittext[DAY].isEmpty()  || strcmp(date.day, k->info.date.day) == 0)
+				&& (edittext[MONTH].isEmpty() || strcmp(date.month, k->info.date.month) == 0)
+				&& (edittext[YEAR].isEmpty() || isPrefix(date.year, k->info.date.year))
+				&& (edittext[ARRIVE].isEmpty() || isPrefix(edittext[ARRIVE].getCharData(), k->info.arrive))
 				)
 			{
 				if (!seat || (seat && k->info.status == 2 || k->info.status == 1)) {
@@ -1179,14 +1174,17 @@ public:
 		PTR k = beginPage[currentPage];
 
 		int i = startPage;
+		
+	
 		while (k != NULL && i < (startPage + 10)) {
 			tempFlight = NULL;
+		
 			if (
-				(strlen(edittext[ID_FLIGHT].getCharData()) == 0 || isPrefix(edittext[ID_FLIGHT].getCharData(), k->info.idFlight))
-				&& (strlen(edittext[DAY].getCharData()) == 0 || /*isPrefix(date.day, k->info.date.day) ||*/ strcmp(date.day, k->info.date.day) == 0)
-				&& (strlen(edittext[MONTH].getCharData()) == 0 || /*isPrefix(date.month, k->info.date.month) ||*/ strcmp(date.month, k->info.date.month) == 0)
-				&& (strlen(edittext[YEAR].getCharData()) == 0 || /*isPrefix(date.year, k->info.date.year) ||*/ isPrefix(date.year, k->info.date.year))
-				&& (strlen(edittext[ARRIVE].getCharData()) == 0 || isPrefix(edittext[ARRIVE].getCharData(), k->info.arrive))
+				(edittext[ID_FLIGHT].isEmpty() || isPrefix(edittext[ID_FLIGHT].getCharData(), k->info.idFlight))
+				&& (edittext[DAY].isEmpty() || strcmp(date.day, k->info.date.day) == 0)
+				&& (edittext[MONTH].isEmpty() ||  strcmp(date.month, k->info.date.month) == 0)
+				&& (edittext[YEAR].isEmpty() ||  isPrefix(date.year, k->info.date.year))
+				&& (edittext[ARRIVE].isEmpty() || isPrefix(edittext[ARRIVE].getCharData(), k->info.arrive))
 				)
 			{
 				if (!seat || (seat && k->info.status == 2 || k->info.status == 1)) {
@@ -1204,13 +1202,13 @@ public:
 					drawOneFlight(preY, i, k, seat);
 
 					if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
-						return 1;
+						return  1;
 
 					}
 
 					else if (isRightMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY))
 					{
-						return 2;
+						return   2;
 
 					}
 					preY += spaceY;
@@ -1226,7 +1224,7 @@ public:
 
 	}
 
-	//-----------FREE MEMORY
+	
 
 
 };

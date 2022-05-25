@@ -22,14 +22,14 @@ public:
 	Data() {
 		readFilePlane(planeList);
 
-		initializeList(flightList);
+		createFlightList(flightList);
 		readFileFlight(flightList);
 
 		createPassengerList(passengerList);
 		readFilePassenger(passengerList);
 	}
 	~Data() {
-
+		
 	}
 	void freeMemory() {
 		deletePlaneList(planeList);

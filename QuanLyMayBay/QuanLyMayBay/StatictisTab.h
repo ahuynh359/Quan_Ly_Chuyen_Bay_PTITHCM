@@ -20,6 +20,7 @@ public:
 	}
 
 	void drawUI() {
+		FunctionTab::drawBackground();
 
 		char a[70] = "STATISTICS THE NUMBER FLYTIMES IN DESCENDING ORDER";
 		int x = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(a)) / 2;
@@ -57,7 +58,6 @@ public:
 
 			int preX = LEFT_BORDER;
 			setcolor(BLACK);
-			cout << i;
 			//VE STT
 			char temp[3];
 			sprintf_s(temp, "%d", i + 1);

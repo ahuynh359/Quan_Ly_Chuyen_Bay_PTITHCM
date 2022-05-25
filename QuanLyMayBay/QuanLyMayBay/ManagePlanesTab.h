@@ -1,8 +1,7 @@
 ﻿#pragma once
 
 
-#ifndef MANAGE_PLANE_H
-#define MANAGE_PLANE_H
+
 
 #include"Planes.h"
 #include"Flights.h"
@@ -15,29 +14,22 @@ class ManagePlanesTab :public FunctionTab {
 
 private:
 
-	EditText* adjustEditextPointer;
-	Data* d;
-	int indexID;
+	EditText* adjustEditextPointer = NULL;
+	Data* d = NULL;
+	int indexID = -1;
 
 	friend class ManageFlightsTab;
 
 public:
 	ManagePlanesTab() {
-		
 	}
 	ManagePlanesTab(Data* d) {
-
 		this->d = d;
-
 		initEdittext();
-
-		edittextPointer = NULL;
-
-		indexID = -1;
-
 	}
 
 
+	//-------------Khoi tao 
 	void initEdittext() {
 
 		//---------EDITTEXT ID
@@ -72,17 +64,16 @@ public:
 	}
 	void initAdjustMenu(Plane* p) {
 
-
-
 		edittext[ID_PLANE].setActive(false);
 
-		//Da thanh lap chuyen bay
+		//Da thanh lap chuyen bay chi cho sua so ghe theo chieu tang dan
 		if (!p->isAvai) {
 
 			edittext[TYPE].setActive(false);
 			adjustEditextPointer = &edittext[SEATS];
 
 		}
+		//Nguoc lai cho sua loai may bay va so ghe
 		else {
 			edittext[TYPE].setActive(true);
 			adjustEditextPointer = &edittext[TYPE];
@@ -126,6 +117,7 @@ public:
 		edittextPointer = NULL;
 		adjustEditextPointer = NULL;
 
+
 	}
 	void reset() {
 		currentMenu = MAIN_MENU;
@@ -134,26 +126,6 @@ public:
 	}
 
 
-	void moveEdittextDown(EditText*& edittextPointer) {
-		if (edittextPointer == &edittext[ID_PLANE])
-			edittextPointer = &edittext[TYPE];
-		else if (edittextPointer == &edittext[TYPE]) {
-			edittextPointer = &edittext[SEATS];
-
-		}
-
-	}
-	void moveEdittextUp(EditText*& edittextPointer) {
-		if (edittextPointer == &edittext[TYPE]) {
-			if (edittext[ID_PLANE].isActive())
-				edittextPointer = &edittext[ID_PLANE];
-
-		}
-		else if (edittextPointer == &edittext[SEATS])
-			if (edittext[TYPE].isActive())
-				edittextPointer = &edittext[TYPE];
-
-	}
 
 	//Neu adjust = 1 thi ap dung cho adjust screen ko check plane ID
 	bool checkEdittextError(EditText*& edittextPointer, bool adjust = false) {
@@ -207,6 +179,7 @@ public:
 
 		return true;
 	}
+	//Check het 3 edittext de luu du lieu
 	bool checkSaveData(EditText*& edittextPointer, bool adjust = false) {
 
 		edittext[ID_PLANE].clearCursor();
@@ -325,8 +298,26 @@ public:
 		}
 
 	}
+	void moveEdittextDown(EditText*& edittextPointer) {
+		if (edittextPointer == &edittext[ID_PLANE])
+			edittextPointer = &edittext[TYPE];
+		else if (edittextPointer == &edittext[TYPE]) {
+			edittextPointer = &edittext[SEATS];
 
+		}
 
+	}
+	void moveEdittextUp(EditText*& edittextPointer) {
+		if (edittextPointer == &edittext[TYPE]) {
+			if (edittext[ID_PLANE].isActive())
+				edittextPointer = &edittext[ID_PLANE];
+
+		}
+		else if (edittextPointer == &edittext[SEATS])
+			if (edittext[TYPE].isActive())
+				edittextPointer = &edittext[TYPE];
+
+	}
 
 	//---------------------------------UI-------------------------
 	void drawUI() {
@@ -359,21 +350,32 @@ public:
 
 		//-----------VE BUTTON
 		button[ADD].onAction();
-		button[SHOW].onAction();
 
 
 		//-----------------VE HUONG DAN TEXT
-		char a[30] = "*Left click to delete item";
+		char a[30] = "*Left click to delete";
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
-		strcpy_s(a, " Right click to edit item");
+		strcpy_s(a, " Right click to edit");
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 40, a);
 
+		//---------------THEM MAY BAY
+		if (button[ADD].isClicked()) {
+			if (d->planeList.size == MAX_PLANE) {
+				drawAnounce(FULL_PLANE);
+			}
+			else {
+				initAddMenu();
+				currentMenu = ADD_MENU;
+			}
 
+		}
 
+		//-----------VE BANG DU LIEU
+		int s = drawPlaneData(d->planeList, indexID);
 
-		int s = drawPlaneData(d->planeList,indexID);
 		if (s == 1) {
 			int s = drawAnounce(REMOVE_CONFIRM);
+
 			switch (s) {
 			case IDOK: {
 				if (d->planeList.data[indexID]->isAvai)
@@ -382,33 +384,23 @@ public:
 					drawAnounce(REMOVE_ERROR);
 				break;
 			}
-			case IDCANCEL: {
-				break;
-			}
 			default:
 				break;
 			}
 		}
 		else if (s == 2) {
-			if (!d->planeList.data[indexID]->isAvai && findFlightByIdPlane(d->flightList, d->planeList.data[indexID]->idPlane)->info.status == 3)
-				drawAnounce(ADJUST_ERROR);
-			else {
-				initAdjustMenu(d->planeList.data[indexID]);
-				currentMenu = ADJUST_MENU;
 
-			}
+			//Sua tinh theo 2 TH avai va ko avai
+			initAdjustMenu(d->planeList.data[indexID]);
+			currentMenu = ADJUST_MENU;
+
 		}
 
 
 
-		if (button[ADD].isClicked()) {
-			initAddMenu();
-			currentMenu = ADD_MENU;
-		}
 
-		else if (button[SHOW].isClicked()) {
-			currentMenu = SHOW_MENU;
-		}
+
+
 
 	}
 	void drawAddMenu() {
@@ -435,8 +427,7 @@ public:
 			int s = drawAnounce(PREVIOUS);
 			switch (s) {
 			case IDOK: {
-				resetEdittext();
-				currentMenu = MAIN_MENU;
+				reset();
 				break;
 			}
 			default:
@@ -450,11 +441,11 @@ public:
 
 			}
 			else {
-
-
 				Plane p = getPlaneData();
 				addPlane(d->planeList, p);
+
 				drawAnounce(SUCCESS);
+
 				resetEdittext();
 				initAddMenu();
 
@@ -484,7 +475,7 @@ public:
 		edittext[SEATS].onAction(adjustEditextPointer);
 
 
-		inputHandel(adjustEditextPointer, 1);
+		inputHandel(adjustEditextPointer, true);
 
 
 		if (!d->planeList.data[indexID]->isAvai) {
@@ -499,8 +490,7 @@ public:
 			int s = drawAnounce(PREVIOUS);
 			switch (s) {
 			case IDOK: {
-				resetEdittext();
-				currentMenu = MAIN_MENU;
+				reset();
 				break;
 			}
 
@@ -518,9 +508,10 @@ public:
 
 				Plane p = getPlaneData();
 				adjustPlane(d->planeList, p, this->indexID);
+
 				drawAnounce(SUCCESS);
-				resetEdittext();
-				currentMenu = MAIN_MENU;
+
+				reset();
 			}
 
 
@@ -532,7 +523,7 @@ public:
 
 
 	//----------------------DATA -----------------
-	void drawOnePlane(PlaneList &planeList,int preX, int preY, int i) {
+	void drawOnePlane(PlaneList& planeList, int preX, int preY, int i) {
 		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / 5;
 
 		//VE STT
@@ -561,14 +552,14 @@ public:
 
 
 	}
-	int  drawPlaneData(PlaneList &planeList,int& indexID) {
+	int  drawPlaneData(PlaneList& planeList, int& indexID) {
 
 		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20;
 		int preY = TOP_BORDER + 60;
 
 		drawBorder(4, 0, isEmpty(planeList)); //Draw border va title
 
-		onButtonPage(planeList.size,currentPage); //Su kien nut left / right
+		onButtonPage(planeList.size, currentPage); //Su kien nut left / right
 		showPage(currentPage); //Hien thi trang
 
 
@@ -587,7 +578,7 @@ public:
 			}
 
 
-			drawOnePlane(planeList,preX, preY, i);
+			drawOnePlane(planeList, preX, preY, i);
 
 			if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
 				return 1;
@@ -614,4 +605,3 @@ public:
 
 
 };
-#endif

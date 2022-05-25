@@ -7,9 +7,7 @@ using namespace std;
 class Button : public UI {
 private:
 	char text[20];
-	int textColor;
-	int textOnPointedColor;
-	int currentTextColor;
+	int textColor, textOnPointedColor, currentTextColor;
 	bool cliked;
 	int active;
 	bool isChoosen;
@@ -30,9 +28,9 @@ public:
 
 	}
 
-	
 
-	
+
+
 
 	void setActive(bool s) {
 		this->active = s;
@@ -158,11 +156,11 @@ public:
 	}
 	//Viet cho button click hoai
 	void onActionFor() {
-		if (isLeftMouseClicked(mousex(), mousey()) &&  active || cliked) {
+		if (isLeftMouseClicked(mousex(), mousey()) && active || cliked) {
 			currentBackground = onSelectedBackgroundColor;
 			currentTextColor = textColor;
 			cliked = true;
-			
+
 		}
 		else {
 			cliked = false;

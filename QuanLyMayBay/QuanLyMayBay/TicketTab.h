@@ -36,6 +36,8 @@ public:
 
 		initSearchEdittext();
 	}
+
+	//-----------------KHOI TAO
 	void initEdittext() {
 
 		//---------EDITTEXT ID
@@ -52,7 +54,7 @@ public:
 		//------------EDITTEXT ID PASS
 
 		strcpy_s(title, "ID PASS");
-		edittext[ID_PASS] = EditText(hint, title, content, left, top, right, bottom, MAX_ID_PASS);
+		edittext[ID_PASS] = EditText(hint, title, content, left, top, right, bottom, MAX_ID_PASS,130);
 
 
 
@@ -85,6 +87,49 @@ public:
 
 
 	}
+	void initAddMenu(bool s, bool id = false) {
+		if (id)
+			edittext[ID_PASS].setActive(s);
+		else
+			edittext[ID_PASS].setActive(true);
+
+		button[FEMALE].setActive(s);
+		button[MALE].setActive(s);
+
+		edittext[FIRST_NAME].setActive(s);
+		edittext[LAST_NAME].setActive(s);
+		edittext[FIRST_NAME].setActive(s);
+
+
+
+	}
+	void initTicketList(PTR& flight) {
+
+		int y = TOP_BORDER + 20;
+		int x = (LEFT_BORDER + RIGHT_BORDER - 680) / 2;
+		char value[3];
+		char a[2] = "";
+		for (int i = 1; i <= flight->info.totalTicket; i++) {
+			sprintf_s(value, "%d", i);
+
+			buttonTicket[i] = Button(x, y, x + 50, y + 50, TICKET_AVAI, TICKET_NOT_AVAI, value, BLACK);
+			if (strcmp(flight->info.ticketList[i - 1], "0") != 0) {
+				buttonTicket[i].setChoosen(true);
+			}
+			else
+				buttonTicket[i].setChoosen(false);
+
+			x += 70;
+			if (i % 10 == 0) {
+				x = (LEFT_BORDER + RIGHT_BORDER - 680) / 2;
+				y += 70;
+
+			}
+
+
+		}
+	}
+
 
 	void customEdittext(AVLTree& pass, bool id = false) {
 		if (id) {
@@ -134,53 +179,9 @@ public:
 		genderButton = NULL;
 
 	}
-
-
-	void initAddMenu(bool s, bool id = false) {
-		if (id)
-			edittext[ID_PASS].setActive(s);
-		else
-			edittext[ID_PASS].setActive(true);
-
-		button[FEMALE].setActive(s);
-		button[MALE].setActive(s);
-
-		edittext[FIRST_NAME].setActive(s);
-		edittext[LAST_NAME].setActive(s);
-		edittext[FIRST_NAME].setActive(s);
-
-
-
-	}
-	void initTicketList(PTR& flight) {
-
-		int y = TOP_BORDER + 20;
-		int x = (LEFT_BORDER + RIGHT_BORDER - 680) / 2;
-		char value[3];
-		char a[2] = "";
-		for (int i = 1; i <= flight->info.totalTicket; i++) {
-			sprintf_s(value, "%d", i);
-
-			buttonTicket[i] = Button(x, y, x + 50, y + 50, TICKET_AVAI, TICKET_NOT_AVAI, value, BLACK);
-			if (strcmp(flight->info.ticketList[i - 1], "0") != 0) {
-				buttonTicket[i].setChoosen(true);
-			}
-			else
-				buttonTicket[i].setChoosen(false);
-
-			x += 70;
-			if (i % 10 == 0) {
-				x = (LEFT_BORDER + RIGHT_BORDER - 680) / 2;
-				y += 70;
-
-			}
-
-
-		}
-	}
 	void reset() {
 		ManageFlightsTab::reset();
-
+	
 		clearEditext();
 	}
 
@@ -310,6 +311,7 @@ public:
 
 	}
 	bool checkSaveData() {
+
 		edittext[ID_PASS].clearCursor();
 		edittext[FIRST_NAME].clearCursor();
 		edittext[LAST_NAME].clearCursor();
@@ -417,8 +419,6 @@ public:
 		if (s == 1 && flightTemp != NULL) {
 			Date d = flightTemp->info.date;
 
-
-
 			//Khong cho dat ve 30 phut cuoi
 			if (!checkTimeBeforeMinute(d, 30)) {
 				drawAnounce(THIRTY_MINUTE);
@@ -476,7 +476,6 @@ public:
 
 		for (int i = 1; i <= flightTemp->info.totalTicket; i++) {
 			buttonTicket[i].onActionSeatButton(ticketPointer);
-			cout << i << " " << buttonTicket[i].getIsChoosen() << "\n\n";
 		}
 
 
@@ -486,7 +485,6 @@ public:
 				initAddMenu(false);
 				delay(50);
 				currentMenu = ADD_MENU;
-				cout << "AHIHI\n\n";
 				return;
 
 			}
@@ -508,7 +506,7 @@ public:
 
 		if (button[BACK].isClicked()) {
 
-			clearEditext();
+			reset();
 			ticketPointer = NULL;
 			delay(50);
 			currentMenu = MAIN_MENU;
@@ -545,6 +543,7 @@ public:
 
 		if (button[BACK].isClicked()) {
 			ticketPointer = NULL;
+			reset();
 			delay(50);
 			currentMenu = TICKET_MENU;
 		}
@@ -637,13 +636,11 @@ public:
 
 		return size;
 	}
-
 	int drawTicketData(PTR& tempFlight, PTR& flightList) {
 
 		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
 		int preY = TOP_BORDER + 60;
 		int size = countFlightAbleToBook(flightList);
-		cout << size << "TICKET NE\n\n";
 
 		drawBorder(6, 3, size == 0); //Draw border va title
 
