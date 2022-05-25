@@ -22,21 +22,6 @@ public:
 	UIController() {
 		initwindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Manage Flights");
 
-		tab = new Tab[MAX_TAB];
-
-		//Khoi tao tab
-		int x = TAB_LEFT;
-		for (int i = 0; i < MAX_TAB; i++) {
-			tab[i] = Tab(i, x, TAB_TOP, x + TAB_WIDTH, TAB_HEIGHT, TAB_TEXT[i]);
-			x += TAB_WIDTH + TAB_SPACE;
-		}
-
-		//Tab mac dinh la plane tab
-		currentTab = &tab[0];
-
-
-		char s[2] = "X";
-		closeButton = Button(SCREEN_WIDTH - 40, 0, SCREEN_WIDTH - 10, 30, RED, RED, s, BLACK);
 
 		data = new Data();
 
@@ -47,6 +32,27 @@ public:
 		manageTab[2] = new ManagePassengersTab(data);
 		manageTab[3] = new TicketTab(data);
 		manageTab[4] = new StatictisTab(data);
+
+		tab = new Tab[MAX_TAB];
+
+		//Khoi tao tab
+		bool isEmptyData = data->planeListIsEmpty();
+		int x = TAB_LEFT;
+		for (int i = 0; i < MAX_TAB; i++) {
+			tab[i] = Tab(i, x, TAB_TOP, x + TAB_WIDTH, TAB_HEIGHT, TAB_TEXT[i]);
+			if (i > 0)
+				tab[i].setActive(!isEmptyData);
+			x += TAB_WIDTH + TAB_SPACE;
+		}
+
+		//Tab mac dinh la plane tab
+		currentTab = &tab[0];
+
+
+		char s[2] = "X";
+		closeButton = Button(SCREEN_WIDTH - 40, 0, SCREEN_WIDTH - 10, 30, RED, RED, s, BLACK);
+
+
 
 	}
 
@@ -65,31 +71,42 @@ public:
 	void onUpdate() {
 
 		drawBackground();
-	
+
+		bool isEmptyData = data->planeListIsEmpty();
 
 		for (int i = 0; i < MAX_TAB; i++) {
+			//Nhung tab > 0 set no theo du lieu plane
+			if (i > 0)
+				tab[i].setActive(!isEmptyData);
 			tab[i].onAction(currentTab);
 		}
 
 		closeButton.onAction();
 
-		//reset tat cac cac tab khong duoc chon,ve tab duoc chon
+
+		
 		int id = currentTab->getID();
+
+		if (isEmptyData) {
+			id = 0;
+			currentTab = &tab[0];
+		}
+
+		//reset tat cac cac tab khong duoc chon,ve tab duoc chon
 		resetTab(id);
 		manageTab[id]->drawUI();
 
-		
 
 	}
 
-	void onCloseButtonClicked(bool &isActive) {
+	void onCloseButtonClicked(bool& isActive) {
 		if (closeButton.isClicked()) {
 			data->writeFile();
 			data->freeMemory();
 			isActive = false;
 		}
-		
-		
+
+
 
 
 	}

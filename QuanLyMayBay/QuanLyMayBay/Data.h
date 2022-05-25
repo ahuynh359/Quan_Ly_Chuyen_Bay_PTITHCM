@@ -41,5 +41,9 @@ public:
 		writeFileFlight(flightList);
 		writeFilePassenger(passengerList);
 	}
+
+	bool planeListIsEmpty() {
+		return isEmpty(planeList);
+	}
 };
 #endif

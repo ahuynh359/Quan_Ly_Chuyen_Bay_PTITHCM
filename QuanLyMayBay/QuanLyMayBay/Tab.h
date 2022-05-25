@@ -17,10 +17,13 @@ public:Tab(int id, int left, int top, int right, int bottom, char text[20])
 	this->backgroundColor = TAB_DEFAULT_BACKGROUND;
 	this->onSelectedBackgroundColor = TAB_ON_SELECTED_BACKGROUND;
 	this->id = id;
+
 }
 	  Tab() :UI() {
 		  strcpy_s(text, "");
-		  id = 0;
+		  this->id = 0;
+		  this->backgroundColor = TAB_DEFAULT_BACKGROUND;
+		  this->onSelectedBackgroundColor = TAB_ON_SELECTED_BACKGROUND;
 	  }
 
 
@@ -36,15 +39,17 @@ public:Tab(int id, int left, int top, int right, int bottom, char text[20])
 	  }
 
 	  void onAction(Tab*& tab) {
-		
-		  if (isLeftMouseClicked(mousex(), mousey()) || tab == this) {
-			  
-				  tab = this;
-				  currentBackground = onSelectedBackgroundColor;
+
+		  if (isLeftMouseClicked(mousex(), mousey()) || tab == this && active) {
+
+			  tab = this;
+			  currentBackground = onSelectedBackgroundColor;
+
 		  }
 		  else if (tab != this) {
 			  currentBackground = backgroundColor;
 		  }
+
 
 		  drawUI();
 	  }

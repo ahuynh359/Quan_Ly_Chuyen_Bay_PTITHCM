@@ -11,7 +11,7 @@ private:
 	char hint[30], title[30], content[50];
 	unsigned int maxChar;
 	int index;
-	bool active, isCliked;
+	bool  isCliked;
 	unsigned int space;//khoang cach giua title va edittext
 
 
@@ -29,7 +29,7 @@ public:
 
 		this->maxChar = maxChar + 1;
 		this->index = 0;
-		this->active = true;
+		
 		this->isCliked = false;
 		this->space = space;
 
@@ -40,7 +40,6 @@ public:
 		strcpy_s(this->content, "");
 		this->maxChar = 0;
 		this->index = 0;
-		this->active = true;
 		this->isCliked = false;
 		this->space = 80;
 
@@ -67,11 +66,6 @@ public:
 
 		//Ve title
 		drawTitle();
-
-		if (!active) {
-			this->currentBackground = EDITTEXT_DISABLE_COLOR;
-
-		}
 
 		UI::drawUI();
 
@@ -102,13 +96,7 @@ public:
 
 	}
 
-	bool isActive() {
-		return active;
-	}
 
-	void setActive(bool s) {
-		this->active = s;
-	}
 
 	bool getIsCliked() {
 		return isCliked;

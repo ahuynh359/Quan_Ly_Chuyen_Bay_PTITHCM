@@ -9,7 +9,7 @@ private:
 	char text[20];
 	int textColor, textOnPointedColor, currentTextColor;
 	bool cliked;
-	int active;
+
 	bool isChoosen;
 	bool isLeftClick, isRightClick;
 
@@ -21,7 +21,6 @@ public:
 		this->textOnPointedColor = textOnPointedColor;
 		this->currentTextColor = textColor;
 		this->cliked = false;
-		this->active = true;
 		this->isChoosen = false;
 		this->isLeftClick = false;
 		this->isRightClick = false;
@@ -32,11 +31,7 @@ public:
 
 
 
-	void setActive(bool s) {
-		this->active = s;
-
-	}
-
+	
 	void setClick(bool s) {
 		this->cliked = s;
 
@@ -53,7 +48,8 @@ public:
 		this->cliked = false;
 		this->active = true;
 		this->isChoosen = false;
-
+		this->isLeftClick = false;
+		this->isRightClick = false;
 	}
 
 	void setBackground(int color) {
@@ -72,13 +68,6 @@ public:
 		return false;
 	}
 	void drawUI() {
-
-
-
-		if (!active) {
-			this->currentBackground = EDITTEXT_DISABLE_COLOR;
-
-		}
 
 
 

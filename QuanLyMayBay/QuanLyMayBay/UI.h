@@ -11,6 +11,7 @@ protected:
 	int left, top;
 	int right, bottom;
 	int backgroundColor, onSelectedBackgroundColor, currentBackground;
+	bool active;
 
 public:
 	UI(int left, int top, int right, int bottom, int backgroundColor, int onSelectedBackgroundColor) {
@@ -21,6 +22,7 @@ public:
 		this->backgroundColor = backgroundColor;
 		this->onSelectedBackgroundColor = onSelectedBackgroundColor;
 		this->currentBackground = backgroundColor;
+		this->active = true;
 
 	}
 	UI() {
@@ -31,49 +33,62 @@ public:
 		currentBackground = -1;
 	}
 
-	int getLeft() {
+	int  getLeft() {
 		return left;
 	}
 
-	int getRight() {
+	int  getRight() {
 		return right;
 	}
 
-	int getTop() {
+	int  getTop() {
 		return top;
 	}
 
-	int getBottom() {
+	int  getBottom() {
 		return bottom;
 	}
-protected:
 
+	void  setActive(bool active) {
+		this->active = active;
+	}
+	bool   isActive() {
+		return active;
+	}
 
-
-	bool virtual isPointed(int xMouse, int yMouse) {
+	bool  isPointed(int xMouse, int yMouse) {
 		if (xMouse <= right && xMouse >= left && yMouse <= bottom && yMouse >= top) {
 			return true;
 		}
 		return false;
 	}
 
-	bool virtual isLeftMouseClicked(int xMouse, int yMouse) {
-		
+	bool  isLeftMouseClicked(int xMouse, int yMouse) {
+
 		if (isPointed(xMouse, yMouse) && GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
 			return true;
 		}
 		return false;
 	}
-	
-	bool virtual isRightMouseClicked(int xMouse, int yMouse) {
+
+	bool  isRightMouseClicked(int xMouse, int yMouse) {
 		if (isPointed(xMouse, yMouse) && GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
 			return true;
 		}
 		return false;
 	}
 
+protected:
+
+
+
 
 	void virtual drawUI() {
+
+		if (!active) {
+			currentBackground = DISABLE_COLOR;
+		}
+
 		setbkcolor(currentBackground);
 		setfillstyle(SOLID_FILL, currentBackground);
 		bar(left, top, right, bottom);

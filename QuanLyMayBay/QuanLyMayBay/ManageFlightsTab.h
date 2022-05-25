@@ -27,7 +27,7 @@ protected:
 
 public:
 	ManageFlightsTab() {
-		
+		beginPage[1] = NULL;
 	}
 	~ManageFlightsTab() {
 		
@@ -41,6 +41,7 @@ public:
 		initEdittext();
 		initSearchEdittext();
 		
+		beginPage[1] = NULL;
 
 
 	}

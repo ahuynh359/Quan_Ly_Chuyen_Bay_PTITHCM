@@ -278,8 +278,8 @@ public:
 
 				}
 				else if (edittextPointer == &edittext[TYPE]) {
-					if (c <= 90 && c >= 65 || c == ' ')
-						edittextPointer->addChar((char)c);
+					if (c <= 90 && c >= 65 || c == ' ' || c <= 122 && c >= 97)
+						edittextPointer->addCharName((char)c);
 
 				}
 				else if (edittextPointer == &edittext[SEATS]) {
@@ -350,6 +350,11 @@ public:
 
 		//-----------VE BUTTON
 		button[ADD].onAction();
+
+		char title[15] = "PLANE DATA";
+		int x = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(title)) / 2;
+		int y = SUBWINDOW_TOP + 20;
+		drawTitle(x, y, title);
 
 
 		//-----------------VE HUONG DAN TEXT

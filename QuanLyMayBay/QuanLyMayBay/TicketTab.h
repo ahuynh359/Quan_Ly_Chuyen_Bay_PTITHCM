@@ -54,7 +54,7 @@ public:
 		//------------EDITTEXT ID PASS
 
 		strcpy_s(title, "ID PASS");
-		edittext[ID_PASS] = EditText(hint, title, content, left, top, right, bottom, MAX_ID_PASS,130);
+		edittext[ID_PASS] = EditText(hint, title, content, left, top, right, bottom, MAX_ID_PASS, 130);
 
 
 
@@ -105,7 +105,9 @@ public:
 	}
 	void initTicketList(PTR& flight) {
 
-		int y = TOP_BORDER + 20;
+	
+
+		int y = TOP_BORDER + 70;
 		int x = (LEFT_BORDER + RIGHT_BORDER - 680) / 2;
 		char value[3];
 		char a[2] = "";
@@ -181,7 +183,7 @@ public:
 	}
 	void reset() {
 		ManageFlightsTab::reset();
-	
+
 		clearEditext();
 	}
 
@@ -432,6 +434,11 @@ public:
 	}
 	void drawCancelTicketMenu() {
 
+
+
+		char s[50] = "CHECK INFO PASSENGER";
+		drawTitle(s);
+
 		button[BACK].onAction();
 		button[CANCLE].onAction();
 		button[FEMALE].onAction(genderButton);
@@ -472,7 +479,38 @@ public:
 	}
 	void drawTicketMenu() {
 
+		
+		//---------HUONG DAN
+
+		char s[200] = "*Left click to book ticket";
+		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, s);
+		strcpy_s(s, " Right click to cancle ticket");
+		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 40, s);
+
 		drawInstructionInline();
+
+
+		//---------TITLE
+		int y = SUBWINDOW_TOP + 5;
+
+		strcpy_s(s, "TICKET LIST ON FLIGHT ") ;
+		strcat_s(s, flightTemp->info.idFlight);
+		int x = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(s)) / 2 - 20;
+
+		drawTitle(x, y, s);
+
+		strcpy_s(s, "Date time: ");
+		strcat_s(s, getDateString(flightTemp->info.date));
+		y += textheight(s) + 10;
+		x -= 30;
+		drawTitle(x, y, s);
+		x += textwidth(s) + 10;
+		strcpy_s(s, "Arrive: ");
+		strcat_s(s, flightTemp->info.arrive);
+
+		drawTitle(x, y, s);
+
+	
 
 		for (int i = 1; i <= flightTemp->info.totalTicket; i++) {
 			buttonTicket[i].onActionSeatButton(ticketPointer);
@@ -526,6 +564,9 @@ public:
 		drawText(left, top, left + textwidth(a), a);
 	}
 	void drawAddMenu() {
+
+		char s[50] = "ADD PASSENGER";
+		drawTitle(s);
 
 		button[BACK].onAction();
 		button[SAVE].onAction();
@@ -651,12 +692,13 @@ public:
 		Date date = getDateFromSearch();
 
 		PTR k = beginPage[currentPage];
-
+	
 		size = 0;
 		int i = startPage;
 
 		while (k != NULL && (i < startPage + 10)) {
-
+			tempFlight = NULL;
+			printf(k->info.arrive);
 			if (k->info.status == 1 || k->info.status == 2)
 			{
 				tempFlight = k;
@@ -690,7 +732,7 @@ public:
 			k = k->next;
 		}
 
-		tempFlight = NULL;
+		
 		return -1;
 
 
