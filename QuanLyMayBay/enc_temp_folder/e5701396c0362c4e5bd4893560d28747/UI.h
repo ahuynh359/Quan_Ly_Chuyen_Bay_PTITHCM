@@ -65,14 +65,14 @@ public:
 
 	bool  isLeftMouseClicked(int xMouse, int yMouse) {
 
-		if (isPointed(xMouse, yMouse) && GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
+		if (isPointed(xMouse, yMouse) && GetAsyncKeyState(VK_LBUTTON) & 1) {
 			return true;
 		}
 		return false;
 	}
 
 	bool  isRightMouseClicked(int xMouse, int yMouse) {
-		if (isPointed(xMouse, yMouse) && GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
+		if (isPointed(xMouse, yMouse) && GetAsyncKeyState(VK_RBUTTON) & 1) {
 			return true;
 		}
 		return false;
