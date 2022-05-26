@@ -5,8 +5,8 @@
 #define DEFINE_H
 
 //----------------SCREEN----------
-int SCREEN_WIDTH = GetSystemMetrics(SM_CXSCREEN);
-int SCREEN_HEIGHT = GetSystemMetrics(SM_CYSCREEN);
+#define SCREEN_WIDTH  1280
+#define SCREEN_HEIGHT  720
 
 
 //-----------------BACKGROUND COLOR

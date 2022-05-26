@@ -224,14 +224,14 @@ public:
 		return false;
 	}
 	bool  isLeftMouseClicked(int left, int top, int right, int bottom) {
-		if (isPointed(left, top, right, bottom) && GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
+		if (isPointed(left, top, right, bottom) && GetAsyncKeyState(VK_LBUTTON) & 1) {
 			return true;
 		}
 		return false;
 	}
 	
 	bool  isRightMouseClicked(int left, int top, int right, int bottom) {
-		if (isPointed(left, top, right, bottom) && GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
+		if (isPointed(left, top, right, bottom) && GetAsyncKeyState(VK_RBUTTON) & 1) {
 			return true;
 		}
 		return false;
