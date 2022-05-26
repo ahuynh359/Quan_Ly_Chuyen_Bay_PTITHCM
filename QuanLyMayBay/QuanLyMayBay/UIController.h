@@ -20,7 +20,9 @@ private:
 	Button closeButton;
 public:
 	UIController() {
-		initwindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Manage Flights");
+		printf("%d", getmaxwidth());
+		initwindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Manage Flights",
+			(getmaxwidth() - SCREEN_WIDTH)/2,(getmaxheight() - SCREEN_HEIGHT)/2);
 
 
 		data = new Data();
