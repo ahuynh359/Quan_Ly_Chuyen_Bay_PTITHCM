@@ -26,6 +26,9 @@ int main()
 
 
 		setvisualpage(getactivepage());
+		clearmouseclick(WM_LBUTTONDOWN);
+		clearmouseclick(WM_RBUTTONDOWN);
+
 		
 		delay(20);
 	}

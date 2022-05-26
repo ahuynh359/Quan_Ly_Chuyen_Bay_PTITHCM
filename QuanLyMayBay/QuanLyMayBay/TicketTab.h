@@ -551,12 +551,12 @@ public:
 
 
 		if (ticketPointer != NULL) {
+		
 			if (!ticketPointer->getIsChoosen() && ticketPointer->getIsLeftClick()) {
 				addEdittextPointer = &edittext[ID_PASS];
 				initAddMenu(false);
 				delay(50);
 				currentMenu = ADD_MENU;
-				return;
 
 			}
 			else
@@ -564,9 +564,8 @@ public:
 					AVLTree passenger = findPassenger(d->passengerList, flightTemp->info.ticketList[ticketPointer->getIntData() - 1]);
 					initAddMenu(false, true);
 					customEdittext(passenger, true);
-					currentMenu = CANCLE_TICKET_MENU;
 					delay(50);
-					return;
+					currentMenu = CANCLE_TICKET_MENU;
 
 
 				}
@@ -597,7 +596,7 @@ public:
 		drawText(left, top, left + textwidth(a), a);
 	}
 	void drawAddMenu() {
-
+		
 		char s[50] = "ADD PASSENGER";
 		drawTitle(s);
 
@@ -612,7 +611,7 @@ public:
 		edittext[FIRST_NAME].onAction(addEdittextPointer);
 		edittext[LAST_NAME].onAction(addEdittextPointer);
 
-
+		
 		inputHandel();
 
 		if (button[BACK].isClicked()) {
@@ -636,7 +635,7 @@ public:
 
 			}
 			else {
-
+				
 				Passenger p = getPassenger();
 				//Neu da co 
 				AVLTree a = findPassenger(d->passengerList, p.idPass);
@@ -654,6 +653,7 @@ public:
 				clearEditext();
 				bookTicket(flightTemp, ticketPointer->getIntData() - 1, p.idPass);
 				currentMenu = TICKET_MENU;
+				delay(50);
 				ticketPointer = NULL;
 
 			}
