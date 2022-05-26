@@ -185,11 +185,31 @@ int checkDupIDOnFlight(PTR& first, char id[MAX_ID_PASS + 1]) {
 	return -1;
 }
 
+// Kiem tra 1 hanh khach chi duoc dat 2 chuyen bay co >= abs(12)
 PTR checkPassOnOtherFlightIn12Hours(PTR& first, PTR& flight, char id[MAX_ID_PASS + 1]) {
 	for (PTR k = first; k != NULL; k = k->next) {
-		for (int i = 0; i < k->info.totalTicket; i++) {
-			if (strcmp(k->info.ticketList[i], id) == 0 && !in12Hour(flight->info.date, first->info.date)) {
-				return k;
+		if (k != flight) {
+			for (int i = 0; i < k->info.totalTicket; i++) {
+				if (strcmp(k->info.ticketList[i], id) == 0 && strcmp(id,"0") !=0  &&
+					!in12Hour(flight->info.date, k->info.date) && (k->info.status == 1 || k->info.status == 2)) {
+				
+					return k;
+				}
+			}
+		}
+	}
+	return NULL;
+}
+
+PTR canEditTime(PTR &first,PTR &flight,Date date) {
+	for (PTR k = first; k != NULL; k = k->next) {
+		if (k != flight) {
+			for (int i = 0; i < flight->info.totalTicket; i++) {
+				if (strcmp(flight->info.ticketList[i], "0") != 0 && checkDupIDOnFlight(k, flight->info.ticketList[i]) != -1   &&
+					!in12Hour(k->info.date, date) && (k->info.status == 1 || k->info.status == 2)) {
+					printf("%d\n", checkDupIDOnFlight(k, flight->info.ticketList[i]));
+					return k;
+			}
 			}
 		}
 	}

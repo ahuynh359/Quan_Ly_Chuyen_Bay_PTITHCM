@@ -30,7 +30,7 @@ public:
 		beginPage[1] = NULL;
 	}
 	~ManageFlightsTab() {
-		
+
 		delete d;
 		delete beginPage;
 	}
@@ -40,7 +40,7 @@ public:
 
 		initEdittext();
 		initSearchEdittext();
-		
+
 		beginPage[1] = NULL;
 
 
@@ -216,7 +216,7 @@ public:
 		addEdittext[HOUR].customInitChar(flightTemp->info.date.hour);
 		addEdittext[MINUTE].customInitChar(flightTemp->info.date.minute);
 	}
-	
+
 
 
 	//-------------RESET
@@ -323,7 +323,7 @@ public:
 		edittext[MONTH].clearCursor();
 		edittext[YEAR].clearCursor();
 		edittext[ARRIVE].clearCursor();
-		
+
 	}
 
 
@@ -488,7 +488,7 @@ public:
 		//CHeck co chuyen bay nao khac cung ID PLANE TRONG 12 tieng
 		for (PTR k = d->flightList; k != NULL; k = k->next) {
 			if ((!in12Hour(date, k->info.date) && strcmp(k->info.idFlight, addEdittext[ID_FLIGHT].getCharData()) != 0
-				&& strcmp(k->info.idPlane, addEdittext[ID_PLANE].getCharData()) == 0 && k->info.status != 0)
+				&& strcmp(k->info.idPlane, addEdittext[ID_PLANE].getCharData()) == 0 && k->info.status == 1 || k->info.status == 2)
 				) {
 				char mess[200] = "Unable to establish flight\n Because there is other flight\n ID: ";
 				strcat_s(mess, k->info.idFlight);
@@ -499,6 +499,23 @@ public:
 				return false;
 
 			}
+		}
+
+		if (isAdjust) {
+			
+			PTR a = canEditTime(d->flightList,flightTemp,getDate() );
+			if (a != NULL) {
+				char mess[300] = "Unable to edit time flight\n Because there is other flight\n ID: ";
+				strcat_s(mess, a->info.idFlight);
+				strcat_s(mess, "\n Time: ");
+				strcat_s(mess, getDateString(a->info.date));
+		
+				strcat_s(mess, "\n Time must >= 12 hours from this flight");
+				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
+				return false;
+			}
+
+
 		}
 
 
@@ -898,7 +915,7 @@ public:
 		strcpy_s(s, "*Use left/right key to navigate");
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, s);
 
-		strcpy_s(s,"Time >= an hour from now");
+		strcpy_s(s, "Time >= an hour from now");
 		drawText(addEdittext[DAY].getLeft(),
 			addEdittext[DAY].getTop() - textheight(s) - 10, s, RED);
 
@@ -1069,7 +1086,7 @@ public:
 		drawBorder(6, 1, isEmpty(flightList));
 
 		checkCompletedAll(flightList, planeList);
-		onButtonPage(size(flightList),currentPage); //Su kien nut left / right
+		onButtonPage(size(flightList), currentPage); //Su kien nut left / right
 		showPage(currentPage); //Hien thi trang
 
 
@@ -1113,7 +1130,7 @@ public:
 			k = k->next;
 		}
 
-		
+
 		return -1;
 
 
@@ -1131,7 +1148,7 @@ public:
 		for (PTR k = flightList; k != NULL; k = k->next) {
 			if (
 				(edittext[ID_FLIGHT].isEmpty() || isPrefix(edittext[ID_FLIGHT].getCharData(), k->info.idFlight))
-				&& (edittext[DAY].isEmpty()  || strcmp(date.day, k->info.date.day) == 0)
+				&& (edittext[DAY].isEmpty() || strcmp(date.day, k->info.date.day) == 0)
 				&& (edittext[MONTH].isEmpty() || strcmp(date.month, k->info.date.month) == 0)
 				&& (edittext[YEAR].isEmpty() || isPrefix(date.year, k->info.date.year))
 				&& (edittext[ARRIVE].isEmpty() || isPrefix(edittext[ARRIVE].getCharData(), k->info.arrive))
@@ -1162,7 +1179,7 @@ public:
 		clearSearchEdittextCursor();
 
 		int size = countSizeFilterData(flightList, seat);
-		
+
 		if (!seat) {
 			drawBorder(6, 1, size == 0); //Draw border va title
 
@@ -1170,7 +1187,7 @@ public:
 		else
 			drawBorder(6, 3, size == 0); //Draw border va title
 
-		onButtonPage(size,currentFilterPage); //Su kien nut left / right
+		onButtonPage(size, currentFilterPage); //Su kien nut left / right
 		showPage(currentFilterPage); //Hien thi trang
 		clearSearchEdittextCursor();
 
@@ -1179,16 +1196,16 @@ public:
 		PTR k = beginPage[currentFilterPage];
 
 		int i = startPage;
-		
-	
+
+
 		while (k != NULL && i < (startPage + 10)) {
 			flightTemp = NULL;
-		
+
 			if (
 				(edittext[ID_FLIGHT].isEmpty() || isPrefix(edittext[ID_FLIGHT].getCharData(), k->info.idFlight))
 				&& (edittext[DAY].isEmpty() || strcmp(date.day, k->info.date.day) == 0)
-				&& (edittext[MONTH].isEmpty() ||  strcmp(date.month, k->info.date.month) == 0)
-				&& (edittext[YEAR].isEmpty() ||  isPrefix(date.year, k->info.date.year))
+				&& (edittext[MONTH].isEmpty() || strcmp(date.month, k->info.date.month) == 0)
+				&& (edittext[YEAR].isEmpty() || isPrefix(date.year, k->info.date.year))
 				&& (edittext[ARRIVE].isEmpty() || isPrefix(edittext[ARRIVE].getCharData(), k->info.arrive))
 				)
 			{
@@ -1223,13 +1240,13 @@ public:
 			k = k->next;
 		}
 
-	
+
 		return -1;
 
 
 	}
 
-	
+
 
 
 };

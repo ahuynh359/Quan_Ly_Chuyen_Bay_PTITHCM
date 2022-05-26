@@ -501,6 +501,7 @@ public:
 				ticketPointer->drawSeatUI();
 				char a[MAX_ID_PASS + 1] = "0";
 				bookTicket(flightTemp, ticketPointer->getIntData() - 1, a);
+				
 			}
 			clearEditext();
 			ticketPointer = NULL;

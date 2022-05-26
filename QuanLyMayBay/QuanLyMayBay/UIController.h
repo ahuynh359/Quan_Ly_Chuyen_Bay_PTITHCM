@@ -79,13 +79,13 @@ public:
 		for (int i = 0; i < MAX_TAB; i++) {
 			//Nhung tab > 0 set no theo du lieu plane
 			if (i > 0) {
-				
+
 
 				tab[i].setActive(!isPlaneDataEmpty);
 				if (i == 2 || i == 3) {
 					tab[i].setActive(!isFlightDataEmpty);
 				}
-				
+
 			}
 			tab[i].onAction(currentTab);
 		}
@@ -93,10 +93,10 @@ public:
 		closeButton.onAction();
 
 
-		
+
 		int id = currentTab->getID();
 
-		
+
 
 		//reset tat cac cac tab khong duoc chon,ve tab duoc chon
 		resetTab(id);
@@ -128,5 +128,4 @@ public:
 
 
 };
-
 
