@@ -40,7 +40,7 @@ public:Tab(int id, int left, int top, int right, int bottom, char text[20])
 
 	  void onAction(Tab*& tab) {
 
-		  if (isLeftMouseClicked(mousex(), mousey()) || tab == this && active) {
+		  if (active && isLeftMouseClicked(mousex(), mousey()) || tab == this) {
 
 			  tab = this;
 			  currentBackground = onSelectedBackgroundColor;

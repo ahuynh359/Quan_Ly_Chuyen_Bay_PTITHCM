@@ -185,6 +185,17 @@ int checkDupIDOnFlight(PTR& first, char id[MAX_ID_PASS + 1]) {
 	return -1;
 }
 
+PTR checkPassOnOtherFlightIn12Hours(PTR& first, PTR& flight, char id[MAX_ID_PASS + 1]) {
+	for (PTR k = first; k != NULL; k = k->next) {
+		for (int i = 0; i < k->info.totalTicket; i++) {
+			if (strcmp(k->info.ticketList[i], id) == 0 && !in12Hour(flight->info.date, first->info.date)) {
+				return k;
+			}
+		}
+	}
+	return NULL;
+}
+
 void bookTicket(PTR& first, int index, char id[MAX_ID_PASS + 1]) {
 	strcpy_s(first->info.ticketList[index], MAX_ID_PASS + 1, id);
 }

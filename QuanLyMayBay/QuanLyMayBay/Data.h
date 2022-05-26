@@ -45,5 +45,9 @@ public:
 	bool planeListIsEmpty() {
 		return isEmpty(planeList);
 	}
+
+	bool flightListIsEmpty() {
+		return isEmpty(flightList);
+	}
 };
 #endif

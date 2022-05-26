@@ -14,13 +14,13 @@ protected:
 	EditText* addPointer = NULL;
 
 	int indexID = -1;
-	PTR tempFlight = NULL;
+	PTR flightTemp = NULL;
 
 	Data* d = NULL;
 
 	ManagePlanesTab manage;
 
-	PTR* beginPage = new PTR[0];
+	PTR* beginPage = new PTR[2];
 	int beginPageSize = 1;
 
 
@@ -197,24 +197,24 @@ public:
 	void initAdjustScreen() {
 		addPointer = &addEdittext[DAY];
 
-		addEdittext[ID_FLIGHT].customInitChar(tempFlight->info.idFlight);
+		addEdittext[ID_FLIGHT].customInitChar(flightTemp->info.idFlight);
 		addEdittext[ID_FLIGHT].setActive(false);
-		addEdittext[ID_PLANE].customInitChar(tempFlight->info.idPlane);
+		addEdittext[ID_PLANE].customInitChar(flightTemp->info.idPlane);
 		addEdittext[ID_PLANE].setActive(false);
-		addEdittext[ARRIVE].customInitChar(tempFlight->info.arrive);
+		addEdittext[ARRIVE].customInitChar(flightTemp->info.arrive);
 		addEdittext[ARRIVE].setActive(false);
 
 		char s[40] = "HAVE TICKET";
-		if (tempFlight->info.status == 2)
+		if (flightTemp->info.status == 2)
 			strcpy_s(s, "SOLD OUT");
 		addEdittext[STATUS].customInitChar(s);
 		addEdittext[STATUS].setActive(false);
 
-		addEdittext[DAY].customInitChar(tempFlight->info.date.day);
-		addEdittext[MONTH].customInitChar(tempFlight->info.date.month);
-		addEdittext[YEAR].customInitChar(tempFlight->info.date.year);
-		addEdittext[HOUR].customInitChar(tempFlight->info.date.hour);
-		addEdittext[MINUTE].customInitChar(tempFlight->info.date.minute);
+		addEdittext[DAY].customInitChar(flightTemp->info.date.day);
+		addEdittext[MONTH].customInitChar(flightTemp->info.date.month);
+		addEdittext[YEAR].customInitChar(flightTemp->info.date.year);
+		addEdittext[HOUR].customInitChar(flightTemp->info.date.hour);
+		addEdittext[MINUTE].customInitChar(flightTemp->info.date.minute);
 	}
 	
 
@@ -757,13 +757,13 @@ public:
 		//Neu tat ca cac truong loc thong tin trong thi ve du lieu bth
 		int s;
 		if (checkAllEdittextIsEmpty())
-			s = drawFlightData(tempFlight, d->flightList, d->planeList);
+			s = drawFlightData(flightTemp, d->flightList, d->planeList);
 
 		else {
 			currentPage = 1;
 			clearSearchEdittextCursor();
 
-			s = drawFilterData(tempFlight, d->flightList);
+			s = drawFilterData(flightTemp, d->flightList);
 
 		}
 
@@ -774,7 +774,7 @@ public:
 			switch (d) {
 			case IDOK: {
 				//Chi duoc cancle thi con ve hoac het ve
-				if (!checkCancleFlight(tempFlight)) {
+				if (!checkCancleFlight(flightTemp)) {
 					drawAnounce(CANCLE_FLIGHT_ERROR);
 
 				}
@@ -789,12 +789,12 @@ public:
 		}
 		else if (s == 2) {
 			//Khong cho chinh sua neu bi huy hoăc hoan tat
-			if (tempFlight->info.status == 0 || tempFlight->info.status == 3) {
+			if (flightTemp->info.status == 0 || flightTemp->info.status == 3) {
 				drawAnounce(ADJUST_ERROR);
 				return;
 			}
 			//Khong cho chinh sua trong 30 phut cuoi
-			if (!checkTimeBeforeMinute(tempFlight->info.date, 30)) {
+			if (!checkTimeBeforeMinute(flightTemp->info.date, 30)) {
 				drawAnounce(THIRTY_MINUTE);
 				return;
 			}
@@ -938,7 +938,7 @@ public:
 			else
 			{
 				Date date = getDate();
-				adjustFlight(tempFlight, date);
+				adjustFlight(flightTemp, date);
 				resetEdittext();
 				resetAddEdittext();
 				drawAnounce(SUCCESS);
@@ -1056,7 +1056,7 @@ public:
 
 
 	}
-	int drawFlightData(PTR& tempFlight, PTR& flightList, PlaneList& planeList) {
+	int drawFlightData(PTR& flightTemp, PTR& flightList, PlaneList& planeList) {
 
 		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
 		int preY = TOP_BORDER + 60;
@@ -1079,10 +1079,10 @@ public:
 		}
 
 		int res = -1;
-		tempFlight = NULL;
+		flightTemp = NULL;
 		for (int i = startPage; k != NULL && i < (startPage + 10); i++) {
 
-			tempFlight = k;
+			flightTemp = k;
 			int preX = LEFT_BORDER;
 
 			setcolor(BLACK);
@@ -1151,7 +1151,7 @@ public:
 
 		return size;
 	}
-	int drawFilterData(PTR& tempFlight, PTR& flightList, bool seat = false) {
+	int drawFilterData(PTR& flightTemp, PTR& flightList, bool seat = false) {
 
 		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
 		int preY = TOP_BORDER + 60;
@@ -1178,7 +1178,7 @@ public:
 		
 	
 		while (k != NULL && i < (startPage + 10)) {
-			tempFlight = NULL;
+			flightTemp = NULL;
 		
 			if (
 				(edittext[ID_FLIGHT].isEmpty() || isPrefix(edittext[ID_FLIGHT].getCharData(), k->info.idFlight))
@@ -1189,7 +1189,7 @@ public:
 				)
 			{
 				if (!seat || (seat && k->info.status == 2 || k->info.status == 1)) {
-					tempFlight = k;
+					flightTemp = k;
 					int preX = LEFT_BORDER;
 
 					setcolor(BLACK);

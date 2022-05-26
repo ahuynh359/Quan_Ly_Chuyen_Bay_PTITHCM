@@ -13,6 +13,8 @@ private:
 	EditText* addEdittextPointer;
 
 	Data* d;
+
+	bool save = false;
 public:
 
 	~TicketTab() {
@@ -105,7 +107,7 @@ public:
 	}
 	void initTicketList(PTR& flight) {
 
-	
+
 
 		int y = TOP_BORDER + 70;
 		int x = (LEFT_BORDER + RIGHT_BORDER - 680) / 2;
@@ -232,6 +234,20 @@ public:
 				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
 				return false;
 			}
+
+			PTR  k = checkPassOnOtherFlightIn12Hours(d->flightList, flightTemp, edittext[ID_PASS].getCharData());
+			if (k != NULL) {
+				char mess[300] = "Can't not book ticket\n";
+
+				strcat_s(mess, "This passenger has booked ticket on flight ");
+				strcat_s(mess, k->info.idFlight);
+				strcat_s(mess, "\n Date:");
+				strcat_s(mess, getDateString(k->info.date));
+				strcat_s(mess, "\n Time >= 12 hours from that flight");
+				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
+				addEdittextPointer = &edittext[ID_PASS];
+				return false;
+			}
 			initAddMenu(true);
 		}
 
@@ -341,7 +357,24 @@ public:
 			addEdittextPointer = &edittext[ID_PASS];
 			return false;
 		}
+
+		PTR k = checkPassOnOtherFlightIn12Hours(d->flightList, flightTemp, edittext[ID_PASS].getCharData());
+		if (k != NULL) {
+			char mess[300] = "Can't not book ticket\n";
+
+			strcat_s(mess, "This passenger has booked ticket on flight ");
+			strcat_s(mess, k->info.idFlight);
+			strcat_s(mess, "\n Date:");
+			strcat_s(mess, getDateString(k->info.date));
+			strcat_s(mess, "\n Time >= 12 hours from that flight");
+			MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
+			addEdittextPointer = &edittext[ID_PASS];
+			return false;
+		}
+
+
 		initAddMenu(true);
+
 
 		if (edittext[FIRST_NAME].isEmpty()) {
 			drawAnounce(EMPTY);
@@ -479,7 +512,7 @@ public:
 	}
 	void drawTicketMenu() {
 
-		
+
 		//---------HUONG DAN
 
 		char s[200] = "*Left click to book ticket";
@@ -493,7 +526,7 @@ public:
 		//---------TITLE
 		int y = SUBWINDOW_TOP + 5;
 
-		strcpy_s(s, "TICKET LIST ON FLIGHT ") ;
+		strcpy_s(s, "TICKET LIST ON FLIGHT ");
 		strcat_s(s, flightTemp->info.idFlight);
 		int x = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(s)) / 2 - 20;
 
@@ -510,7 +543,7 @@ public:
 
 		drawTitle(x, y, s);
 
-	
+
 
 		for (int i = 1; i <= flightTemp->info.totalTicket; i++) {
 			buttonTicket[i].onActionSeatButton(ticketPointer);
@@ -587,20 +620,34 @@ public:
 			reset();
 			delay(50);
 			currentMenu = TICKET_MENU;
+
 		}
 		if (button[SAVE].isClicked()) {
 			if (!checkSaveData()) {
 
+				if (!edittext[ID_PASS].isEmpty() && checkDupIDOnFlight(flightTemp, edittext[ID_PASS].getCharData()) == -1 &&
+					checkPassOnOtherFlightIn12Hours(d->flightList, flightTemp, edittext[ID_PASS].getCharData()) == NULL) {
+					AVLTree a = findPassenger(d->passengerList, edittext[ID_PASS].getCharData());
+					if (a != NULL) {
+						customEdittext(a);
+
+					}
+				}
+
 			}
 			else {
+
 				Passenger p = getPassenger();
 				//Neu da co 
 				AVLTree a = findPassenger(d->passengerList, p.idPass);
+
 				if (a != NULL) {
 					adjustPassenger(p, a);
+
 				}
 				else
 					d->passengerList = addPassenger(d->passengerList, p);
+
 
 				ticketPointer->setChoosen(true);
 				drawAnounce(SUCCESS);
@@ -608,6 +655,7 @@ public:
 				bookTicket(flightTemp, ticketPointer->getIntData() - 1, p.idPass);
 				currentMenu = TICKET_MENU;
 				ticketPointer = NULL;
+
 			}
 		}
 
@@ -692,13 +740,12 @@ public:
 		Date date = getDateFromSearch();
 
 		PTR k = beginPage[currentPage];
-	
+
 		size = 0;
 		int i = startPage;
 
 		while (k != NULL && (i < startPage + 10)) {
 			tempFlight = NULL;
-			printf(k->info.arrive);
 			if (k->info.status == 1 || k->info.status == 2)
 			{
 				tempFlight = k;
@@ -732,7 +779,7 @@ public:
 			k = k->next;
 		}
 
-		
+
 		return -1;
 
 

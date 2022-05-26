@@ -72,12 +72,21 @@ public:
 
 		drawBackground();
 
-		bool isEmptyData = data->planeListIsEmpty();
+		bool isPlaneDataEmpty = data->planeListIsEmpty();
+		bool isFlightDataEmpty = data->flightListIsEmpty();
+
 
 		for (int i = 0; i < MAX_TAB; i++) {
 			//Nhung tab > 0 set no theo du lieu plane
-			if (i > 0)
-				tab[i].setActive(!isEmptyData);
+			if (i > 0) {
+				
+
+				tab[i].setActive(!isPlaneDataEmpty);
+				if (i == 2 || i == 3) {
+					tab[i].setActive(!isFlightDataEmpty);
+				}
+				
+			}
 			tab[i].onAction(currentTab);
 		}
 
@@ -87,10 +96,7 @@ public:
 		
 		int id = currentTab->getID();
 
-		if (isEmptyData) {
-			id = 0;
-			currentTab = &tab[0];
-		}
+		
 
 		//reset tat cac cac tab khong duoc chon,ve tab duoc chon
 		resetTab(id);
