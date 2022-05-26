@@ -759,8 +759,8 @@ public:
 				}
 
 
-				drawOneFlight(preY, size, k, true);
-				size++;
+				drawOneFlight(preY, i, k, true);
+			
 
 				if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
 					return 1;

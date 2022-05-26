@@ -54,7 +54,7 @@ public:
 
 		setbkcolor(SUBWINDOW_BACKGROUND);
 
-		for (int i = startPage ; i < d->planeList.size && i < 10; i++) {
+		for (int i = startPage ; i < d->planeList.size && i < (startPage + 10); i++) {
 
 			int preX = LEFT_BORDER;
 			setcolor(BLACK);

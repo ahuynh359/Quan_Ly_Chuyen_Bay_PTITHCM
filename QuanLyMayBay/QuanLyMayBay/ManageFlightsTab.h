@@ -854,17 +854,19 @@ public:
 
 			}
 			else {
+
 				Flight p = getFlight();
 				insertAfter(d->flightList, p);
 				drawAnounce(SUCCESS);
 				resetAddEdittext();
 				initAddMenu();
-
+				manage.currentPage = 1;
 
 			}
 		}
 
 		if (button[BACK].isClicked()) {
+			manage.currentPage = 1;
 			int s = drawAnounce(PREVIOUS);
 			switch (s) {
 			case IDOK: {
@@ -880,6 +882,7 @@ public:
 		}
 
 		if (button[FIND].isClicked()) {
+			manage.currentPage = 1;
 			delay(50);
 			currentMenu = FIND_PLANE_MENU;
 
@@ -965,6 +968,7 @@ public:
 			int s = drawAnounce(PREVIOUS);
 			switch (s) {
 			case IDOK: {
+				manage.currentPage = 1;
 				currentMenu = ADD_MENU;
 				break;
 			}
@@ -1158,7 +1162,7 @@ public:
 		clearSearchEdittextCursor();
 
 		int size = countSizeFilterData(flightList, seat);
-		//cout << size << "\n\n";
+		
 		if (!seat) {
 			drawBorder(6, 1, size == 0); //Draw border va title
 
@@ -1172,7 +1176,7 @@ public:
 
 		Date date = getDateFromSearch();
 
-		PTR k = beginPage[currentPage];
+		PTR k = beginPage[currentFilterPage];
 
 		int i = startPage;
 		

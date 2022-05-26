@@ -89,7 +89,7 @@ public:
 
 		int y = SUBWINDOW_TOP + 5;
 
-		char s[40] = "LIST OF PASSENGERS ON FLIGHT ";
+		char s[100] = "LIST OF PASSENGERS ON FLIGHT ";
 		strcat_s(s, tempFlight->info.idFlight);
 		int x = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(s)) / 2;
 
@@ -124,7 +124,6 @@ public:
 		int x = preX + 100;
 		drawText(preX, preY, x, temp);
 		preX = x;
-		cnt++;
 
 		//VE SO VE
 
@@ -199,6 +198,7 @@ public:
 
 			setcolor(BLACK);
 			drawOnePassenger(cnt, preY, i, p);
+			cnt++;
 			preY += spaceY;
 
 
