@@ -510,10 +510,8 @@ public:
 
 			}
 			else {
-
-				Plane p = getPlaneData();
-				adjustPlane(d->planeList, p, this->indexID);
-
+				adjustPlane(d->planeList, edittext[SEATS].getIntData(), this->indexID);
+				adjustTicketList(d->flightList, edittext[SEATS].getIntData(), edittext[ID_PLANE].getCharData());
 				drawAnounce(SUCCESS);
 
 				reset();
@@ -567,7 +565,7 @@ public:
 		onButtonPage(planeList.size, currentPage); //Su kien nut left / right
 		showPage(currentPage); //Hien thi trang
 
-
+		indexID = -1;
 
 		for (int i = startPage; i < min(planeList.size, (startPage + 10)); i++) {
 
@@ -600,7 +598,7 @@ public:
 			preY += spaceY;
 
 		}
-		indexID = -1;
+		
 		return -1;
 
 

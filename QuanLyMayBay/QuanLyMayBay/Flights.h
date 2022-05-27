@@ -167,7 +167,7 @@ void initTicketList(PlaneList& planeList, Flight& flight) {
 	flight.totalTicket = p->seats;
 
 	char s[MAX_ID_PASS + 1] = "0";
-	flight.ticketList = new char* [flight.totalTicket + 1];
+	flight.ticketList = new char* [51];
 	for (int i = 0; i < flight.totalTicket; i++) {
 		flight.ticketList[i] = new char[MAX_ID_PASS + 1];
 		strcpy_s(flight.ticketList[i], 2, s);
@@ -190,9 +190,9 @@ PTR checkPassOnOtherFlightIn12Hours(PTR& first, PTR& flight, char id[MAX_ID_PASS
 	for (PTR k = first; k != NULL; k = k->next) {
 		if (k != flight) {
 			for (int i = 0; i < k->info.totalTicket; i++) {
-				if (strcmp(k->info.ticketList[i], id) == 0 && strcmp(id,"0") !=0  &&
+				if (strcmp(k->info.ticketList[i], id) == 0 && strcmp(id, "0") != 0 &&
 					!in12Hour(flight->info.date, k->info.date) && (k->info.status == 1 || k->info.status == 2)) {
-				
+
 					return k;
 				}
 			}
@@ -201,19 +201,38 @@ PTR checkPassOnOtherFlightIn12Hours(PTR& first, PTR& flight, char id[MAX_ID_PASS
 	return NULL;
 }
 
-PTR canEditTime(PTR &first,PTR &flight,Date date) {
+PTR canEditTime(PTR& first, PTR& flight, Date date) {
 	for (PTR k = first; k != NULL; k = k->next) {
 		if (k != flight) {
 			for (int i = 0; i < flight->info.totalTicket; i++) {
-				if (strcmp(flight->info.ticketList[i], "0") != 0 && checkDupIDOnFlight(k, flight->info.ticketList[i]) != -1   &&
+				if (strcmp(flight->info.ticketList[i], "0") != 0 && checkDupIDOnFlight(k, flight->info.ticketList[i]) != -1 &&
 					!in12Hour(k->info.date, date) && (k->info.status == 1 || k->info.status == 2)) {
 					printf("%d\n", checkDupIDOnFlight(k, flight->info.ticketList[i]));
 					return k;
-			}
+				}
 			}
 		}
 	}
 	return NULL;
+}
+
+void adjustTicketList(PTR& first, int totalTicket, char id[MAX_ID_PLANE + 1]) {
+
+	char s[MAX_ID_PASS + 1] = "0";
+
+	for (PTR k = first; k != NULL; k = k->next) {
+		if (strcmp(k->info.idPlane, id) == 0) {
+
+			for (int i = k->info.totalTicket; i < totalTicket; i++) {
+				k->info.ticketList[i] = new char[MAX_ID_PASS + 1];
+				strcpy_s(k->info.ticketList[i], 2, s);
+			}
+			k->info.totalTicket = totalTicket;
+
+		}
+
+	}
+
 }
 
 void bookTicket(PTR& first, int index, char id[MAX_ID_PASS + 1]) {
@@ -272,7 +291,7 @@ void deleteFlightList(PTR& first)
 		PTR t = temp;
 		temp = temp->next;
 		for (int i = 0; i < t->info.totalTicket; i++) {
-			delete  t->info.ticketList[i];
+			delete []  t->info.ticketList[i];
 		}
 		delete[] t->info.ticketList;
 		delete t;

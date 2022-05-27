@@ -50,8 +50,8 @@ void addPlane(PlaneList& list, Plane& plane) {
 
 int findPlane(PlaneList& list, char idPlane[MAX_ID_PLANE + 1]) {
 	for (int i = 0; i < list.size; i++) {
-			if (strcmp(list.data[i]->idPlane, idPlane) == 0)
-				return i;
+		if (strcmp(list.data[i]->idPlane, idPlane) == 0)
+			return i;
 	}
 	return -1;
 }
@@ -59,7 +59,7 @@ int findPlane(PlaneList& list, char idPlane[MAX_ID_PLANE + 1]) {
 
 
 void removePlane(PlaneList& list, int index) {
-
+	delete list.data[index];
 	for (int i = index; i < list.size - 1; i++) {
 		list.data[i] = list.data[i + 1];
 	}
@@ -74,8 +74,8 @@ bool checkSeat(int seat) {
 bool isGreaterSeat(int oldSeat, int newSeat) {
 	return (newSeat >= oldSeat);
 }
-void adjustPlane(PlaneList& list, Plane& plane, int& index) {
-	*list.data[index] = plane;
+void adjustPlane(PlaneList& list,int seats, int& index) {
+	list.data[index]->seats = seats;
 }
 
 
@@ -135,8 +135,6 @@ void readFilePlane(PlaneList& planeList) {
 void deletePlaneList(PlaneList& planeList) {
 	for (int i = 0; i < planeList.size; i++)
 		delete planeList.data[i];
-
-	planeList.size = 0;
 
 }
 
