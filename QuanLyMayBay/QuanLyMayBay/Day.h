@@ -2,6 +2,7 @@
 
 #include<ctime>
 
+
 const int DAY_MONTH[13] = { 0,31,28,31,30,31,30,31,31,30,31,30,31 };
 
 struct Date {
@@ -145,6 +146,8 @@ bool checkMinute(char minute[3]) {
 	return (d <= 59 && d >= 0);
 
 }
+
+//Tinh so ngay tu ngay 0/0/0
 long long  calDateToday(Date& d) {
 	int year = stoi(d.year);
 	int month = stoi(d.month);
@@ -162,6 +165,7 @@ long long  calDateToday(Date& d) {
 	return  dayOfYear + dayOfMonth + day - 1;
 }
 
+//Tra ve so phut giua hai moc thoi gian
 long long calSpaceTime(Date& d1, Date& d2) {
 	int hour = stoi(d1.hour);
 	int minute = stoi(d1.minute);
@@ -177,7 +181,7 @@ long long calSpaceTime(Date& d1, Date& d2) {
 
 
 
-
+// kiem tra thoi gian hien tai voi moc thgian nhap vao cach bao nhieu phut
 bool checkTimeBeforeMinute(Date& d, int min) {
 	Date now = getCurTime();
 

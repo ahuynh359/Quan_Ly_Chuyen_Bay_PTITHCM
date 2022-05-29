@@ -732,7 +732,7 @@ public:
 		int preY = TOP_BORDER + 60;
 		int size = countFlightAbleToBook(flightList);
 
-		drawBorder(6, 3, size == 0); //Draw border va title
+		drawBorder(7, 1, size == 0); //Draw border va title
 
 		onButtonPage(size, currentPage); //Su kien nut left / right
 		showPage(currentPage); //Hien thi trang
@@ -751,7 +751,8 @@ public:
 			{
 				tempFlight = k;
 				int preX = LEFT_BORDER;
-
+				if (k->info.status == 1 || k->info.status == 2)
+				checkFull(k);
 				setcolor(BLACK);
 
 
@@ -760,7 +761,7 @@ public:
 				}
 
 
-				drawOneFlight(preY, i, k, true);
+				drawOneFlight(preY, i, k);
 			
 
 				if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {

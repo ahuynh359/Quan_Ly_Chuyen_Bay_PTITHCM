@@ -502,14 +502,14 @@ public:
 		}
 
 		if (isAdjust) {
-			
-			PTR a = canEditTime(d->flightList,flightTemp,getDate() );
+
+			PTR a = canEditTime(d->flightList, flightTemp, getDate());
 			if (a != NULL) {
 				char mess[300] = "Unable to edit time flight\n Because there is other flight\n ID: ";
 				strcat_s(mess, a->info.idFlight);
 				strcat_s(mess, "\n Time: ");
 				strcat_s(mess, getDateString(a->info.date));
-		
+
 				strcat_s(mess, "\n Time must >= 12 hours from this flight");
 				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
 				return false;
@@ -1000,11 +1000,12 @@ public:
 	//---------------DRAW DATA
 
 
-	void drawOneFlight(int preY, int i, PTR& k, bool seat = false) {
+	void drawOneFlight(int preY, int i, PTR& k) {
 		setbkcolor(SUBWINDOW_BACKGROUND);
 
-		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / 7;
+		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / 8;
 		int preX = LEFT_BORDER;
+
 		//VE STT
 		char temp[200];
 		sprintf_s(temp, "%d", i + 1);
@@ -1013,7 +1014,6 @@ public:
 		preX = x;
 
 		//VE ID FLIGHT
-
 		x = preX + spaceX;
 		drawText(preX, preY, x, k->info.idFlight);
 		preX = x;
@@ -1036,42 +1036,43 @@ public:
 		drawText(preX, preY, x, k->info.arrive);
 		preX = x;
 
+
+		//VE TRANG THAI
+		x = preX + spaceX;
+		switch (k->info.status) {
+		case 0: {
+			strcpy_s(temp, "CANCLED");
+			break;
+		}
+		case 1: {
+			strcpy_s(temp, "HAVE TICKET");
+			break;
+		}
+		case 2: {
+			strcpy_s(temp, "SOLD OUT");
+			break;
+		}
+		case 3: {
+			strcpy_s(temp, "COMPLETED");
+			break;
+		}
+		default:
+			break;
+		}
+		drawText(preX, preY, x, temp);
+		preX = x;
+
+
+		//VE VE CON/TONG VE
 		x = RIGHT_BORDER;
-		if (seat) {
-			sprintf_s(temp, "%d", countTicketLeft(k));
-
-			strcat_s(temp, " / ");
-			char a[200];
-
-			sprintf_s(a, "%d", k->info.totalTicket);
-			strcat_s(temp, a);
-			drawText(preX, preY, x, temp);
+		sprintf_s(temp, "%d", countTicketLeft(k));
+		strcat_s(temp, " / ");
+		char a[200];
+		sprintf_s(a, "%d", k->info.totalTicket);
+		strcat_s(temp, a);
+		drawText(preX, preY, x, temp);
 
 
-		}
-		else {
-			switch (k->info.status) {
-			case 0: {
-				strcpy_s(temp, "CANCLED");
-				break;
-			}
-			case 1: {
-				strcpy_s(temp, "HAVE TICKET");
-				break;
-			}
-			case 2: {
-				strcpy_s(temp, "SOLD OUT");
-				break;
-			}
-			case 3: {
-				strcpy_s(temp, "COMPLETED");
-				break;
-			}
-			default:
-				break;
-			}
-			drawText(preX, preY, x, temp);
-		}
 
 
 
@@ -1083,7 +1084,7 @@ public:
 		int preY = TOP_BORDER + 60;
 
 
-		drawBorder(6, 1, isEmpty(flightList));
+		drawBorder(7, 1, isEmpty(flightList));
 
 		checkCompletedAll(flightList, planeList);
 		onButtonPage(size(flightList), currentPage); //Su kien nut left / right
@@ -1107,8 +1108,8 @@ public:
 			int preX = LEFT_BORDER;
 
 			setcolor(BLACK);
-
-
+			if(k->info.status == 1 || k->info.status == 2)
+			checkFull(k);
 			if (isPointed(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
 				setcolor(ON_SELECTED_DATA_COLOR);
 			}
@@ -1135,7 +1136,7 @@ public:
 
 
 	}
-	int countSizeFilterData(PTR& flightList, bool seat) {
+	int countSizeFilterData(PTR& flightList) {
 		beginPageSize = 1;
 
 		clearSearchEdittextCursor();
@@ -1154,17 +1155,17 @@ public:
 				&& (edittext[ARRIVE].isEmpty() || isPrefix(edittext[ARRIVE].getCharData(), k->info.arrive))
 				)
 			{
-				if (!seat || (seat && k->info.status == 2 || k->info.status == 1)) {
-					if (cnt % 10 == 1) {
-						beginPage[beginPageSize] = new FlightNode;
-						beginPage[beginPageSize] = k;
-						beginPageSize++;
 
-						cnt = 1;
-					}
-					cnt++;
-					size++;
+				if (cnt % 10 == 1) {
+					beginPage[beginPageSize] = new FlightNode;
+					beginPage[beginPageSize] = k;
+					beginPageSize++;
+
+					cnt = 1;
 				}
+				cnt++;
+				size++;
+
 
 
 			}
@@ -1172,20 +1173,16 @@ public:
 
 		return size;
 	}
-	int drawFilterData(PTR& flightTemp, PTR& flightList, bool seat = false) {
+	int drawFilterData(PTR& flightTemp, PTR& flightList,bool haveTicket = false) {
 
 		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
 		int preY = TOP_BORDER + 60;
 		clearSearchEdittextCursor();
 
-		int size = countSizeFilterData(flightList, seat);
+		int size = countSizeFilterData(flightList);
 
-		if (!seat) {
-			drawBorder(6, 1, size == 0); //Draw border va title
 
-		}
-		else
-			drawBorder(6, 3, size == 0); //Draw border va title
+		drawBorder(7, 1, size == 0);
 
 		onButtonPage(size, currentFilterPage); //Su kien nut left / right
 		showPage(currentFilterPage); //Hien thi trang
@@ -1209,7 +1206,7 @@ public:
 				&& (edittext[ARRIVE].isEmpty() || isPrefix(edittext[ARRIVE].getCharData(), k->info.arrive))
 				)
 			{
-				if (!seat || (seat && k->info.status == 2 || k->info.status == 1)) {
+				if (!haveTicket || (haveTicket && k->info.status == 2 || k->info.status == 1)) {
 					flightTemp = k;
 					int preX = LEFT_BORDER;
 
@@ -1221,7 +1218,7 @@ public:
 					}
 
 
-					drawOneFlight(preY, i, k, seat);
+					drawOneFlight(preY, i, k);
 
 					if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
 						return  1;

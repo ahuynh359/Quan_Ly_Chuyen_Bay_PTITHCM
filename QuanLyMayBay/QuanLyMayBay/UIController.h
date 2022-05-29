@@ -18,15 +18,14 @@ private:
 	FunctionTab** manageTab;
 
 	Button closeButton;
+
 public:
 	UIController() {
-		printf("%d", getmaxwidth());
 		initwindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Manage Flights",
-			(getmaxwidth() - SCREEN_WIDTH)/2,(getmaxheight() - SCREEN_HEIGHT)/2);
+			(getmaxwidth() - SCREEN_WIDTH)/2,(getmaxheight() - SCREEN_HEIGHT)/2,false,false);
 
-
+		
 		data = new Data();
-
 		manageTab = new FunctionTab * [MAX_TAB];
 
 		manageTab[0] = new ManagePlanesTab(data);
@@ -39,6 +38,7 @@ public:
 
 		//Khoi tao tab
 		bool isEmptyData = data->planeListIsEmpty();
+
 		int x = TAB_LEFT;
 		for (int i = 0; i < MAX_TAB; i++) {
 			tab[i] = Tab(i, x, TAB_TOP, x + TAB_WIDTH, TAB_HEIGHT, TAB_TEXT[i]);
@@ -73,7 +73,7 @@ public:
 	void onUpdate() {
 
 		drawBackground();
-
+		
 		bool isPlaneDataEmpty = data->planeListIsEmpty();
 		bool isFlightDataEmpty = data->flightListIsEmpty();
 
@@ -118,6 +118,8 @@ public:
 
 
 	}
+
+	
 
 	void resetTab(int index) {
 		for (int i = 0; i < MAX_TAB; i++) {

@@ -509,8 +509,7 @@ public:
 	* stt = 0 -> drawPlane
 	* stt = 1 -> drawFlight
 	* stt = 2 -> drawPassenger
-	* stt = 3 -> draw Ticket
-	* stt = 4 -> drawStatictis
+	* stt = 3 -> drawStatictis
 	*/
 	void drawBorder(int n, int stt, bool isEmpty) {
 
@@ -568,11 +567,8 @@ public:
 				drawText(x, (TOP_BORDER + y - textheight(PASS_TITLE[i])) / 2, x1, PASS_TITLE[i]);
 				break;
 			}
+			
 			case 3: {
-				drawText(x, (TOP_BORDER + y - textheight(TICKET_TAB[i])) / 2, x1, TICKET_TAB[i]);
-				break;
-			}
-			case 4: {
 				drawText(x, (TOP_BORDER + y - textheight(STATICITS_TITLE[i])) / 2, x1, STATICITS_TITLE[i]);
 				break;
 			}

@@ -511,7 +511,9 @@ public:
 			}
 			else {
 				adjustPlane(d->planeList, edittext[SEATS].getIntData(), this->indexID);
-				adjustTicketList(d->flightList, edittext[SEATS].getIntData(), edittext[ID_PLANE].getCharData());
+				//Neu da thanh lap chuyen bay thi sua luon total ticket
+				if (!d->planeList.data[indexID]->isAvai)
+					adjustTicketList(d->flightList, edittext[SEATS].getIntData(), edittext[ID_PLANE].getCharData());
 				drawAnounce(SUCCESS);
 
 				reset();
@@ -598,7 +600,7 @@ public:
 			preY += spaceY;
 
 		}
-		
+
 		return -1;
 
 

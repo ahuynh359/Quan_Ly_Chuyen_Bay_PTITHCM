@@ -89,6 +89,7 @@ void adjustFlight(PTR& flight, Date& date) {
 	flight->info.date = date;
 }
 
+//pre la nhap, str la chuoi co san
 bool isPrefix(const char* pre, const char* str) {
 	if (strlen(pre) > strlen(str))
 		return false;
@@ -98,8 +99,6 @@ bool isPrefix(const char* pre, const char* str) {
 
 	return true;
 }
-
-
 
 
 
@@ -118,11 +117,25 @@ PTR findFlightByIdPlane(PTR& first, char id[MAX_ID_PLANE + 1]) {
 	}
 	return NULL;
 }
+int countTicketLeft(PTR& flight) {
+	int cnt = 0;
+	for (int i = 0; i < flight->info.totalTicket; i++) {
+		if (strcmp(flight->info.ticketList[i], "0") == 0)
+			cnt++;
+	}
+	return cnt;
+}
+void checkFull(PTR& flight) {
+	if (countTicketLeft(flight) == 0)
+		flight->info.status = 2;
+	else 
+		flight->info.status = 1;
+}
 
 
 bool checkCancleFlight(PTR& first) {
 	if (first->info.status == HAVE_TICKET || first->info.status == OUT_OF_TICKET) {
-		first->info.status = CANCEL_TICKET;
+		first->info.status = CANCLE_FLIGHT;
 		return true;
 	}
 	return false;
@@ -134,20 +147,13 @@ void checkCompleted(PlaneList& planeList, PTR& temp) {
 		Date now = getCurTime();
 
 		if (calSpaceTime(now, temp->info.date) >= 0) {
-			temp->info.status = COMPLETE_TICKET;
+			temp->info.status = COMPLETE_FLIGHT;
 			planeList.data[findPlane(planeList, temp->info.idPlane)]->flyTimes++;
 		}
 	}
 }
 
-int countTicketLeft(PTR& first) {
-	int cnt = 0;
-	for (int i = 0; i < first->info.totalTicket; i++) {
-		if (strcmp(first->info.ticketList[i], "0") == 0)
-			cnt++;
-	}
-	return cnt;
-}
+
 
 void checkCompletedAll(PTR& first, PlaneList& planeList) {
 	for (PTR k = first; k != NULL; k = k->next) {
@@ -156,7 +162,7 @@ void checkCompletedAll(PTR& first, PlaneList& planeList) {
 }
 
 
-//-------------TICKET
+//-------------TICKET -------------
 void initTicketList(PlaneList& planeList, Flight& flight) {
 	flight.status = HAVE_TICKET;
 
@@ -175,17 +181,18 @@ void initTicketList(PlaneList& planeList, Flight& flight) {
 
 }
 
-//kiem tra CMND trung tren 1 chuyen bay, tra ve so ghe bi trung
+//Kiem tra 1 hanh khach tren 1 chuyen bay co trung ID PASS khong
 int checkDupIDOnFlight(PTR& first, char id[MAX_ID_PASS + 1]) {
 	for (int i = 0; i < first->info.totalTicket; i++) {
 		if (strcmp(first->info.ticketList[i], id) == 0) {
 			return i + 1;
 		}
 	}
-	return -1;
+	return -1; // CMND khong trung
 }
 
-// Kiem tra 1 hanh khach chi duoc dat 2 chuyen bay co >= abs(12)
+
+//Kiem tra xem hanh khach co dat ve tren chuyen bay nao < 12 tieng 
 PTR checkPassOnOtherFlightIn12Hours(PTR& first, PTR& flight, char id[MAX_ID_PASS + 1]) {
 	for (PTR k = first; k != NULL; k = k->next) {
 		if (k != flight) {
@@ -201,13 +208,13 @@ PTR checkPassOnOtherFlightIn12Hours(PTR& first, PTR& flight, char id[MAX_ID_PASS
 	return NULL;
 }
 
+//Kiem tra xem co the chinh sua thoi gian khi co 1 hanh khach cung ngoi tren 2 chuyen bay
 PTR canEditTime(PTR& first, PTR& flight, Date date) {
 	for (PTR k = first; k != NULL; k = k->next) {
 		if (k != flight) {
 			for (int i = 0; i < flight->info.totalTicket; i++) {
 				if (strcmp(flight->info.ticketList[i], "0") != 0 && checkDupIDOnFlight(k, flight->info.ticketList[i]) != -1 &&
 					!in12Hour(k->info.date, date) && (k->info.status == 1 || k->info.status == 2)) {
-					printf("%d\n", checkDupIDOnFlight(k, flight->info.ticketList[i]));
 					return k;
 				}
 			}
@@ -216,6 +223,8 @@ PTR canEditTime(PTR& first, PTR& flight, Date date) {
 	return NULL;
 }
 
+
+//Thay doi danh sach ve khi so cho ngoi cua may bay duoc thay doi
 void adjustTicketList(PTR& first, int totalTicket, char id[MAX_ID_PLANE + 1]) {
 
 	char s[MAX_ID_PASS + 1] = "0";
@@ -270,7 +279,7 @@ void readFileFlight(PTR& first) {
 	Flight flight;
 
 	while (inp.read(reinterpret_cast<char*>(&flight), sizeof(flight))) {
-		flight.ticketList = new char* [flight.totalTicket + 1];
+		flight.ticketList = new char* [51];
 		for (int i = 0; i < flight.totalTicket; i++) {
 			flight.ticketList[i] = new char[MAX_ID_PASS + 1];
 		}
@@ -291,7 +300,7 @@ void deleteFlightList(PTR& first)
 		PTR t = temp;
 		temp = temp->next;
 		for (int i = 0; i < t->info.totalTicket; i++) {
-			delete []  t->info.ticketList[i];
+			delete[]  t->info.ticketList[i];
 		}
 		delete[] t->info.ticketList;
 		delete t;

@@ -69,7 +69,7 @@ int BOTTOM_BORDER = SUBWINDOW_BOTTOM - 120;
 #define MAX_ID_FLIGHT 15
 #define MAX_ARRIVE 100
 #define MAX_FLIGHT 50
-enum STATUS { CANCEL_TICKET, HAVE_TICKET, OUT_OF_TICKET, COMPLETE_TICKET };
+enum STATUS { CANCLE_FLIGHT, HAVE_TICKET, OUT_OF_TICKET, COMPLETE_FLIGHT };
 
 
 
@@ -96,13 +96,14 @@ char PLANE_TITLE[5][20]{
 
 
 //---------------MANAGE FLIGHT TAB-------------
-char FLIGHT_TITLE[7][20]{
+char FLIGHT_TITLE[8][20]{
 	"Number",
 	"ID Flight",
 	"ID Plane",
 	"Date",
 	"Arrive",
 	"Status"
+	,"Ticket Left"
 };
 
 // PASSENGER TAB
@@ -118,14 +119,6 @@ char PASS_TITLE[6][20]{
 //TICKET TAB
 #define TICKET_AVAI COLOR(144,151,155)
 #define TICKET_NOT_AVAI COLOR(255,136,136)
-char TICKET_TAB[7][20]{
-	"Number",
-	"ID Flight",
-	"ID Plane",
-	"Date",
-	"Arrive",
-	"Ticket left"
-};
 
 // STATICTIS TAB
 char STATICITS_TITLE[4][20]{

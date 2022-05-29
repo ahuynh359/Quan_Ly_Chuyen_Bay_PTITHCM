@@ -174,12 +174,12 @@ AVLTree addPassenger(AVLTree& root, Passenger& data) {
 
 
 void savePassengerData(AVLTree& passengerList, ofstream& out) {
-	if (passengerList == NULL) {
-		return;
+	if (passengerList != NULL) {
+		out.write(reinterpret_cast<char*>(&passengerList->data), sizeof(Passenger));
+		savePassengerData(passengerList->pleft, out);
+		savePassengerData(passengerList->pright, out);
 	}
-	out.write(reinterpret_cast<char*>(&passengerList->data), sizeof(Passenger));
-	savePassengerData(passengerList->pleft, out);
-	savePassengerData(passengerList->pright, out);
+	
 }
 
 void writeFilePassenger(AVLTree& passengerList) {
