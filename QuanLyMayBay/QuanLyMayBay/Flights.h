@@ -173,7 +173,7 @@ void initTicketList(PlaneList& planeList, Flight& flight) {
 	flight.totalTicket = p->seats;
 
 	char s[MAX_ID_PASS + 1] = "0";
-	flight.ticketList = new char* [51];
+	flight.ticketList = new char* [MAX_SEAT + 1];
 	for (int i = 0; i < flight.totalTicket; i++) {
 		flight.ticketList[i] = new char[MAX_ID_PASS + 1];
 		strcpy_s(flight.ticketList[i], 2, s);
@@ -279,7 +279,7 @@ void readFileFlight(PTR& first) {
 	Flight flight;
 
 	while (inp.read(reinterpret_cast<char*>(&flight), sizeof(flight))) {
-		flight.ticketList = new char* [51];
+		flight.ticketList = new char* [MAX_SEAT + 1];
 		for (int i = 0; i < flight.totalTicket; i++) {
 			flight.ticketList[i] = new char[MAX_ID_PASS + 1];
 		}

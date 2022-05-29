@@ -36,33 +36,28 @@ public:
 		this->active = true;
 	}
 
-	int virtual  getLeft() {
+	int   getLeft() {
 		return left;
 	}
 
-	int virtual  getRight() {
+	int   getRight() {
 		return right;
 	}
 
-	int virtual getTop() {
+	int  getTop() {
 		return top;
 	}
 
-	int virtual getBottom() {
+	int  getBottom() {
 		return bottom;
 	}
 
-	void virtual setActive(bool active) {
+	void  setActive(bool active) {
 		this->active = active;
 	}
-	bool virtual  isActive() {
+	bool  isActive() {
 		return active;
 	}
-
-	
-
-protected:
-
 
 	bool   isPointed(int xMouse, int yMouse) {
 		if (xMouse <= right && xMouse >= left && yMouse <= bottom && yMouse >= top) {
@@ -73,18 +68,23 @@ protected:
 
 	bool   isLeftMouseClicked(int xMouse, int yMouse) {
 
-		if (isPointed(xMouse, yMouse) && GetAsyncKeyState(VK_LBUTTON) & 1) {
+		if (isPointed(xMouse, yMouse) && GetAsyncKeyState(VK_LBUTTON) & 0x8000) {
 			return true;
 		}
 		return false;
 	}
 
 	bool   isRightMouseClicked(int xMouse, int yMouse) {
-		if (isPointed(xMouse, yMouse) && GetAsyncKeyState(VK_RBUTTON) & 1) {
+		if (isPointed(xMouse, yMouse) && GetAsyncKeyState(VK_RBUTTON) & 0x8000) {
 			return true;
 		}
 		return false;
 	}
+
+protected:
+
+
+	
 
 	void virtual drawUI() {
 

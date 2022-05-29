@@ -30,7 +30,7 @@ public:
 
 		initEdittext();
 
-		buttonTicket = new Button[51]; //Khoi tao so ghe
+		buttonTicket = new Button[MAX_SEAT + 1]; //Khoi tao so ghe
 		closeButton = &button[CLOSE];
 		addEdittextPointer = NULL;
 		genderButton = NULL;
@@ -109,24 +109,24 @@ public:
 
 
 
-		int y = TOP_BORDER + 70;
-		int x = (LEFT_BORDER + RIGHT_BORDER - 680) / 2;
-		char value[3];
+		int y = TOP_BORDER + 10;
+		int x = (LEFT_BORDER + RIGHT_BORDER - 1000) / 2;
+		char value[4];
 		char a[2] = "";
 		for (int i = 1; i <= flight->info.totalTicket; i++) {
 			sprintf_s(value, "%d", i);
 
-			buttonTicket[i] = Button(x, y, x + 50, y + 50, TICKET_AVAI, TICKET_NOT_AVAI, value, BLACK);
+			buttonTicket[i] = Button(x, y, x + 30, y + 30, TICKET_AVAI, TICKET_NOT_AVAI, value, BLACK);
 			if (strcmp(flight->info.ticketList[i - 1], "0") != 0) {
 				buttonTicket[i].setChoosen(true);
 			}
 			else
 				buttonTicket[i].setChoosen(false);
 
-			x += 70;
-			if (i % 10 == 0) {
-				x = (LEFT_BORDER + RIGHT_BORDER - 680) / 2;
-				y += 70;
+			x += 40;
+			if (i % 25 == 0) {
+				x = (LEFT_BORDER + RIGHT_BORDER - 1000) / 2;
+				y += 40;
 
 			}
 
@@ -438,8 +438,9 @@ public:
 
 		inputMainMenuHandel();
 		//-----------------VE HUONG DAN TEXT
-		char a[40] = "*Left click to book/cancel ticket";
+		char a[40] = "*Left click to book/cancle ticket";
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
+
 		int s;
 		if (checkAllEdittextIsEmpty()) {
 			s = drawTicketData(flightTemp, this->d->flightList);
@@ -517,9 +518,9 @@ public:
 		//---------HUONG DAN
 
 		char s[200] = "*Left click to book ticket";
-		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, s);
+		drawInstruction(SUBWINDOW_LEFT + 10, BOTTOM_BORDER  + 55 , s);
 		strcpy_s(s, " Right click to cancle ticket");
-		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 40, s);
+		drawInstruction(SUBWINDOW_LEFT + 10, BOTTOM_BORDER + 75, s);
 
 		drawInstructionInline();
 
@@ -667,15 +668,15 @@ public:
 
 		char s[30];
 		char a[2] = "";
-		int left = SUBWINDOW_RIGHT - 50;
-		int top = BOTTOM_BORDER - 20;
+		int left = SUBWINDOW_RIGHT - 30;
+		int top = SUBWINDOW_BOTTOM - 70;
 
-		strcpy_s(s, "Available");
+		strcpy_s(s, "Avai");
 		drawSmallBox(left, top, 20, 20, TICKET_AVAI, s);
 
 
 		top += 30;
-		strcpy_s(s, "Not available");
+		strcpy_s(s, "Not avai");
 		drawSmallBox(left, top, 20, 20, TICKET_NOT_AVAI, s);
 
 

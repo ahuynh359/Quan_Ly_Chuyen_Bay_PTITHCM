@@ -710,7 +710,7 @@ public:
 
 				}
 				else if (edittextPointer == &edittext[ARRIVE]) {
-					if (c <= 90 && c >= 65 || c == ' ')
+					if (c <= 90 && c >= 65 )
 						edittextPointer->addChar((char)c);
 
 				}

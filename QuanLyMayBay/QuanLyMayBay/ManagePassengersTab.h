@@ -9,8 +9,8 @@
 class ManagePassengersTab :public ManageFlightsTab {
 private:
 
-	Data* d;
-	PTR tempFlight;
+	Data* d = NULL;
+	PTR tempFlight = NULL;
 
 
 public:

@@ -47,17 +47,18 @@ public:
 
 
 		//------------EDITTEXT TYPE
+		strcpy_s(hint, "Max 40 character");
 		strcpy_s(title, "TYPE");
 		top = bottom + EDITTEXT_SPACE;
 		bottom = top + EDITTEXT_HEIGHT;
 		edittext[TYPE] = EditText(hint, title, content, left, top, right, bottom, MAX_TYPE_PLANE);
 
 		//-------------EDITTEXT SEATS
-		strcpy_s(hint, "20-50");
+		strcpy_s(hint, "20-300");
 		strcpy_s(title, "SEATS");
 		top = bottom + EDITTEXT_SPACE;
 		bottom = top + EDITTEXT_HEIGHT;
-		edittext[SEATS] = EditText(hint, title, content, left, top, right, bottom, 2);
+		edittext[SEATS] = EditText(hint, title, content, left, top, right, bottom, 3);
 
 
 
@@ -278,7 +279,7 @@ public:
 
 				}
 				else if (edittextPointer == &edittext[TYPE]) {
-					if (c <= 90 && c >= 65 || c == ' ' || c <= 122 && c >= 97)
+					if (c <= 90 && c >= 65 || (c <= 57 && c >= 48) ||  c == ' ' || c <= 122 && c >= 97)
 						edittextPointer->addCharName((char)c);
 
 				}
@@ -532,7 +533,7 @@ public:
 		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / 5;
 
 		//VE STT
-		char temp[3];
+		char temp[4];
 		sprintf_s(temp, "%d", i + 1);
 		int x = preX + 100;
 		drawText(preX, preY, x, temp);

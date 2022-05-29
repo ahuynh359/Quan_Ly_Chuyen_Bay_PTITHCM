@@ -23,11 +23,6 @@ int SUBWINDOW_BOTTOM = SCREEN_HEIGHT;
 
 //-------------------------TAB --------------------
 #define MAX_TAB 5
-#define TAB_WIDTH 200
-#define TAB_HEIGHT 90
-#define TAB_SPACE 20
-#define TAB_TOP 20
-#define TAB_LEFT 25
 #define TAB_DEFAULT_BACKGROUND COLOR(241, 208, 215)
 #define TAB_ON_SELECTED_BACKGROUND COLOR(167, 206, 225)
 char TAB_TEXT[MAX_TAB][30] = {
@@ -55,7 +50,7 @@ int BOTTOM_BORDER = SUBWINDOW_BOTTOM - 120;
 #define MAX_ID_PLANE 15
 #define MAX_PLANE 300
 #define MAX_TYPE_PLANE 40
-#define MAX_SEAT 50
+#define MAX_SEAT 300
 #define MIN_SEAT 20
 
 //--------------PASSENGER

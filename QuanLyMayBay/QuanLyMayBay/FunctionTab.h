@@ -24,7 +24,7 @@ protected:
 	EditText edittext[MAX_EDITTEXT];
 
 	EditText* buttonPointer, * edittextPointer;
-
+	
 
 public:
 
@@ -32,7 +32,7 @@ public:
 		currentMenu = 0;
 		currentPage = startPage = currentFilterPage =  endPage = 1;
 
-
+		
 		initButton();
 
 
@@ -397,7 +397,7 @@ public:
 		case SEAT_ERROR: {
 			msgboxID = MessageBox(
 				GetForegroundWindow(),
-				(LPCWSTR)L"Seats is 20-50",
+				(LPCWSTR)L"Seats is 20-300",
 				(LPCWSTR)L"Warning",
 				MB_ICONEXCLAMATION | MB_OK
 			);

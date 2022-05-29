@@ -49,7 +49,7 @@ public:
 		checkCompletedAll(d->flightList, d->planeList);
 		onButtonPage(d->planeList.size, currentPage);
 		showPage(currentPage);
-		drawBorder(3, 4, isEmpty(d->planeList));
+		drawBorder(3, 3, isEmpty(d->planeList));
 
 
 		setbkcolor(SUBWINDOW_BACKGROUND);

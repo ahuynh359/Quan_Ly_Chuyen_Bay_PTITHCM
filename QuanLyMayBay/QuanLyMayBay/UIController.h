@@ -22,9 +22,10 @@ private:
 public:
 	UIController() {
 		initwindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Manage Flights",
-			(getmaxwidth() - SCREEN_WIDTH)/2,(getmaxheight() - SCREEN_HEIGHT)/2,false,false);
+			(getmaxwidth() - SCREEN_WIDTH)/2,(getmaxheight() - SCREEN_HEIGHT)/2);
 
 		
+
 		data = new Data();
 		manageTab = new FunctionTab * [MAX_TAB];
 
@@ -39,12 +40,13 @@ public:
 		//Khoi tao tab
 		bool isEmptyData = data->planeListIsEmpty();
 
-		int x = TAB_LEFT;
+		int x = 25;
+
 		for (int i = 0; i < MAX_TAB; i++) {
-			tab[i] = Tab(i, x, TAB_TOP, x + TAB_WIDTH, TAB_HEIGHT, TAB_TEXT[i]);
+			tab[i] = Tab(i, x, 20, x + 200, 90, TAB_TEXT[i]);
 			if (i > 0)
 				tab[i].setActive(!isEmptyData);
-			x += TAB_WIDTH + TAB_SPACE;
+			x += 220;
 		}
 
 		//Tab mac dinh la plane tab
@@ -52,7 +54,7 @@ public:
 
 
 		char s[2] = "X";
-		closeButton = Button(SCREEN_WIDTH - 40, 0, SCREEN_WIDTH - 10, 30, RED, RED, s, BLACK);
+		closeButton = Button(1240,5, 1270, 35, RED, RED, s, BLACK);
 
 
 
@@ -62,6 +64,7 @@ public:
 		delete tab; //Xoa luon current tab
 		delete data;
 	}
+
 
 	void drawBackground() {
 		setbkcolor(BACKGROUND_COLOR);
@@ -73,17 +76,16 @@ public:
 	void onUpdate() {
 
 		drawBackground();
-		
+		closeButton.onAction();
+
 		bool isPlaneDataEmpty = data->planeListIsEmpty();
 		bool isFlightDataEmpty = data->flightListIsEmpty();
-
 
 		for (int i = 0; i < MAX_TAB; i++) {
 			//Nhung tab > 0 set no theo du lieu plane
 			if (i > 0) {
-
-
 				tab[i].setActive(!isPlaneDataEmpty);
+				//Tab nay set theo du lieu flight
 				if (i == 2 || i == 3) {
 					tab[i].setActive(!isFlightDataEmpty);
 				}
@@ -92,17 +94,9 @@ public:
 			tab[i].onAction(currentTab);
 		}
 
-		closeButton.onAction();
-
-
-
-		int id = currentTab->getID();
-
-
-
-		//reset tat cac cac tab khong duoc chon,ve tab duoc chon
-		resetTab(id);
-		manageTab[id]->drawUI();
+		
+		resetAndDrawTab(currentTab->getID());
+		
 
 
 	}
@@ -114,18 +108,15 @@ public:
 			isActive = false;
 		}
 
-
-
-
 	}
 
-	
-
-	void resetTab(int index) {
+	//reset tat cac cac tab khong duoc chon,ve tab duoc chon
+	void resetAndDrawTab(int index) {
 		for (int i = 0; i < MAX_TAB; i++) {
 			if (i != index) {
 				manageTab[i]->reset();
-			}
+			} else 
+				manageTab[i]->drawUI();
 		}
 	}
 
