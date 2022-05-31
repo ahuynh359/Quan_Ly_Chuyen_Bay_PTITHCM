@@ -466,15 +466,7 @@ public:
 			);
 			break;
 		}
-		case BEFORE_OLD_TIME: {
-			msgboxID = MessageBox(
-				GetForegroundWindow(),
-				(LPCWSTR)L"Time must > old time",
-				(LPCWSTR)L"Warning",
-				MB_ICONEXCLAMATION | MB_OK
-			);
-			break;
-		}
+		
 		case CANCEL_CONFIRM: {
 			msgboxID = MessageBox(
 				GetForegroundWindow(),
