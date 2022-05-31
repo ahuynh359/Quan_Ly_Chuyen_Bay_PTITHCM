@@ -37,11 +37,15 @@ public:
 
 
 	}
-	 ~FunctionTab() {
+	 virtual ~FunctionTab() {
+		 printf("Destructor function tab\n\n");
 		delete buttonPointer;
 		delete edittextPointer;
 	}
 
+	 void setCurrentPage(int a) {
+		 this->currentPage = a;
+	 }
 	//------------KHOI TAO
 	void  initButton() {
 		//------------BUTTON  TRAI  
@@ -462,6 +466,15 @@ public:
 			);
 			break;
 		}
+		case BEFORE_OLD_TIME: {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"Time must > old time",
+				(LPCWSTR)L"Warning",
+				MB_ICONEXCLAMATION | MB_OK
+			);
+			break;
+		}
 		case CANCEL_CONFIRM: {
 			msgboxID = MessageBox(
 				GetForegroundWindow(),
@@ -476,7 +489,7 @@ public:
 				GetForegroundWindow(),
 				(LPCWSTR)L"Flight takes off in 30 minute, can't adjust any information",
 				(LPCWSTR)L"Warning",
-				MB_ICONEXCLAMATION | MB_OKCANCEL
+				MB_ICONEXCLAMATION | MB_OK
 			);
 			break;
 		}

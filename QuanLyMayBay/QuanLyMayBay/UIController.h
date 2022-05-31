@@ -22,9 +22,9 @@ private:
 public:
 	UIController() {
 		initwindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Manage Flights",
-			(getmaxwidth() - SCREEN_WIDTH)/2,(getmaxheight() - SCREEN_HEIGHT)/2);
+			(getmaxwidth() - SCREEN_WIDTH) / 2, (getmaxheight() - SCREEN_HEIGHT) / 2);
 
-		
+
 
 		data = new Data();
 		manageTab = new FunctionTab * [MAX_TAB];
@@ -54,14 +54,18 @@ public:
 
 
 		char s[2] = "X";
-		closeButton = Button(1240,5, 1270, 35, RED, RED, s, BLACK);
+		closeButton = Button(1240, 5, 1270, 35, RED, RED, s, BLACK);
 
 
 
 	}
 
 	~UIController() {
-		delete tab; //Xoa luon current tab
+		for (int i = 0; i < MAX_TAB; i++) {
+			delete  manageTab[i];
+		}
+		delete []  manageTab;
+		delete [] tab; //Xoa luon current tab
 		delete data;
 	}
 
@@ -94,15 +98,18 @@ public:
 			tab[i].onAction(currentTab);
 		}
 
-		
+
 		resetAndDrawTab(currentTab->getID());
-		
+
 
 
 	}
 
 	void onCloseButtonClicked(bool& isActive) {
 		if (closeButton.isClicked()) {
+			for (int i = 0; i < MAX_TAB; i++) {
+				manageTab[i]->reset();
+			}
 			data->writeFile();
 			data->freeMemory();
 			isActive = false;
@@ -115,7 +122,8 @@ public:
 		for (int i = 0; i < MAX_TAB; i++) {
 			if (i != index) {
 				manageTab[i]->reset();
-			} else 
+			}
+			else
 				manageTab[i]->drawUI();
 		}
 	}

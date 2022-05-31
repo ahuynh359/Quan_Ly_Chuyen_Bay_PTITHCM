@@ -30,9 +30,10 @@ public:
 		beginPage[1] = NULL;
 	}
 	~ManageFlightsTab() {
-
-		delete d;
-		delete beginPage;
+		printf("Manage Flight Constructor\n");
+		delete addPointer;
+		delete [] beginPage;
+		delete flightTemp;
 	}
 
 	ManageFlightsTab(Data* data) {
@@ -222,6 +223,7 @@ public:
 	//-------------RESET
 	void reset() {
 		currentMenu = MAIN_MENU;
+		flightTemp = NULL;
 		currentPage = 1;
 		resetAddEdittext();
 		resetEdittext();
@@ -473,22 +475,29 @@ public:
 			return false;
 		}
 		Date date = getDate();
+		
 
 		if (!checkTime(date)) {
 			drawAnounce(TIME_ERROR);
 			return false;
 		}
 
-		//Thoi gian khoi hanh >= 60 phut tu hien tai
+		//Thoi gian khoi hanh > hien tai + 60
+
 		if (!checkTimeBeforeMinute(date, 60)) {
 			drawAnounce(BEFORE_ONE_HOUR);
 			return false;
 		}
 
+
+
+
 		//CHeck co chuyen bay nao khac cung ID PLANE TRONG 12 tieng
 		for (PTR k = d->flightList; k != NULL; k = k->next) {
-			if ((!in12Hour(date, k->info.date) && strcmp(k->info.idFlight, addEdittext[ID_FLIGHT].getCharData()) != 0
-				&& strcmp(k->info.idPlane, addEdittext[ID_PLANE].getCharData()) == 0 && k->info.status == 1 || k->info.status == 2)
+			if ((!in12Hour(date, k->info.date) &&
+				strcmp(k->info.idFlight, addEdittext[ID_FLIGHT].getCharData()) != 0
+				&& strcmp(k->info.idPlane, addEdittext[ID_PLANE].getCharData()) == 0 &&
+				k->info.status == 1 || k->info.status == 2)
 				) {
 				char mess[200] = "Unable to establish flight\n Because there is other flight\n ID: ";
 				strcat_s(mess, k->info.idFlight);
@@ -496,6 +505,7 @@ public:
 				strcat_s(mess, getDateString(k->info.date));
 				strcat_s(mess, "\n Time must >= 12 hours from this flight");
 				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
+				
 				return false;
 
 			}
@@ -710,7 +720,7 @@ public:
 
 				}
 				else if (edittextPointer == &edittext[ARRIVE]) {
-					if (c <= 90 && c >= 65 )
+					if (c <= 90 && c >= 65)
 						edittextPointer->addChar((char)c);
 
 				}
@@ -852,6 +862,8 @@ public:
 		button[BACK].onAction();
 		button[FIND].onAction();
 
+		
+
 		char s[200] = "Time >= an hour from now";
 		drawText(addEdittext[DAY].getLeft(),
 			addEdittext[DAY].getTop() - textheight(s) - 10, s, RED);
@@ -861,7 +873,7 @@ public:
 
 		//-----------------VE HUONG DAN TEXT
 		strcpy_s(s, "*Use Up/Down/Left/Right/Enter button");
-		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, s);
+		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 30, s);
 
 		inputHandel();
 
@@ -877,13 +889,13 @@ public:
 				drawAnounce(SUCCESS);
 				resetAddEdittext();
 				initAddMenu();
-				manage.currentPage = 1;
+				manage.setCurrentPage(1);
 
 			}
 		}
 
 		if (button[BACK].isClicked()) {
-			manage.currentPage = 1;
+			manage.setCurrentPage(1);
 			int s = drawAnounce(PREVIOUS);
 			switch (s) {
 			case IDOK: {
@@ -899,7 +911,8 @@ public:
 		}
 
 		if (button[FIND].isClicked()) {
-			manage.currentPage = 1;
+			manage.setCurrentPage(1);
+
 			delay(50);
 			currentMenu = FIND_PLANE_MENU;
 
@@ -935,6 +948,7 @@ public:
 		button[SAVE].onAction();
 
 
+		
 
 		if (button[BACK].isClicked()) {
 			int s = drawAnounce(PREVIOUS);
@@ -952,6 +966,20 @@ public:
 		}
 
 		if (button[SAVE].isClicked()) {
+
+			//Khong cho chinh sua neu  hoan tat
+			if ( flightTemp->info.status == 3) {
+				currentMenu = MAIN_MENU;
+				drawAnounce(ADJUST_ERROR);
+				return;
+			}
+			//Neu luc save da lo qua 30 phut tu dong out ma ko cho luu
+			if (!checkTimeBeforeMinute(flightTemp->info.date, 30)) {
+				currentMenu = MAIN_MENU;
+				drawAnounce(THIRTY_MINUTE);
+				return;
+
+			}
 			if (!checkSaveData(1)) {
 
 			}
@@ -985,7 +1013,8 @@ public:
 			int s = drawAnounce(PREVIOUS);
 			switch (s) {
 			case IDOK: {
-				manage.currentPage = 1;
+				manage.setCurrentPage(1);
+
 				currentMenu = ADD_MENU;
 				break;
 			}
@@ -1108,8 +1137,8 @@ public:
 			int preX = LEFT_BORDER;
 
 			setcolor(BLACK);
-			if(k->info.status == 1 || k->info.status == 2)
-			checkFull(k);
+			if (k->info.status == 1 || k->info.status == 2)
+				checkFull(k);
 			if (isPointed(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
 				setcolor(ON_SELECTED_DATA_COLOR);
 			}
@@ -1173,7 +1202,7 @@ public:
 
 		return size;
 	}
-	int drawFilterData(PTR& flightTemp, PTR& flightList,bool haveTicket = false) {
+	int drawFilterData(PTR& flightTemp, PTR& flightList, bool haveTicket = false) {
 
 		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
 		int preY = TOP_BORDER + 60;

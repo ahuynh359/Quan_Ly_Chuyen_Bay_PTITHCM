@@ -128,7 +128,7 @@ int countTicketLeft(PTR& flight) {
 void checkFull(PTR& flight) {
 	if (countTicketLeft(flight) == 0)
 		flight->info.status = 2;
-	else 
+	else
 		flight->info.status = 1;
 }
 
@@ -147,8 +147,15 @@ void checkCompleted(PlaneList& planeList, PTR& temp) {
 		Date now = getCurTime();
 
 		if (calSpaceTime(now, temp->info.date) >= 0) {
+			if (countTicketLeft(temp) == temp->info.totalTicket) {
+				temp->info.status = CANCLE_FLIGHT;
+				return;
+			}
+
 			temp->info.status = COMPLETE_FLIGHT;
 			planeList.data[findPlane(planeList, temp->info.idPlane)]->flyTimes++;
+
+
 		}
 	}
 }

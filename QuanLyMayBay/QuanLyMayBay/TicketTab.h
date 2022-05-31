@@ -18,12 +18,15 @@ private:
 public:
 
 	~TicketTab() {
-		delete buttonTicket;
-		delete closeButton;
+		printf("Destructor Ticket\n");
+
+		delete [] buttonTicket;
+		//delete closeButton; //do thang nay tro thoi vung nho stack nen ko soa duoc
 		delete genderButton;
 		delete ticketPointer;
 		delete addEdittextPointer;
-		delete d;
+		delete flightTemp;
+		
 	}
 	TicketTab(Data* d) {
 		this->d = d;
@@ -181,11 +184,14 @@ public:
 		edittext[FIRST_NAME].clearText();
 		addEdittextPointer = NULL;
 		genderButton = NULL;
+		
 
 	}
 	void reset() {
 		ManageFlightsTab::reset();
-
+		ticketPointer = NULL;
+		closeButton = NULL;
+		flightTemp = NULL;
 		clearEditext();
 	}
 
@@ -232,6 +238,7 @@ public:
 				sprintf_s(a, "%d", s);
 				strcat_s(mess, a);
 				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
+				edittext[ID_PASS].clearText();
 				return false;
 			}
 
@@ -245,7 +252,7 @@ public:
 				strcat_s(mess, getDateString(k->info.date));
 				strcat_s(mess, "\n Time >= 12 hours from that flight");
 				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
-				addEdittextPointer = &edittext[ID_PASS];
+				edittext[ID_PASS].clearText();
 				return false;
 			}
 			initAddMenu(true);
@@ -488,7 +495,6 @@ public:
 
 
 		if (button[BACK].isClicked()) {
-
 			clearEditext();
 			ticketPointer = NULL;
 			delay(50);
@@ -496,13 +502,26 @@ public:
 			return;
 		}
 		if (button[CANCLE].isClicked()) {
+			//Khong cho chinh sua neu  hoan tat
+			if (flightTemp->info.status == 3) {
+				currentMenu = MAIN_MENU;
+				drawAnounce(ADJUST_ERROR);
+				return;
+			}
+			//Neu luc save da lo qua 30 phut tu dong out ma ko cho luu
+			if (!checkTimeBeforeMinute(flightTemp->info.date, 30)) {
+				currentMenu = MAIN_MENU;
+				drawAnounce(THIRTY_MINUTE);
+				return;
+
+			}
 			int s = drawAnounce(CANCEL_CONFIRM);
 			if (s == IDOK) {
 				ticketPointer->setChoosen(false);
 				ticketPointer->drawSeatUI();
 				char a[MAX_ID_PASS + 1] = "0";
 				bookTicket(flightTemp, ticketPointer->getIntData() - 1, a);
-				
+
 			}
 			clearEditext();
 			ticketPointer = NULL;
@@ -518,7 +537,7 @@ public:
 		//---------HUONG DAN
 
 		char s[200] = "*Left click to book ticket";
-		drawInstruction(SUBWINDOW_LEFT + 10, BOTTOM_BORDER  + 55 , s);
+		drawInstruction(SUBWINDOW_LEFT + 10, BOTTOM_BORDER + 55, s);
 		strcpy_s(s, " Right click to cancle ticket");
 		drawInstruction(SUBWINDOW_LEFT + 10, BOTTOM_BORDER + 75, s);
 
@@ -545,6 +564,19 @@ public:
 
 		drawTitle(x, y, s);
 
+		//Khong cho chinh sua neu  hoan tat
+		if (flightTemp->info.status == 3) {
+			drawAnounce(ADJUST_ERROR);
+			currentMenu = MAIN_MENU;
+			return;
+		}
+		//Neu luc save da lo qua 30 phut tu dong out ma ko cho luu
+		if (!checkTimeBeforeMinute(flightTemp->info.date, 30)) {
+			currentMenu = MAIN_MENU;
+			drawAnounce(THIRTY_MINUTE);
+			return;
+
+		}
 
 
 		for (int i = 1; i <= flightTemp->info.totalTicket; i++) {
@@ -553,7 +585,7 @@ public:
 
 
 		if (ticketPointer != NULL) {
-		
+
 			if (!ticketPointer->getIsChoosen() && ticketPointer->getIsLeftClick()) {
 				addEdittextPointer = &edittext[ID_PASS];
 				initAddMenu(false);
@@ -598,7 +630,7 @@ public:
 		drawText(left, top, left + textwidth(a), a);
 	}
 	void drawAddMenu() {
-		
+
 		char s[50] = "ADD PASSENGER";
 		drawTitle(s);
 
@@ -613,7 +645,7 @@ public:
 		edittext[FIRST_NAME].onAction(addEdittextPointer);
 		edittext[LAST_NAME].onAction(addEdittextPointer);
 
-		
+
 		inputHandel();
 
 		if (button[BACK].isClicked()) {
@@ -624,6 +656,18 @@ public:
 
 		}
 		if (button[SAVE].isClicked()) {
+			//Khong cho chinh sua neu  hoan tat
+			if (flightTemp->info.status == 3) {
+				drawAnounce(ADJUST_ERROR);
+				return;
+			}
+			//Neu luc save da lo qua 30 phut tu dong out ma ko cho luu
+			if (!checkTimeBeforeMinute(flightTemp->info.date, 30)) {
+				currentMenu = MAIN_MENU;
+				drawAnounce(THIRTY_MINUTE);
+				return;
+
+			}
 			if (!checkSaveData()) {
 
 				if (!edittext[ID_PASS].isEmpty() && checkDupIDOnFlight(flightTemp, edittext[ID_PASS].getCharData()) == -1 &&
@@ -637,7 +681,7 @@ public:
 
 			}
 			else {
-				
+
 				Passenger p = getPassenger();
 				//Neu da co 
 				AVLTree a = findPassenger(d->passengerList, p.idPass);
@@ -753,7 +797,7 @@ public:
 				tempFlight = k;
 				int preX = LEFT_BORDER;
 				if (k->info.status == 1 || k->info.status == 2)
-				checkFull(k);
+					checkFull(k);
 				setcolor(BLACK);
 
 
@@ -763,7 +807,7 @@ public:
 
 
 				drawOneFlight(preY, i, k);
-			
+
 
 				if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
 					return 1;

@@ -12,13 +12,13 @@
 class ManagePlanesTab :public FunctionTab {
 
 
-private:
+protected:
 
 	EditText* adjustEditextPointer = NULL;
 	Data* d = NULL;
 	int indexID = -1;
 
-	friend class ManageFlightsTab;
+	
 
 public:
 	ManagePlanesTab() {
@@ -28,6 +28,10 @@ public:
 		initEdittext();
 	}
 
+	~ManagePlanesTab() {
+		printf("Destructor Plane Tab\n");
+		delete adjustEditextPointer;
+	}
 
 	//-------------Khoi tao 
 	void initEdittext() {

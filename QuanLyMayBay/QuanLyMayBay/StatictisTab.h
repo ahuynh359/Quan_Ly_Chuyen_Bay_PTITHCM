@@ -12,7 +12,7 @@ public:
 		this->d = d;
 	}
 	~StatictisTab() {
-		delete d;
+		
 	}
 
 	void reset() {
