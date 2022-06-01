@@ -1,27 +1,28 @@
 ﻿#pragma once
 
 
-
-
 #include"Planes.h"
-#include"Flights.h"
-#include"Passengers.h"
 #include"FunctionTab.h"
 #include"Data.h"
+
+
 
 class ManagePlanesTab :public FunctionTab {
 
 
-protected:
+private:
 
 	EditText* adjustEditextPointer = NULL;
 	Data* d = NULL;
+	//Index cua may bay duoc chon
 	int indexID = -1;
-
 	
+	
+
 
 public:
 	ManagePlanesTab() {
+
 	}
 	ManagePlanesTab(Data* d) {
 		this->d = d;
@@ -29,11 +30,12 @@ public:
 	}
 
 	~ManagePlanesTab() {
-		printf("Destructor Plane Tab\n");
 		delete adjustEditextPointer;
 	}
 
-	//-------------Khoi tao 
+
+
+	//Khoi tao edittext
 	void initEdittext() {
 
 		//---------EDITTEXT ID
@@ -41,32 +43,29 @@ public:
 		char title[30] = "ID";
 		char content[30] = "";
 
-		int left = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - EDITTEXT_WIDTH + EDITTEXT_SPACE) / 2;
-		int top = SUBWINDOW_TOP + 150;
-		int right = left + EDITTEXT_WIDTH;
-		int bottom = top + EDITTEXT_HEIGHT;
+		int left = 430;
+		int top = 250;
 
 		//------------EDITTEXT ID PLANE
-		edittext[ID_PLANE] = EditText(hint, title, content, left, top, right, bottom, MAX_ID_PLANE);
+		edittext[ID_PLANE] = EditText(hint, title, content, left, top, left + EDITTEXT_WIDTH, top + EDITTEXT_HEIGHT, MAX_ID_PLANE);
 
 
 		//------------EDITTEXT TYPE
 		strcpy_s(hint, "Max 40 character");
 		strcpy_s(title, "TYPE");
-		top = bottom + EDITTEXT_SPACE;
-		bottom = top + EDITTEXT_HEIGHT;
-		edittext[TYPE] = EditText(hint, title, content, left, top, right, bottom, MAX_TYPE_PLANE);
+		top += 120;
+		edittext[TYPE] = EditText(hint, title, content, left, top, left + EDITTEXT_WIDTH, top + EDITTEXT_HEIGHT, MAX_TYPE_PLANE);
 
 		//-------------EDITTEXT SEATS
 		strcpy_s(hint, "20-300");
 		strcpy_s(title, "SEATS");
-		top = bottom + EDITTEXT_SPACE;
-		bottom = top + EDITTEXT_HEIGHT;
-		edittext[SEATS] = EditText(hint, title, content, left, top, right, bottom, 3);
+		top += 120;
+		edittext[SEATS] = EditText(hint, title, content, left, top, left + EDITTEXT_WIDTH, top + EDITTEXT_HEIGHT, 3);
 
 
 
 	}
+	//Khoi tao edittext cho menu chinh sua may bay
 	void initAdjustMenu(Plane* p) {
 
 		edittext[ID_PLANE].setActive(false);
@@ -89,6 +88,7 @@ public:
 		edittext[SEATS].customInitNum(p->seats);
 
 	}
+	//Khoi tao edittext cho menu them may bay
 	void initAddMenu() {
 
 		edittextPointer = &edittext[ID_PLANE];
@@ -102,16 +102,12 @@ public:
 	//Lay du lieu may bay tu edittext
 	Plane getPlaneData() {
 		Plane p;
-
-
 		strcpy_s(p.idPlane, edittext[ID_PLANE].getCharData());
 		strcpy_s(p.type, edittext[TYPE].getCharData());
 		p.seats = edittext[SEATS].getIntData();
-
 		return p;
 
 	}
-
 	//Xoa  het du lieu 3 edittext
 	void resetEdittext() {
 
@@ -124,6 +120,7 @@ public:
 
 
 	}
+	//Reset tab manage plane
 	void reset() {
 		currentMenu = MAIN_MENU;
 		currentPage = 1;
@@ -132,51 +129,44 @@ public:
 
 
 
-	//Neu adjust = 1 thi ap dung cho adjust screen ko check plane ID
+	/*Neu adjust la true thi ap dung cho adjust menu, nguoc lai add menu
+	* Kiem tra loi tung edittext khi them hoac sua may bay
+	*/
 	bool checkEdittextError(EditText*& edittextPointer, bool adjust = false) {
 
 		edittextPointer->clearCursor();
 
-		if (!adjust) {
-			if (edittextPointer == &edittext[ID_PLANE]) {
-				if (edittextPointer->isEmpty()) {
-					drawAnounce(EMPTY);
-					return false;
-				}
+		//Kiem tra edittext rong
+		if (edittextPointer->isEmpty()) {
+			drawAnounce(EMPTY);
+			return false;
+		}
+
+		if (!adjust)
+			if (edittextPointer == &edittext[ID_PLANE])
+				//Kiem tra ID May bay co trung lap khong
 				if (findPlane(d->planeList, edittextPointer->getCharData()) != -1) {
+					edittext[ID_PLANE].clearText();
 					drawAnounce(DUP);
 					return false;
 				}
 
-			}
-
-
-		}
-
-		if (edittextPointer == &edittext[TYPE]) {
-			if (edittextPointer->isEmpty()) {
-				drawAnounce(EMPTY);
-				return false;
-			}
-		}
-
 		edittext[TYPE].standarContent();
 
+		//Kiem tra so ghe nam tu 20 - 300
 		if (edittextPointer == &edittext[SEATS]) {
-			if (edittextPointer->isEmpty()) {
-				drawAnounce(EMPTY);
-				return false;
-			}
 			if (!checkSeat(edittextPointer->getIntData())) {
+				edittext[SEATS].clearText();
 				drawAnounce(SEAT_ERROR);
 				return false;
 			}
 		}
 
-
+		//Neu da thanh lap chuyen bay kiem tra so ghe hien tai >= so ghe cu
 		if (adjust && !d->planeList.data[indexID]->isAvai) {
 			if (!isGreaterSeat(d->planeList.data[indexID]->seats, edittext[SEATS].getIntData())) {
 				drawAnounce(GREATER_SEAT);
+				edittext[SEATS].clearText();
 				edittextPointer = &edittext[SEATS];
 				return false;
 			}
@@ -184,7 +174,9 @@ public:
 
 		return true;
 	}
-	//Check het 3 edittext de luu du lieu
+	/*Neu adjust la true thi ap dung cho adjust menu, nguoc lai add menu
+	* Check toan bo het 3 edittext de luu du lieu
+	*/
 	bool checkSaveData(EditText*& edittextPointer, bool adjust = false) {
 
 		edittext[ID_PLANE].clearCursor();
@@ -197,17 +189,15 @@ public:
 				edittextPointer = &edittext[ID_PLANE];
 				return false;
 			}
-
+			//Kiem tra co trung ID hay khong
 			if (findPlane(d->planeList, edittext[ID_PLANE].getCharData()) != -1) {
 				drawAnounce(DUP);
+				edittext[ID_PLANE].clearText();
 				edittextPointer = &edittext[ID_PLANE];
 				return false;
 			}
 
-
 		}
-
-
 
 		if (edittext[TYPE].isEmpty()) {
 			drawAnounce(EMPTY);
@@ -217,21 +207,25 @@ public:
 
 		edittext[TYPE].standarContent();
 
-
 		if (edittext[SEATS].isEmpty()) {
 			drawAnounce(EMPTY);
+			edittext[SEATS].clearText();
 			edittextPointer = &edittext[SEATS];
 			return false;
 		}
 
+		//Kiem tra so cho 20 - 300
 		if (!checkSeat(edittext[SEATS].getIntData())) {
 			drawAnounce(SEAT_ERROR);
+			edittext[SEATS].clearText();
 			edittextPointer = &edittext[SEATS];
 			return false;
 		}
+		//Neu may bay da thanh lap chyen kiem tra so cho hien tai > so cho cu
 		if (adjust && !d->planeList.data[indexID]->isAvai) {
 			if (!isGreaterSeat(d->planeList.data[indexID]->seats, edittext[SEATS].getIntData())) {
 				drawAnounce(GREATER_SEAT);
+				edittext[SEATS].clearText();
 				edittextPointer = &edittext[SEATS];
 				return false;
 			}
@@ -283,7 +277,7 @@ public:
 
 				}
 				else if (edittextPointer == &edittext[TYPE]) {
-					if (c <= 90 && c >= 65 || (c <= 57 && c >= 48) ||  c == ' ' || c <= 122 && c >= 97)
+					if (c <= 90 && c >= 65 || (c <= 57 && c >= 48) || c == ' ' || c <= 122 && c >= 97)
 						edittextPointer->addCharName((char)c);
 
 				}
@@ -292,8 +286,6 @@ public:
 						edittextPointer->addChar((char)c);
 
 				}
-
-
 
 				break;
 
@@ -353,25 +345,27 @@ public:
 	}
 	void drawMainMenu() {
 
-		//-----------VE BUTTON
+		//Ve button add
 		button[ADD].onAction();
 
+		//Ve title
 		char title[15] = "PLANE DATA";
 		int x = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - textwidth(title)) / 2;
 		int y = SUBWINDOW_TOP + 20;
 		drawTitle(x, y, title);
 
 
-		//-----------------VE HUONG DAN TEXT
+		//Ve huong dan su dung
 		char a[30] = "*Left click to delete";
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
 		strcpy_s(a, " Right click to edit");
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 40, a);
 
-		//---------------THEM MAY BAY
+		//Neu nut them duoc bam
 		if (button[ADD].isClicked()) {
+			//Day du lieu
 			if (d->planeList.size == MAX_PLANE) {
-				drawAnounce(FULL_PLANE);
+				drawAnounce(FULL_LIST);
 			}
 			else {
 				initAddMenu();
@@ -380,7 +374,7 @@ public:
 
 		}
 
-		//-----------VE BANG DU LIEU
+		//Ve bang du lieu
 		int s = drawPlaneData(d->planeList, indexID);
 
 		if (s == 1) {
@@ -388,6 +382,7 @@ public:
 
 			switch (s) {
 			case IDOK: {
+				//Chi remove khi chua thanh lap chuyen bay
 				if (d->planeList.data[indexID]->isAvai)
 					removePlane(d->planeList, indexID);
 				else
@@ -400,7 +395,7 @@ public:
 		}
 		else if (s == 2) {
 
-			//Sua tinh theo 2 TH avai va ko avai
+			
 			initAdjustMenu(d->planeList.data[indexID]);
 			currentMenu = ADJUST_MENU;
 
@@ -415,26 +410,29 @@ public:
 	}
 	void drawAddMenu() {
 
-		//-----------------VE HUONG DAN TEXT
+		//Ve huong dan
 		char a[30] = "*Use Up/Down/Enter button";
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
 
+		//Ve title
 		strcpy_s(a, "ADD PLANE");
 		drawTitle(a);
 
 		button[BACK].onAction();
 		button[SAVE].onAction();
 
-
+		//ve edittext
 		edittext[ID_PLANE].onAction(edittextPointer);
 		edittext[TYPE].onAction(edittextPointer);
 		edittext[SEATS].onAction(edittextPointer);
 
+		//xu li ban phim
 		inputHandel(edittextPointer, false);
 
 
 		if (button[BACK].isClicked()) {
 			int s = drawAnounce(PREVIOUS);
+			
 			switch (s) {
 			case IDOK: {
 				reset();
@@ -516,7 +514,7 @@ public:
 			}
 			else {
 				adjustPlane(d->planeList, edittext[SEATS].getIntData(), this->indexID);
-				//Neu da thanh lap chuyen bay thi sua luon total ticket
+				//Neu da thanh lap chuyen bay thi cap nhat luon total ticket
 				if (!d->planeList.data[indexID]->isAvai)
 					adjustTicketList(d->flightList, edittext[SEATS].getIntData(), edittext[ID_PLANE].getCharData());
 				drawAnounce(SUCCESS);
@@ -534,10 +532,10 @@ public:
 
 	//----------------------DATA -----------------
 	void drawOnePlane(PlaneList& planeList, int preX, int preY, int i) {
-		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / 5;
+		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / 6;
 
 		//VE STT
-		char temp[4];
+		char temp[30];
 		sprintf_s(temp, "%d", i + 1);
 		int x = preX + 100;
 		drawText(preX, preY, x, temp);
@@ -555,7 +553,17 @@ public:
 
 		//VE SEATS
 		sprintf_s(temp, "%d", planeList.data[i]->seats);
+		x = preX + spaceX;
+		drawText(preX, preY, x, temp);
+		preX = x;
+
+
+		//VE TRANG THAI
 		x = RIGHT_BORDER;
+		if (planeList.data[i]->isAvai)
+			strcpy_s(temp, "Avai");
+		else
+			strcpy_s(temp, "Not avai");
 		drawText(preX, preY, x, temp);
 
 
@@ -567,8 +575,7 @@ public:
 		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20;
 		int preY = TOP_BORDER + 60;
 
-		drawBorder(4, 0, isEmpty(planeList)); //Draw border va title
-
+		drawBorder(5, 0, isEmpty(planeList)); //Draw border va title
 		onButtonPage(planeList.size, currentPage); //Su kien nut left / right
 		showPage(currentPage); //Hien thi trang
 

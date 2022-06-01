@@ -191,6 +191,8 @@ public:
 			return;
 		if (index > 2 && content[index - 2] == ' ' && c == ' ')
 			return;
+		if (content[0] == '_' && c == ' ') //Khong cho nhap ky tu dau la ky tu trang
+			return;
 
 		if (content[0] == '_' && (c <= 'z' && c >= 'a'))
 			c -= 32;

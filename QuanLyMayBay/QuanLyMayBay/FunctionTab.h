@@ -50,7 +50,7 @@ public:
 	void  initButton() {
 		//------------BUTTON  TRAI  
 		int left = SCREEN_WIDTH / 2 - 100;
-		int top = BOTTOM_BORDER + 30;
+		int top = BOTTOM_BORDER + 50;
 		int right = left + 50;
 		int bottom = top + 30;
 		char a[10] = "<";
@@ -117,7 +117,7 @@ public:
 			SUBWINDOW_BOTTOM - 1);
 
 	}
-	void drawText(int x, int y, char s[50], int color) {
+	void drawText(int x, int y, char* s, int color) {
 		setbkcolor(SUBWINDOW_BACKGROUND);
 		setcolor(color);
 		outtextxy(x, y, s);
@@ -430,7 +430,7 @@ public:
 			break;
 		}
 
-		case FULL_PLANE: {
+		case FULL_LIST: {
 			msgboxID = MessageBox(
 				GetForegroundWindow(),
 				(LPCWSTR)L"Plane list is Full",

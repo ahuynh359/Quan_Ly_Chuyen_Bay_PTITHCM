@@ -9,8 +9,8 @@
 class TicketTab :public ManageFlightsTab {
 private:
 	PTR flightTemp;
-	Button* buttonTicket, * closeButton, * genderButton, * ticketPointer;
-	EditText* addEdittextPointer;
+	Button* buttonTicket = NULL, * closeButton = NULL, * genderButton= NULL, * ticketPointer = NULL;
+	EditText* addEdittextPointer = NULL;
 
 	Data* d;
 
@@ -35,14 +35,12 @@ public:
 
 		buttonTicket = new Button[MAX_SEAT + 1]; //Khoi tao so ghe
 		closeButton = &button[CLOSE];
-		addEdittextPointer = NULL;
-		genderButton = NULL;
-		ticketPointer = NULL;
 
 		initSearchEdittext();
 	}
 
 	//-----------------KHOI TAO
+	//Khoi tao edittext
 	void initEdittext() {
 
 		//---------EDITTEXT ID
@@ -92,6 +90,7 @@ public:
 
 
 	}
+	//Khoi tao menu add
 	void initAddMenu(bool s, bool id = false) {
 		if (id)
 			edittext[ID_PASS].setActive(s);
@@ -108,6 +107,7 @@ public:
 
 
 	}
+	//Khoi tao ds ve
 	void initTicketList(PTR& flight) {
 
 
@@ -137,7 +137,7 @@ public:
 		}
 	}
 
-
+	
 	void customEdittext(AVLTree& pass, bool id = false) {
 		if (id) {
 			edittext[ID_PASS].customInitChar(pass->data.idPass);
@@ -162,6 +162,7 @@ public:
 		}
 
 	}
+	//Lay du lieu passenger
 	Passenger getPassenger() {
 		Passenger p;
 
@@ -177,7 +178,7 @@ public:
 
 	}
 
-
+	//Xoa noi dung edittext
 	void clearEditext() {
 		edittext[ID_PASS].clearText();
 		edittext[LAST_NAME].clearText();
@@ -187,6 +188,7 @@ public:
 		
 
 	}
+	//reset tab ticket
 	void reset() {
 		ManageFlightsTab::reset();
 		ticketPointer = NULL;
@@ -194,8 +196,6 @@ public:
 		flightTemp = NULL;
 		clearEditext();
 	}
-
-
 	void moveEdittextUp() {
 		if (addEdittextPointer == &edittext[LAST_NAME]) {
 			addEdittextPointer = &edittext[FIRST_NAME];
@@ -219,6 +219,8 @@ public:
 		}
 
 	}
+
+	//Kiem tra loi tung edittext
 	bool checkEdittextError() {
 		addEdittextPointer->clearCursor();
 
@@ -281,60 +283,7 @@ public:
 
 
 	}
-
-	void inputHandel() {
-		int c = FunctionTab::getInput();
-
-		if (addEdittextPointer != NULL) {
-			switch (c) {
-			case -1: {
-				addEdittextPointer->deleteChar();
-				break;
-			}
-			case 1: {
-				if (!checkEdittextError()) {
-
-				}
-				else
-					moveEdittextUp();
-
-
-				break;
-			}
-			case 3: case 2: {
-
-				if (!checkEdittextError()) {
-
-				}
-				else
-					moveEdittextDown();
-				break;
-			}
-			default: {
-
-
-				if (addEdittextPointer == &edittext[ID_PASS]) {
-					if (c <= 57 && c >= 48)
-						addEdittextPointer->addChar((char)c);
-
-				}
-				else if (addEdittextPointer == &edittext[FIRST_NAME] || addEdittextPointer == &edittext[LAST_NAME]) {
-					if (c <= 90 && c >= 65 || c == ' ' || c <= 122 && c >= 97)
-						addEdittextPointer->addCharName((char)c);
-
-				}
-
-
-
-
-				break;
-
-
-			}
-			}
-		}
-
-	}
+	//Kiem tra torng quan de luu toan bo du lieu
 	bool checkSaveData() {
 
 		edittext[ID_PASS].clearCursor();
@@ -408,6 +357,61 @@ public:
 		return true;
 	}
 
+	//Xu li su kien ban phim
+	void inputHandel() {
+		int c = FunctionTab::getInput();
+
+		if (addEdittextPointer != NULL) {
+			switch (c) {
+			case -1: {
+				addEdittextPointer->deleteChar();
+				break;
+			}
+			case 1: {
+				if (!checkEdittextError()) {
+
+				}
+				else
+					moveEdittextUp();
+
+
+				break;
+			}
+			case 3: case 2: {
+
+				if (!checkEdittextError()) {
+
+				}
+				else
+					moveEdittextDown();
+				break;
+			}
+			default: {
+
+
+				if (addEdittextPointer == &edittext[ID_PASS]) {
+					if (c <= 57 && c >= 48)
+						addEdittextPointer->addChar((char)c);
+
+				}
+				else if (addEdittextPointer == &edittext[FIRST_NAME] || addEdittextPointer == &edittext[LAST_NAME]) {
+					if (c <= 90 && c >= 65 || c == ' ' || c <= 122 && c >= 97)
+						addEdittextPointer->addCharName((char)c);
+
+				}
+
+
+
+
+				break;
+
+
+			}
+			}
+		}
+
+	}
+
 	//-------------------------UI--------------------------
 	void drawUI() {
 
@@ -468,7 +472,7 @@ public:
 				return;
 			}
 			initTicketList(flightTemp);
-			delay(50);
+			delay(500);
 			currentMenu = TICKET_MENU;
 		}
 
@@ -537,9 +541,9 @@ public:
 		//---------HUONG DAN
 
 		char s[200] = "*Left click to book ticket";
-		drawInstruction(SUBWINDOW_LEFT + 10, BOTTOM_BORDER + 55, s);
-		strcpy_s(s, " Right click to cancle ticket");
 		drawInstruction(SUBWINDOW_LEFT + 10, BOTTOM_BORDER + 75, s);
+		strcpy_s(s, " Right click to cancle ticket");
+		drawInstruction(SUBWINDOW_LEFT + 10, BOTTOM_BORDER + 95, s);
 
 		drawInstructionInline();
 
@@ -589,7 +593,7 @@ public:
 			if (!ticketPointer->getIsChoosen() && ticketPointer->getIsLeftClick()) {
 				addEdittextPointer = &edittext[ID_PASS];
 				initAddMenu(false);
-				delay(50);
+				delay(500);
 				currentMenu = ADD_MENU;
 
 			}
@@ -598,7 +602,7 @@ public:
 					AVLTree passenger = findPassenger(d->passengerList, flightTemp->info.ticketList[ticketPointer->getIntData() - 1]);
 					initAddMenu(false, true);
 					customEdittext(passenger, true);
-					delay(50);
+					delay(500);
 					currentMenu = CANCLE_TICKET_MENU;
 
 
@@ -650,7 +654,7 @@ public:
 
 		if (button[BACK].isClicked()) {
 			ticketPointer = NULL;
-			reset();
+			resetAddEdittext();
 			delay(50);
 			currentMenu = TICKET_MENU;
 
@@ -706,14 +710,13 @@ public:
 		}
 
 	}
-
-	//-------------------------------------
+	//VE HUONG DAN
 	void drawInstructionInline() {
 
 		char s[30];
 		char a[2] = "";
 		int left = SUBWINDOW_RIGHT - 30;
-		int top = SUBWINDOW_BOTTOM - 70;
+		int top = SUBWINDOW_BOTTOM - 60;
 
 		strcpy_s(s, "Avai");
 		drawSmallBox(left, top, 20, 20, TICKET_AVAI, s);
@@ -740,14 +743,19 @@ public:
 
 	}
 
+	
+	//---------------DATA---------------
+	int drawTicketData(PTR& tempFlight, PTR& flightList) {
 
+		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
+		int preY = TOP_BORDER + 60;
 
-	int countFlightAbleToBook(PTR& flightList) {
-		beginPageSize = 1;
+		int beginPageSize = 0;
 
 		clearSearchEdittextCursor();
 		Date date = getDateFromSearch();
-
+		PTR* beginPage = new PTR[size(flightList)];
+		beginPage[1] = NULL;
 		int size = 0;
 		int cnt = 1;
 		int t = 1;
@@ -757,9 +765,10 @@ public:
 			{
 
 				if (cnt % 10 == 1) {
+					beginPageSize++;
+
 					beginPage[beginPageSize] = new FlightNode;
 					beginPage[beginPageSize] = k;
-					beginPageSize++;
 
 					cnt = 1;
 				}
@@ -769,21 +778,14 @@ public:
 			}
 		}
 
-		return size;
-	}
-	int drawTicketData(PTR& tempFlight, PTR& flightList) {
-
-		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
-		int preY = TOP_BORDER + 60;
-		int size = countFlightAbleToBook(flightList);
+	
+	
 
 		drawBorder(7, 1, size == 0); //Draw border va title
 
 		onButtonPage(size, currentPage); //Su kien nut left / right
 		showPage(currentPage); //Hien thi trang
-		clearSearchEdittextCursor();
 
-		Date date = getDateFromSearch();
 
 		PTR k = beginPage[currentPage];
 

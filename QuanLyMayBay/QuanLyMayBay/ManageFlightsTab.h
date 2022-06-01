@@ -20,133 +20,119 @@ protected:
 
 	ManagePlanesTab manage;
 
-	PTR* beginPage = new PTR[2];
-	int beginPageSize = 1;
-
-
-
 public:
 	ManageFlightsTab() {
-		beginPage[1] = NULL;
-	}
-	~ManageFlightsTab() {
-		printf("Manage Flight Constructor\n");
-		delete addPointer;
-		delete [] beginPage;
-		delete flightTemp;
+
 	}
 
 	ManageFlightsTab(Data* data) {
-		d = data;
-
+		this->d = data;
 		initEdittext();
 		initSearchEdittext();
+	}
 
-		beginPage[1] = NULL;
-
-
+	~ManageFlightsTab() {
+		printf("Manage Flight Constructor\n");
+		delete addPointer;
+		delete flightTemp;
 	}
 
 
-	//------------KHOI TAO
+
+	//----------HAM KHOI TAO
+	//Khoi tao edittext cho nhap va sua thong tin
 	void initEdittext() {
 
-		int left = (SUBWINDOW_LEFT + SUBWINDOW_RIGHT - EDITTEXT_WIDTH + EDITTEXT_SPACE) / 2;
-		int top = SUBWINDOW_TOP + 100;
-		int right = left + EDITTEXT_WIDTH;
-		int bottom = top + EDITTEXT_HEIGHT;
-
-		//------------EDITTEXT ID FLIGHT
 		char hint[30] = "Do not leave empty!";
 		char title[30] = "FLIGHT ID";
 		char content[30] = "";
-		addEdittext[ID_FLIGHT] = EditText(hint, title, content, left, top, right, bottom, 15);
+
+		int left = 430;
+		int top = 200;
+		int right = left + EDITTEXT_WIDTH;
+		int bottom = top + EDITTEXT_HEIGHT;
+		int spaceY = 90;
+		int spaceX = 90;
+
+		//------------EDITTEXT ID FLIGHT
+
+		addEdittext[ID_FLIGHT] = EditText(hint, title, content, left, top, left + EDITTEXT_WIDTH, top + EDITTEXT_HEIGHT, MAX_ID_FLIGHT);
 
 		//------------EDITTEXT ID PLANE
 		strcpy_s(title, "PLANE ID");
-		top = bottom + EDITTEXT_MIN_SPACE;
-		bottom = top + EDITTEXT_HEIGHT;
-		addEdittext[ID_PLANE] = EditText(hint, title, content, left, top, right, bottom, 15);
+		strcpy_s(hint, "Max 15 character");
+		top += spaceY;
+		addEdittext[ID_PLANE] = EditText(hint, title, content, left, top, left + EDITTEXT_WIDTH, top + EDITTEXT_HEIGHT, MAX_ID_PLANE);
 
 		//-----------BUTTON TIM KIEM MAY BAY
 		strcpy_s(title, "FIND");
-		button[FIND] = Button(right + 10, top, right + 60, bottom, BUTTON_BACKGROUND,
+		button[FIND] = Button(right + 10, top, right + 10 + BUTTON_WIDTH, top + EDITTEXT_HEIGHT, BUTTON_BACKGROUND,
 			WHITE, title,
 			BUTTON_TEXT_COLOR);
 
 
-		//------------EDITTEXT ARRIVE
+		//------------EDITTEXT ARRIVE 
 		strcpy_s(title, "ARRIVE");
-		top = bottom + EDITTEXT_MIN_SPACE;
-		bottom = top + EDITTEXT_HEIGHT;
-		addEdittext[ARRIVE] = EditText(hint, title, content, left, top, right, bottom, 15);
+		strcpy_s(hint, "Max 40 character");
+		top += spaceY;
+		addEdittext[ARRIVE] = EditText(hint, title, content, left, top, left + EDITTEXT_WIDTH, top + EDITTEXT_HEIGHT, 40);
 
-		//------------EDITTEXT ARRIVE
+		//EDITTEXT STATUS
 		strcpy_s(title, "STATUS");
-		strcpy_s(hint, "");
 		strcpy_s(content, "HAVE TICKET");
-		right = left + 100;
-		top = bottom + EDITTEXT_MIN_SPACE;
-		bottom = top + EDITTEXT_HEIGHT;
-		addEdittext[STATUS] = EditText(hint, title, content, left, top, right, bottom, 15);
-
-
+		top += spaceY;
+		addEdittext[STATUS] = EditText(hint, title, content, left, top, left + textwidth(content) + 10, top + EDITTEXT_HEIGHT, 40);
+		addEdittext[STATUS].setActive(false);
 
 		//------------EDITTEXT DAY
 
 		strcpy_s(title, "TIME");
-		right = left + 50;
-		top = bottom + EDITTEXT_MIN_SPACE;
-		bottom = top + EDITTEXT_HEIGHT;
-		addEdittext[DAY] = EditText(hint, title, content, left, top, right, bottom, 2);
+		top += spaceY;
+		addEdittext[DAY] = EditText(hint, title, content, left, top, left + EDITTEXT_MIN_WIDTH, top + EDITTEXT_HEIGHT, 2);
 
 		//------------EDITTEXT MONTH
 
 		strcpy_s(title, "/");
-		left = right + 15;
-		right = left + 70;
-		addEdittext[MONTH] = EditText(hint, title, content, left, top, right, bottom, 2, 10);
+		left += spaceX;
+		addEdittext[MONTH] = EditText(hint, title, content, left, top, left + EDITTEXT_MIN_WIDTH, top + EDITTEXT_HEIGHT, 2, 10);
 
 
 		//------------EDITTEXT YEAR
 
-		strcpy_s(title, "/");
-		left = right + 15;
-		right = left + 70;
-		addEdittext[YEAR] = EditText(hint, title, content, left, top, right, bottom, 4, 10);
+		left += spaceX;
+		addEdittext[YEAR] = EditText(hint, title, content, left, top, left + EDITTEXT_MIN_WIDTH, top + EDITTEXT_HEIGHT, 4, 10);
 
 
 		//------------EDITTEXT HOUR
 
 		strcpy_s(title, "AT");
-		left = right + 70;
-		right = left + 70;
-		addEdittext[HOUR] = EditText(hint, title, content, left, top, right, bottom, 2, 25);
+		left += spaceX + 20;
+		addEdittext[HOUR] = EditText(hint, title, content, left, top, left + EDITTEXT_MIN_WIDTH, top + EDITTEXT_HEIGHT, 2, 25);
 
 
 		//------------EDITTEXT MINUTE
 
 		strcpy_s(title, ":");
-		left = right + 15;
-		right = left + 70;
-		addEdittext[MINUTE] = EditText(hint, title, content, left, top, right, bottom, 2, 10);
+		left += spaceX;
+		addEdittext[MINUTE] = EditText(hint, title, content, left, top, left + EDITTEXT_MIN_WIDTH, top + EDITTEXT_HEIGHT, 2, 10);
 
 
 
 
 	}
+	//Khoi tao edittext cho phan loc thong tin
 	void  initSearchEdittext() {
 		int left = LEFT_BORDER;
 		int top = SUBWINDOW_TOP + 5;
 		int right = left + 150;
 		int bottom = top + EDITTEXT_HEIGHT;
 
-		char hint[30] = "";
+		char hint[30] = "Max 15 character";
 		char title[30] = "FLIGHT ID";
 		char content[30] = "";
 
 		//------------EDITTEXT ID FLIGHT
-		edittext[ID_FLIGHT] = EditText(hint, title, content, left, top, right, bottom, 15);
+		edittext[ID_FLIGHT] = EditText(hint, title, content, left, top, right, bottom, MAX_ID_FLIGHT);
 
 
 		//------------EDITTEXT DAY
@@ -173,11 +159,12 @@ public:
 
 		//------------EDITTEXT ARRIVE
 		strcpy_s(title, "ARRIVE");
-		strcpy_s(hint, "");
+		strcpy_s(hint, "Max 40 character");
 		left = right + EDITTEXT_SPACE;
 		right = RIGHT_BORDER;
 		edittext[ARRIVE] = EditText(hint, title, content, left, top, right, bottom, 40, 55);
 	}
+	//Khoi tao cho man hinh them chuyen bay
 	void initAddMenu() {
 		addPointer = &addEdittext[ID_FLIGHT];
 		char s[30] = "HAVE TICKET";
@@ -188,6 +175,7 @@ public:
 
 		addEdittext[STATUS].customInitChar(s);
 		addEdittext[STATUS].setActive(false);
+
 		addEdittext[MINUTE].customInitChar(getCurTime().minute);
 		addEdittext[HOUR].customInitChar(getCurTime().hour);
 		addEdittext[YEAR].customInitChar(getCurTime().year);
@@ -195,6 +183,7 @@ public:
 		addEdittext[DAY].customInitChar(getCurTime().day);
 
 	}
+	//Khoi tao man hinh chinh sua chuyen bay
 	void initAdjustScreen() {
 		addPointer = &addEdittext[DAY];
 
@@ -219,15 +208,16 @@ public:
 	}
 
 
-
-	//-------------RESET
+	//----------RESET
+	//reset tab flight 
 	void reset() {
 		currentMenu = MAIN_MENU;
 		flightTemp = NULL;
 		currentPage = 1;
 		resetAddEdittext();
-		resetEdittext();
+		resetSearchEdittext();
 	}
+	//reset cac edittext
 	void resetAddEdittext() {
 		addEdittext[ID_FLIGHT].clearText();
 		addEdittext[ID_PLANE].clearText();
@@ -240,10 +230,8 @@ public:
 		addEdittext[MINUTE].clearText();
 		addPointer = NULL;
 
-
-
 	}
-	void  resetEdittext() {
+	void  resetSearchEdittext() {
 		edittext[ID_FLIGHT].clearText();
 		edittext[DAY].clearText();
 		edittext[MONTH].clearText();
@@ -252,7 +240,9 @@ public:
 		edittextPointer = NULL;
 	}
 
-	//-------------HAM EDITTEXT
+
+	//----------HAM XU LI EDITTEXT
+	//Kiem tra tat cac cach search edittext co empty hay khong
 	bool  checkAllEdittextIsEmpty() {
 		if (edittext[ID_FLIGHT].isEmpty() &&
 			edittext[DAY].isEmpty() &&
@@ -329,9 +319,9 @@ public:
 	}
 
 
-	//-------------GET DATA
+	//------GET DATA
+	//Ham lay du lieu thoi gian tu edittext
 	Date   getDate() {
-
 		Date d;
 		strcpy_s(d.day, addEdittext[DAY].getCharData());
 		strcpy_s(d.month, addEdittext[MONTH].getCharData());
@@ -339,12 +329,10 @@ public:
 		strcpy_s(d.hour, addEdittext[HOUR].getCharData());
 		strcpy_s(d.minute, addEdittext[MINUTE].getCharData());
 		format(d);
-
-
-
 		return d;
 
 	}
+	//Ham lay du lieu thoi gian tu search edittext
 	Date  getDateFromSearch() {
 		Date date;
 		strcpy_s(date.day, edittext[DAY].getCharData());
@@ -359,6 +347,7 @@ public:
 		return date;
 
 	}
+	//Lay chuyen bay
 	Flight getFlight() {
 		Flight f;
 		strcpy_s(f.idFlight, addEdittext[ID_FLIGHT].getCharData());
@@ -376,6 +365,7 @@ public:
 
 
 	//----------HAM XU LI INPUT
+	//Ham kiem tra tat ca du lieu de luu
 	bool checkSaveData(bool isAdjust = 0) {
 
 		clearAddEdittextCursor();
@@ -387,6 +377,7 @@ public:
 				return false;
 			}
 
+			//Kiem tra trung ID Flight
 			if (findFlight(d->flightList, addPointer->getCharData()) != NULL) {
 				drawAnounce(DUP);
 				addPointer = &addEdittext[ID_FLIGHT];
@@ -399,6 +390,7 @@ public:
 				return false;
 			}
 
+			//Kiem tra ID PLane ton tai hay khong
 			if (findPlane(d->planeList, addEdittext[ID_PLANE].getCharData()) == -1) {
 				drawAnounce(PLANE_NOT_EXIST);
 				addPointer = &edittext[ID_PLANE];
@@ -475,15 +467,14 @@ public:
 			return false;
 		}
 		Date date = getDate();
-		
 
+		//Ngay gio co hop le hay khong
 		if (!checkTime(date)) {
 			drawAnounce(TIME_ERROR);
 			return false;
 		}
 
 		//Thoi gian khoi hanh > hien tai + 60
-
 		if (!checkTimeBeforeMinute(date, 60)) {
 			drawAnounce(BEFORE_ONE_HOUR);
 			return false;
@@ -505,12 +496,12 @@ public:
 				strcat_s(mess, getDateString(k->info.date));
 				strcat_s(mess, "\n Time must >= 12 hours from this flight");
 				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
-				
+
 				return false;
 
 			}
 		}
-
+		//Kiem tra co cung hanh khach nao dat 2 chuyen ma cho sua hay khong
 		if (isAdjust) {
 
 			PTR a = canEditTime(d->flightList, flightTemp, getDate());
@@ -533,6 +524,7 @@ public:
 
 		return true;
 	}
+	//Ham kiem tra tung loi edittext de luu
 	bool checkEdittextError() {
 		addPointer->clearCursor();
 
@@ -542,7 +534,7 @@ public:
 		}
 
 		if (addPointer == &addEdittext[ID_FLIGHT]) {
-
+			//Kiem tra trung id flight
 			if (findFlight(d->flightList, addPointer->getCharData()) != NULL) {
 				drawAnounce(DUP);
 				return false;
@@ -550,7 +542,7 @@ public:
 		}
 
 		if (addPointer == &addEdittext[ID_PLANE]) {
-
+			//Kiem tra id plane co ton tai
 			if (findPlane(d->planeList, addPointer->getCharData()) == -1) {
 				drawAnounce(PLANE_NOT_EXIST);
 				return false;
@@ -559,8 +551,6 @@ public:
 
 
 		if (addPointer == &addEdittext[DAY]) {
-
-
 			if (!checkDay(addPointer->getCharData())) {
 				drawAnounce(DAY_ERROR);
 				return false;
@@ -616,7 +606,8 @@ public:
 
 		return true;
 	}
-	void inputHandel(bool isAdjust = 0) {
+	//Ham xu li input
+	void inputHandel(bool isAdjust = false) {
 		int c = FunctionTab::getInput();
 
 		if (addPointer != NULL) {
@@ -664,17 +655,19 @@ public:
 			}
 			default: {
 
-
+				//Cho nhap chu hoa va so
 				if (addPointer == &addEdittext[ID_FLIGHT] || addPointer == &addEdittext[ID_PLANE]) {
 					if ((c <= 90 && c >= 65) || (c <= 57 && c >= 48))
 						addPointer->addChar((char)c);
 
 				}
+				//cho nhap chu hoa
 				else if (addPointer == &addEdittext[ARRIVE]) {
 					if (c <= 90 && c >= 65)
 						addPointer->addChar((char)c);
 
 				}
+				//cho nhap so
 				else if (addPointer == &addEdittext[HOUR] || addPointer == &addEdittext[MINUTE] || addPointer == &addEdittext[DAY]
 					|| addPointer == &addEdittext[MONTH] || addPointer == &addEdittext[YEAR]) {
 					if (c <= 57 && c >= 48)
@@ -692,6 +685,7 @@ public:
 		}
 
 	}
+	//Ham xu li input cho search
 	void  inputMainMenuHandel() {
 
 		edittext[ID_FLIGHT].onAction(edittextPointer, true);
@@ -770,7 +764,6 @@ public:
 			break;
 		}
 	}
-
 	void drawMainMenu() {
 
 
@@ -789,7 +782,6 @@ public:
 		else {
 			currentPage = 1;
 			clearSearchEdittextCursor();
-
 			s = drawFilterData(flightTemp, d->flightList);
 
 		}
@@ -800,7 +792,7 @@ public:
 			int d = drawAnounce(CANCEL_CONFIRM);
 			switch (d) {
 			case IDOK: {
-				//Chi duoc cancle thi con ve hoac het ve
+				//Chi duoc cancle khi con ve hoac het ve
 				if (!checkCancleFlight(flightTemp)) {
 					drawAnounce(CANCLE_FLIGHT_ERROR);
 
@@ -839,7 +831,7 @@ public:
 
 
 		if (button[ADD].isClicked()) {
-			resetEdittext();
+			resetAddEdittext();
 			initAddMenu();
 			currentMenu = ADD_MENU;
 
@@ -862,7 +854,7 @@ public:
 		button[BACK].onAction();
 		button[FIND].onAction();
 
-		
+
 
 		char s[200] = "Time >= an hour from now";
 		drawText(addEdittext[DAY].getLeft(),
@@ -889,17 +881,15 @@ public:
 				drawAnounce(SUCCESS);
 				resetAddEdittext();
 				initAddMenu();
-				manage.setCurrentPage(1);
 
 			}
 		}
 
 		if (button[BACK].isClicked()) {
-			manage.setCurrentPage(1);
 			int s = drawAnounce(PREVIOUS);
 			switch (s) {
 			case IDOK: {
-				resetEdittext();
+				resetSearchEdittext();
 				resetAddEdittext();
 				currentMenu = MAIN_MENU;
 				break;
@@ -912,7 +902,6 @@ public:
 
 		if (button[FIND].isClicked()) {
 			manage.setCurrentPage(1);
-
 			delay(50);
 			currentMenu = FIND_PLANE_MENU;
 
@@ -942,21 +931,19 @@ public:
 		addEdittext[HOUR].onAction(addPointer);
 		addEdittext[MINUTE].onAction(addPointer);
 
-		inputHandel(1);
+		inputHandel(true);
 
 		button[BACK].onAction();
 		button[SAVE].onAction();
 
 
-		
+
 
 		if (button[BACK].isClicked()) {
 			int s = drawAnounce(PREVIOUS);
 			switch (s) {
 			case IDOK: {
-				resetEdittext();
-				resetAddEdittext();
-				currentMenu = MAIN_MENU;
+				reset();
 				break;
 			}
 			default:
@@ -966,16 +953,15 @@ public:
 		}
 
 		if (button[SAVE].isClicked()) {
-
 			//Khong cho chinh sua neu  hoan tat
-			if ( flightTemp->info.status == 3) {
-				currentMenu = MAIN_MENU;
+			if (flightTemp->info.status == 3) {
+				reset();
 				drawAnounce(ADJUST_ERROR);
 				return;
 			}
 			//Neu luc save da lo qua 30 phut tu dong out ma ko cho luu
 			if (!checkTimeBeforeMinute(flightTemp->info.date, 30)) {
-				currentMenu = MAIN_MENU;
+				reset();
 				drawAnounce(THIRTY_MINUTE);
 				return;
 
@@ -987,10 +973,8 @@ public:
 			{
 				Date date = getDate();
 				adjustFlight(flightTemp, date);
-				resetEdittext();
-				resetAddEdittext();
+				reset();
 				drawAnounce(SUCCESS);
-				currentMenu = MAIN_MENU;
 
 
 			}
@@ -1013,8 +997,6 @@ public:
 			int s = drawAnounce(PREVIOUS);
 			switch (s) {
 			case IDOK: {
-				manage.setCurrentPage(1);
-
 				currentMenu = ADD_MENU;
 				break;
 			}
@@ -1026,9 +1008,7 @@ public:
 
 	}
 
-	//---------------DRAW DATA
-
-
+	//---------------DRAW DATA---------------
 	void drawOneFlight(int preY, int i, PTR& k) {
 		setbkcolor(SUBWINDOW_BACKGROUND);
 
@@ -1107,6 +1087,7 @@ public:
 
 
 	}
+	//Ve bang du lieu data
 	int drawFlightData(PTR& flightTemp, PTR& flightList, PlaneList& planeList) {
 
 		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
@@ -1115,7 +1096,7 @@ public:
 
 		drawBorder(7, 1, isEmpty(flightList));
 
-		checkCompletedAll(flightList, planeList);
+		checkCompletedAll(flightList, planeList);// Tu dong chuyen sang completed/cancle
 		onButtonPage(size(flightList), currentPage); //Su kien nut left / right
 		showPage(currentPage); //Hien thi trang
 
@@ -1137,6 +1118,7 @@ public:
 			int preX = LEFT_BORDER;
 
 			setcolor(BLACK);
+			//tu dong cap nhat  het ve
 			if (k->info.status == 1 || k->info.status == 2)
 				checkFull(k);
 			if (isPointed(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
@@ -1165,8 +1147,15 @@ public:
 
 
 	}
-	int countSizeFilterData(PTR& flightList) {
-		beginPageSize = 1;
+	//Ve data khi loc
+	int drawFilterData(PTR& flightTemp, PTR& flightList, bool haveTicket = false) {
+
+		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
+		int preY = TOP_BORDER + 60;
+		PTR* beginPage = new PTR[size(flightList) + 2];
+		beginPage[1] = NULL;
+		int pageSize = 0;
+
 
 		clearSearchEdittextCursor();
 		Date date = getDateFromSearch();
@@ -1186,9 +1175,9 @@ public:
 			{
 
 				if (cnt % 10 == 1) {
-					beginPage[beginPageSize] = new FlightNode;
-					beginPage[beginPageSize] = k;
-					beginPageSize++;
+					pageSize++;
+					beginPage[pageSize] = new FlightNode;
+					beginPage[pageSize] = k;
 
 					cnt = 1;
 				}
@@ -1200,27 +1189,16 @@ public:
 			}
 		}
 
-		return size;
-	}
-	int drawFilterData(PTR& flightTemp, PTR& flightList, bool haveTicket = false) {
 
-		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
-		int preY = TOP_BORDER + 60;
-		clearSearchEdittextCursor();
 
-		int size = countSizeFilterData(flightList);
 
 
 		drawBorder(7, 1, size == 0);
-
 		onButtonPage(size, currentFilterPage); //Su kien nut left / right
 		showPage(currentFilterPage); //Hien thi trang
-		clearSearchEdittextCursor();
 
-		Date date = getDateFromSearch();
 
 		PTR k = beginPage[currentFilterPage];
-
 		int i = startPage;
 
 
