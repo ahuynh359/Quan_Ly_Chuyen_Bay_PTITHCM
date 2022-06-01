@@ -470,12 +470,16 @@ public:
 
 		//Ngay gio co hop le hay khong
 		if (!checkTime(date)) {
+			addPointer = &addEdittext[DAY];
+
 			drawAnounce(TIME_ERROR);
 			return false;
 		}
 
 		//Thoi gian khoi hanh > hien tai + 60
 		if (!checkTimeBeforeMinute(date, 60)) {
+			addPointer = &addEdittext[DAY];
+
 			drawAnounce(BEFORE_ONE_HOUR);
 			return false;
 		}
@@ -496,6 +500,7 @@ public:
 				strcat_s(mess, getDateString(k->info.date));
 				strcat_s(mess, "\n Time must >= 12 hours from this flight");
 				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
+				addPointer = &addEdittext[ID_FLIGHT];
 
 				return false;
 
@@ -513,6 +518,7 @@ public:
 
 				strcat_s(mess, "\n Time must >= 12 hours from this flight");
 				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
+				addPointer = &addEdittext[ID_FLIGHT];
 				return false;
 			}
 
@@ -536,6 +542,8 @@ public:
 		if (addPointer == &addEdittext[ID_FLIGHT]) {
 			//Kiem tra trung id flight
 			if (findFlight(d->flightList, addPointer->getCharData()) != NULL) {
+				addEdittext[ID_FLIGHT].clearText();
+
 				drawAnounce(DUP);
 				return false;
 			}
@@ -545,6 +553,8 @@ public:
 			//Kiem tra id plane co ton tai
 			if (findPlane(d->planeList, addPointer->getCharData()) == -1) {
 				drawAnounce(PLANE_NOT_EXIST);
+				addEdittext[ID_PLANE].clearText();
+
 				return false;
 			}
 		}

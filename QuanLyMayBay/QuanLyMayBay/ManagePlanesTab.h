@@ -16,8 +16,8 @@ private:
 	Data* d = NULL;
 	//Index cua may bay duoc chon
 	int indexID = -1;
-	
-	
+
+
 
 
 public:
@@ -395,7 +395,7 @@ public:
 		}
 		else if (s == 2) {
 
-			
+
 			initAdjustMenu(d->planeList.data[indexID]);
 			currentMenu = ADJUST_MENU;
 
@@ -432,7 +432,7 @@ public:
 
 		if (button[BACK].isClicked()) {
 			int s = drawAnounce(PREVIOUS);
-			
+
 			switch (s) {
 			case IDOK: {
 				reset();
@@ -513,7 +513,8 @@ public:
 
 			}
 			else {
-				adjustPlane(d->planeList, edittext[SEATS].getIntData(), this->indexID);
+				Plane p = getPlaneData();
+				adjustPlane(d->planeList, p, this->indexID);
 				//Neu da thanh lap chuyen bay thi cap nhat luon total ticket
 				if (!d->planeList.data[indexID]->isAvai)
 					adjustTicketList(d->flightList, edittext[SEATS].getIntData(), edittext[ID_PLANE].getCharData());

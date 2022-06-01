@@ -77,8 +77,8 @@ bool checkSeat(int seat) {
 bool isGreaterSeat(int oldSeat, int newSeat) {
 	return (newSeat >= oldSeat);
 }
-void adjustPlane(PlaneList& list,int seats, int& index) {
-	list.data[index]->seats = seats;
+void adjustPlane(PlaneList& list,Plane& plane, int& index) {
+	*list.data[index] = plane;
 }
 
 
