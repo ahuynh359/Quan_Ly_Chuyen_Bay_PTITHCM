@@ -11,7 +11,7 @@ private:
 	PTR flightTemp;
 	Button* buttonTicket = NULL, * closeButton = NULL, * genderButton= NULL, * ticketPointer = NULL;
 	EditText* addEdittextPointer = NULL;
-
+	PTR* beginPage;
 	Data* d;
 
 	bool save = false;
@@ -21,11 +21,8 @@ public:
 		printf("Destructor Ticket\n");
 
 		delete [] buttonTicket;
+		delete[] beginPage;
 		//delete closeButton; //do thang nay tro thoi vung nho stack nen ko soa duoc
-		delete genderButton;
-		delete ticketPointer;
-		delete addEdittextPointer;
-		delete flightTemp;
 		
 	}
 	TicketTab(Data* d) {
@@ -192,8 +189,6 @@ public:
 	void reset() {
 		ManageFlightsTab::reset();
 		ticketPointer = NULL;
-		closeButton = NULL;
-		flightTemp = NULL;
 		clearEditext();
 	}
 	void moveEdittextUp() {
@@ -754,7 +749,7 @@ public:
 
 		clearSearchEdittextCursor();
 		Date date = getDateFromSearch();
-		PTR* beginPage = new PTR[size(flightList)];
+		beginPage = new PTR[size(flightList)];
 		beginPage[1] = NULL;
 		int size = 0;
 		int cnt = 1;
@@ -812,12 +807,14 @@ public:
 
 
 				if (isLeftMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY)) {
+
 					return 1;
 
 				}
 
 				else if (isRightMouseClicked(LEFT_BORDER, preY, RIGHT_BORDER, preY + spaceY))
 				{
+
 					return 2;
 
 				}
@@ -827,7 +824,6 @@ public:
 			}
 			k = k->next;
 		}
-
 
 		return -1;
 

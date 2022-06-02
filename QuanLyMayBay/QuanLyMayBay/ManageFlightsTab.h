@@ -17,7 +17,7 @@ protected:
 	PTR flightTemp = NULL;
 
 	Data* d = NULL;
-
+	PTR* beginPage;
 	ManagePlanesTab manage;
 
 public:
@@ -32,9 +32,7 @@ public:
 	}
 
 	~ManageFlightsTab() {
-		printf("Manage Flight Constructor\n");
-		delete addPointer;
-		delete flightTemp;
+		delete  [] beginPage;
 	}
 
 
@@ -212,7 +210,6 @@ public:
 	//reset tab flight 
 	void reset() {
 		currentMenu = MAIN_MENU;
-		flightTemp = NULL;
 		currentPage = 1;
 		resetAddEdittext();
 		resetSearchEdittext();
@@ -469,23 +466,12 @@ public:
 		Date date = getDate();
 
 		//Ngay gio co hop le hay khong
-		if (!checkTime(date)) {
-			addPointer = &addEdittext[DAY];
-
+		if (!checkTime(date) || !checkTimeBeforeMinute(date, 1)) {
 			drawAnounce(TIME_ERROR);
 			return false;
 		}
 
-		//Thoi gian khoi hanh > hien tai + 60
-		if (!checkTimeBeforeMinute(date, 60)) {
-			addPointer = &addEdittext[DAY];
-
-			drawAnounce(BEFORE_ONE_HOUR);
-			return false;
-		}
-
-
-
+	
 
 		//CHeck co chuyen bay nao khac cung ID PLANE TRONG 12 tieng
 		for (PTR k = d->flightList; k != NULL; k = k->next) {
@@ -866,11 +852,9 @@ public:
 
 
 
-		char s[200] = "Time >= an hour from now";
-		drawText(addEdittext[DAY].getLeft(),
-			addEdittext[DAY].getTop() - textheight(s) - 10, s, RED);
 
-		strcpy_s(s, "ADD FLIGHT");
+
+		char s[200] = "ADD FLIGHT";
 		drawTitle(s);
 
 		//-----------------VE HUONG DAN TEXT
@@ -927,9 +911,7 @@ public:
 		strcpy_s(s, "*Use left/right key to navigate");
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, s);
 
-		strcpy_s(s, "Time >= an hour from now");
-		drawText(addEdittext[DAY].getLeft(),
-			addEdittext[DAY].getTop() - textheight(s) - 10, s, RED);
+
 
 		addEdittext[ID_FLIGHT].onAction(addPointer);
 		addEdittext[ID_PLANE].onAction(addPointer);
@@ -1162,7 +1144,7 @@ public:
 
 		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
 		int preY = TOP_BORDER + 60;
-		PTR* beginPage = new PTR[size(flightList) + 2];
+		beginPage = new PTR[size(flightList) + 2];
 		beginPage[1] = NULL;
 		int pageSize = 0;
 
@@ -1253,7 +1235,6 @@ public:
 			}
 			k = k->next;
 		}
-
 
 		return -1;
 

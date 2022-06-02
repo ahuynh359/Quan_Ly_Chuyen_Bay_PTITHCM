@@ -457,15 +457,7 @@ public:
 			);
 			break;
 		}
-		case BEFORE_ONE_HOUR: {
-			msgboxID = MessageBox(
-				GetForegroundWindow(),
-				(LPCWSTR)L"Time must >= an hour from now",
-				(LPCWSTR)L"Warning",
-				MB_ICONEXCLAMATION | MB_OK
-			);
-			break;
-		}
+	
 		
 		case CANCEL_CONFIRM: {
 			msgboxID = MessageBox(

@@ -184,7 +184,6 @@ long long calSpaceTime(Date& d1, Date& d2) {
 // kiem tra thoi gian hien tai voi moc thgian nhap vao cach bao nhieu phut
 bool checkTimeBeforeMinute(Date& d, int min) {
 	Date now = getCurTime();
-
 	if (calSpaceTime(d, now) >= min)
 		return true;
 

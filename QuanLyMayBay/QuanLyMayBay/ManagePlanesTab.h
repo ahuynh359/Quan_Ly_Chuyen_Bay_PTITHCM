@@ -30,7 +30,6 @@ public:
 	}
 
 	~ManagePlanesTab() {
-		delete adjustEditextPointer;
 	}
 
 

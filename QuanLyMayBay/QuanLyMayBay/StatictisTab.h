@@ -7,12 +7,13 @@ class StatictisTab :public FunctionTab {
 private:
 	Data* d;
 
+	int* sortedPlane;
 public:
 	StatictisTab(Data* d) {
 		this->d = d;
 	}
 	~StatictisTab() {
-		
+		delete[] sortedPlane;
 	}
 
 	void reset() {
@@ -28,8 +29,6 @@ public:
 		drawTitle(x, y, a);
 
 		int size = d->planeList.size;
-
-		int* sortedPlane;
 		sortedPlane = new int[size];
 
 		for (int i = 0; i < size; i++)

@@ -25,12 +25,10 @@ public:
 	}
 	~ManagePassengersTab() {
 		printf("Destructor Pass\n");
-		delete tempFlight;
 	}
 	void reset() {
 		ManageFlightsTab::reset();
 		currentMenu = MAIN_MENU;
-		tempFlight = NULL;
 		currentPage = 1;
 
 	}
