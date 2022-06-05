@@ -107,6 +107,7 @@ public:
 
 		button[BACK].onAction();
 		if (button[BACK].isClicked()) {
+			
 			currentMenu = MAIN_MENU;
 		}
 	}
@@ -176,7 +177,7 @@ public:
 		showPage(currentPage);
 
 
-		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
+		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20;
 		int preY = TOP_BORDER + 60;
 
 		drawBorder(6, 2, cnt == 0);

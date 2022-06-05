@@ -39,8 +39,8 @@ public:
 	}
 	 virtual ~FunctionTab() {
 		 printf("Destructor function tab\n\n");
-		delete buttonPointer;
-		delete edittextPointer;
+		//delete buttonPointer;
+		//delete edittextPointer;
 	}
 
 	 void setCurrentPage(int a) {
@@ -457,7 +457,16 @@ public:
 			);
 			break;
 		}
-	
+		case BEFORE_ONE_HOUR: {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"Time must >= 60 minutes from now",
+				(LPCWSTR)L"Warning",
+				MB_ICONEXCLAMATION | MB_OK
+			);
+			break;
+		}
+
 		
 		case CANCEL_CONFIRM: {
 			msgboxID = MessageBox(

@@ -649,7 +649,7 @@ public:
 
 		if (button[BACK].isClicked()) {
 			ticketPointer = NULL;
-			resetAddEdittext();
+			clearEditext();
 			delay(50);
 			currentMenu = TICKET_MENU;
 
@@ -742,7 +742,7 @@ public:
 	//---------------DATA---------------
 	int drawTicketData(PTR& tempFlight, PTR& flightList) {
 
-		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
+		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20;
 		int preY = TOP_BORDER + 60;
 
 		int beginPageSize = 0;

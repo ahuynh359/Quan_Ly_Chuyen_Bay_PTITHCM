@@ -42,7 +42,7 @@ public:
 	void drawStatictisData(int* a) {
 
 		int spaceX = (RIGHT_BORDER + LEFT_BORDER) / 4;
-		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
+		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20;
 		int preY = TOP_BORDER + 60;
 
 		checkCompletedAll(d->flightList, d->planeList);

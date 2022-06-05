@@ -32,7 +32,7 @@ public:
 	}
 
 	~ManageFlightsTab() {
-		delete  [] beginPage;
+		delete[] beginPage;
 	}
 
 
@@ -466,12 +466,16 @@ public:
 		Date date = getDate();
 
 		//Ngay gio co hop le hay khong
-		if (!checkTime(date) || !checkTimeBeforeMinute(date, 1)) {
+		if (!checkTime(date)) {
 			drawAnounce(TIME_ERROR);
 			return false;
 		}
+		//Thoi gian khoi hanh >= hien tai 60 phut
+		if (!checkTimeBeforeMinute(date, 60)) {
+			drawAnounce(BEFORE_ONE_HOUR);
+			return false;
+		}
 
-	
 
 		//CHeck co chuyen bay nao khac cung ID PLANE TRONG 12 tieng
 		for (PTR k = d->flightList; k != NULL; k = k->next) {
@@ -765,11 +769,8 @@ public:
 
 		button[ADD].onAction();
 
-
 		//Xu li ban phim cho loc thong tin
 		inputMainMenuHandel();
-
-
 		//Neu tat ca cac truong loc thong tin trong thi ve du lieu bth
 		int s;
 		if (checkAllEdittextIsEmpty())
@@ -857,6 +858,9 @@ public:
 		char s[200] = "ADD FLIGHT";
 		drawTitle(s);
 
+		strcpy_s(s, "Time >= 60 minutes from now");
+		drawText(addEdittext[DAY].getLeft(), addEdittext[DAY].getTop() - textheight(s) - 10, s, RED);
+
 		//-----------------VE HUONG DAN TEXT
 		strcpy_s(s, "*Use Up/Down/Left/Right/Enter button");
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 30, s);
@@ -908,6 +912,9 @@ public:
 		char s[200] = "ADJUST FLIGHT";
 		drawTitle(s);
 
+
+		strcpy_s(s, "Time >= 60 minutes from now");
+		drawText(addEdittext[DAY].getLeft(), addEdittext[DAY].getTop() - textheight(s) - 10, s, RED);
 		strcpy_s(s, "*Use left/right key to navigate");
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, s);
 
@@ -1082,7 +1089,7 @@ public:
 	//Ve bang du lieu data
 	int drawFlightData(PTR& flightTemp, PTR& flightList, PlaneList& planeList) {
 
-		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
+		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20;
 		int preY = TOP_BORDER + 60;
 
 
