@@ -5,6 +5,7 @@
 - [CHỨC NĂNG](#2)
 - [LƯU Ý](#3)
 - [THẦY NHẬN XÉT](#4)
+- [CÀI THƯ VIỆN](#5)
 
  
 ## ĐỀ BÀI <a name="1"></a>
@@ -83,6 +84,39 @@ e/ In danh sách các hành khách thuộc 1 chuyến bay dựa vào mã chuyế
 h/ Thống kê số lượt thực hiện chuyến bay của từng máy bay
 - Tạo một mảng mới lưu vị trí, và sắp xếp vị trí trên mảng đó ko làm ảnh hưởng đến danh sách máy bay
 
+<img width="960" alt="Untitled" src="https://user-images.githubusercontent.com/32415728/172219427-f555ef0f-c171-49a8-8b37-6d1a3faab90f.png">
+Màn hình danh sách máy bay
+
+
+<img width="960" alt="Untitled" src="https://user-images.githubusercontent.com/32415728/172219504-e38bb713-4a75-4223-a3c2-96c032cde957.png">
+Màn hình thêm  máy bay
+
+
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/32415728/172219548-f2994491-45cc-4feb-891b-20525f2def20.png">
+Màn hình danh sách chuyến bay
+
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/32415728/172219591-25d9c7cd-1837-4a04-9d36-6d4081ef1b2f.png">
+Thêm danh chuyến bay
+
+
+<img width="960" alt="Untitled" src="https://user-images.githubusercontent.com/32415728/172219737-1a91e899-e465-4668-b16a-543669da9951.png">
+Danh sách hành khách
+
+
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/32415728/172219797-092ca7cb-8c77-4683-bbf6-e81141c9dc70.png">
+Danh sách vé
+
+
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/32415728/172219823-b7e7da69-75ad-40ad-a544-3e6f8c038c4a.png">
+Màn hình đặt vé
+
+
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/32415728/172219883-cd4d8849-d67f-45a3-968a-459451541ab9.png">
+Màn hình hủy vé
+
+
+<img width="960" alt="image" src="https://user-images.githubusercontent.com/32415728/172219907-72d54a5d-2bfb-4691-8982-09173840a631.png">
+Thống kê số lượt thực hiện máy bay
 
 
 ## LƯU Ý <a name="3"></a>
@@ -104,3 +138,5 @@ h/ Thống kê số lượt thực hiện chuyến bay của từng máy bay
 - Câu hỏi phụ
   - Cho một danh sách gồm 30000 phần tử trong đó chứa dữ liệu từ [1-32000] hỏi làm sao để load vào bộ nhớ tối ưu nhất và sắp xếp nhanh nhất
  
+ ## CÀI THƯ VIỆN <a name="5"></a>
+ Tham khảo thêm link https://github.com/ahuynh359/Graphics
