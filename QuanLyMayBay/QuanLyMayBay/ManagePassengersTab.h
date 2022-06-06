@@ -129,7 +129,7 @@ public:
 
 
 		x = preX + spaceX;
-		sprintf_s(temp, "%d", i);
+		sprintf_s(temp, "%d", i+1);
 		drawText(preX, preY, x, temp);
 		preX = x;
 
@@ -210,7 +210,6 @@ public:
 		int i = seats[this->currentPage];
 	
 		while (t < (startPage + 10) && i < flightList->info.totalTicket) {
-			printf( flightList->info.ticketList[i]);
 			if (strcmp(flightList->info.ticketList[i], "0") != 0) {
 				AVLTree p = findPassenger(d->passengerList, flightList->info.ticketList[i]);
 				setcolor(BLACK);
