@@ -35,7 +35,7 @@ public:
 
 	void drawUI() {
 		FunctionTab::drawBackground();
-
+		typing = false;
 		switch (currentMenu) {
 		case MAIN_MENU: {
 			drawMainMenu();
@@ -68,14 +68,14 @@ public:
 		int s;
 		if (checkAllEdittextIsEmpty()) {
 			s = drawFlightData(tempFlight, d->flightList, d->planeList);
-			
+
 
 		}
 
 		else {
 			currentPage = 1;
 			clearSearchEdittextCursor();
-			s = drawFilterData(tempFlight,d->flightList);
+			s = drawFilterData(tempFlight, d->flightList);
 
 		}
 		if (s == 1)
@@ -107,7 +107,7 @@ public:
 
 		button[BACK].onAction();
 		if (button[BACK].isClicked()) {
-			
+
 			currentMenu = MAIN_MENU;
 		}
 	}
@@ -129,7 +129,7 @@ public:
 
 
 		x = preX + spaceX;
-		sprintf_s(temp, "%d", i + 1);
+		sprintf_s(temp, "%d", i);
 		drawText(preX, preY, x, temp);
 		preX = x;
 
@@ -173,7 +173,8 @@ public:
 			if (strcmp(flightList->info.ticketList[i], "0") != 0)
 				cnt++;
 
-		onButtonPage(cnt, currentPage);
+		
+		onButtonPage(cnt, this->currentPage);
 		showPage(currentPage);
 
 
@@ -182,28 +183,29 @@ public:
 
 		drawBorder(6, 2, cnt == 0);
 
-		cnt = 1;
-
-
 		setbkcolor(SUBWINDOW_BACKGROUND);
 
+		//Bien luu so ghe
+		cnt = startPage;
 
-		for (int i = 0; i < flightList->info.totalTicket; i++) {
+		for (int i = startPage; i < (startPage + 10) && i < flightList->info.totalTicket; i++) {
 
-
-			AVLTree p = findPassenger(d->passengerList, flightList->info.ticketList[i]);
-
-			if (p == NULL)
-				continue;
-
-			setcolor(BLACK);
-			drawOnePassenger(cnt, preY, i, p);
-			cnt++;
-			preY += spaceY;
-
-
+			if (strcmp(flightList->info.ticketList[i], "0") != 0) {
+				AVLTree p = findPassenger(d->passengerList, flightList->info.ticketList[i]);
+				setcolor(BLACK);
+				drawOnePassenger(cnt+1, preY, i, p);
+				preY += spaceY;
+				cnt++;
+			}
 
 		}
+
+
+
+
+
+
+
 
 
 	}

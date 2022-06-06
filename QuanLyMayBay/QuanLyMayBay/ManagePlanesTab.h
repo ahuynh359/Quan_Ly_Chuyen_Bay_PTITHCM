@@ -107,6 +107,8 @@ public:
 		return p;
 
 	}
+
+	
 	//Xoa  het du lieu 3 edittext
 	void resetEdittext() {
 
@@ -121,6 +123,7 @@ public:
 	}
 	//Reset tab manage plane
 	void reset() {
+		typing = false;
 		currentMenu = MAIN_MENU;
 		currentPage = 1;
 		resetEdittext();
@@ -318,7 +321,7 @@ public:
 	//---------------------------------UI-------------------------
 	void drawUI() {
 		FunctionTab::drawBackground();
-
+		typing = false;
 		switch (currentMenu) {
 		case MAIN_MENU: {
 			drawMainMenu();
@@ -408,7 +411,7 @@ public:
 
 	}
 	void drawAddMenu() {
-
+		typing = true;
 		//Ve huong dan
 		char a[30] = "*Use Up/Down/Enter button";
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
@@ -434,7 +437,8 @@ public:
 
 			switch (s) {
 			case IDOK: {
-				reset();
+				resetEdittext();
+				currentMenu = MAIN_MENU;
 				break;
 			}
 			default:
@@ -465,7 +469,7 @@ public:
 
 	}
 	void drawAjustMenu() {
-
+		typing = true;
 		//-----------------VE HUONG DAN TEXT
 		char a[30] = "*Use Up/Down/Enter button";
 		drawInstruction(LEFT_BORDER - 10, BOTTOM_BORDER + 20, a);
@@ -487,8 +491,8 @@ public:
 
 		if (!d->planeList.data[indexID]->isAvai) {
 			char ss[30] = "Must >= current seats";
-			drawText(edittext[SEATS].getRight() + 10,
-				(edittext[SEATS].getTop() + edittext[SEATS].getBottom() - textheight(ss)) / 2, ss, RED);
+			drawText(edittext[SEATS].getLeft(),
+				edittext[SEATS].getTop() -textheight(ss) - 10, ss, RED);
 
 		}
 
@@ -497,7 +501,8 @@ public:
 			int s = drawAnounce(PREVIOUS);
 			switch (s) {
 			case IDOK: {
-				reset();
+				resetEdittext();
+				currentMenu = MAIN_MENU;
 				break;
 			}
 
@@ -512,14 +517,20 @@ public:
 
 			}
 			else {
-				Plane p = getPlaneData();
-				adjustPlane(d->planeList, p, this->indexID);
+				
+				Plane* p = d->planeList.data[indexID];
+				p->seats = edittext[SEATS].getIntData();
 				//Neu da thanh lap chuyen bay thi cap nhat luon total ticket
-				if (!d->planeList.data[indexID]->isAvai)
+				if (!p->isAvai) {
 					adjustTicketList(d->flightList, edittext[SEATS].getIntData(), edittext[ID_PLANE].getCharData());
+
+				} else 
+					strcpy_s(p->type, edittext[TYPE].getCharData());
+
 				drawAnounce(SUCCESS);
 
-				reset();
+				resetEdittext();
+				currentMenu = MAIN_MENU;
 			}
 
 

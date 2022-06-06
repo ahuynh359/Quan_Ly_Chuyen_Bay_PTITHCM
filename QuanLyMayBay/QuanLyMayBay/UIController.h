@@ -64,8 +64,8 @@ public:
 		for (int i = 0; i < MAX_TAB; i++) {
 			delete  manageTab[i];
 		}
-		delete []  manageTab;
-		delete [] tab; //Xoa luon current tab
+		delete[]  manageTab;
+		delete[] tab; //Xoa luon current tab
 		delete data;
 	}
 
@@ -84,6 +84,7 @@ public:
 
 		bool isPlaneDataEmpty = data->planeListIsEmpty();
 		bool isFlightDataEmpty = data->flightListIsEmpty();
+		int oldId = currentTab->getID();
 
 		for (int i = 0; i < MAX_TAB; i++) {
 			//Nhung tab > 0 set no theo du lieu plane
@@ -95,10 +96,20 @@ public:
 				}
 
 			}
+
 			tab[i].onAction(currentTab);
+
+
 		}
+		//Kiem tra tab hien tai co dang nhap du lieu hay khong
+		if (oldId != currentTab->getID() && manageTab[oldId]->isTyping()) {
+			int s = manageTab[currentTab->getID()]->drawAnounce(TAB);
+			if (s != IDOK)
+				currentTab = &tab[oldId];
 
 
+		}
+		//reset va ve noi dung cho tab
 		resetAndDrawTab(currentTab->getID());
 
 

@@ -21,6 +21,7 @@ public:
 	}
 
 	void drawUI() {
+		typing = false;
 		FunctionTab::drawBackground();
 
 		char a[70] = "STATISTICS THE NUMBER FLYTIMES IN DESCENDING ORDER";

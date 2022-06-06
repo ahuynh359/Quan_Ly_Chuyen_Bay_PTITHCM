@@ -218,7 +218,7 @@ PTR checkPassOnOtherFlightIn12Hours(PTR& first, PTR& flight, char id[MAX_ID_PASS
 //Kiem tra xem co the chinh sua thoi gian khi co 1 hanh khach cung ngoi tren 2 chuyen bay
 PTR canEditTime(PTR& first, PTR& flight, Date date) {
 	for (PTR k = first; k != NULL; k = k->next) {
-		if (k != flight) {
+		if (strcmp(k->info.idFlight,flight->info.idFlight) != 0) {
 			for (int i = 0; i < flight->info.totalTicket; i++) {
 				if (strcmp(flight->info.ticketList[i], "0") != 0 && checkDupIDOnFlight(k, flight->info.ticketList[i]) != -1 &&
 					!in12Hour(k->info.date, date) && (k->info.status == 1 || k->info.status == 2)) {

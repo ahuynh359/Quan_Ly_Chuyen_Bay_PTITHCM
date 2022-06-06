@@ -209,6 +209,7 @@ public:
 	//----------RESET
 	//reset tab flight 
 	void reset() {
+		typing = false;
 		currentMenu = MAIN_MENU;
 		currentPage = 1;
 		resetAddEdittext();
@@ -476,39 +477,37 @@ public:
 			return false;
 		}
 
-
+		
 		//CHeck co chuyen bay nao khac cung ID PLANE TRONG 12 tieng
 		for (PTR k = d->flightList; k != NULL; k = k->next) {
-			if ((!in12Hour(date, k->info.date) &&
+			printf(k->info.idFlight);
+			printf(addEdittext[ID_FLIGHT].getCharData());
+			if (!in12Hour(date, k->info.date) &&
 				strcmp(k->info.idFlight, addEdittext[ID_FLIGHT].getCharData()) != 0
 				&& strcmp(k->info.idPlane, addEdittext[ID_PLANE].getCharData()) == 0 &&
-				k->info.status == 1 || k->info.status == 2)
-				) {
+				k->info.status != 0) {
 				char mess[200] = "Unable to establish flight\n Because there is other flight\n ID: ";
 				strcat_s(mess, k->info.idFlight);
 				strcat_s(mess, "\n Time: ");
 				strcat_s(mess, getDateString(k->info.date));
 				strcat_s(mess, "\n Time must >= 12 hours from this flight");
 				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
-				addPointer = &addEdittext[ID_FLIGHT];
-
 				return false;
 
 			}
 		}
 		//Kiem tra co cung hanh khach nao dat 2 chuyen ma cho sua hay khong
 		if (isAdjust) {
-
-			PTR a = canEditTime(d->flightList, flightTemp, getDate());
+			printf("ajojo");
+			PTR a = canEditTime(d->flightList, flightTemp, date);
 			if (a != NULL) {
-				char mess[300] = "Unable to edit time flight\n Because there is other flight\n ID: ";
+				char mess[300] = "Unable to edit time flight\n Because there is passenger on other flight\n ID: ";
 				strcat_s(mess, a->info.idFlight);
 				strcat_s(mess, "\n Time: ");
 				strcat_s(mess, getDateString(a->info.date));
 
 				strcat_s(mess, "\n Time must >= 12 hours from this flight");
 				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);
-				addPointer = &addEdittext[ID_FLIGHT];
 				return false;
 			}
 
@@ -737,7 +736,7 @@ public:
 
 	//--------------------UI-------------------
 	void  drawUI() {
-
+		typing = false;
 		FunctionTab::drawBackground();
 
 		switch (currentMenu) {
@@ -765,7 +764,7 @@ public:
 		}
 	}
 	void drawMainMenu() {
-
+	
 
 		button[ADD].onAction();
 
@@ -837,6 +836,7 @@ public:
 
 	}
 	void drawAddMenu() {
+		typing = true;
 		addEdittext[ID_FLIGHT].onAction(addPointer);
 		addEdittext[ID_PLANE].onAction(addPointer);
 		addEdittext[ARRIVE].onAction(addPointer);
@@ -908,7 +908,7 @@ public:
 
 	}
 	void drawAjustScreen() {
-
+		typing = true;
 		char s[200] = "ADJUST FLIGHT";
 		drawTitle(s);
 
@@ -942,7 +942,9 @@ public:
 			int s = drawAnounce(PREVIOUS);
 			switch (s) {
 			case IDOK: {
-				reset();
+				resetSearchEdittext();
+				resetAddEdittext();
+				currentMenu = MAIN_MENU;
 				break;
 			}
 			default:
@@ -954,13 +956,17 @@ public:
 		if (button[SAVE].isClicked()) {
 			//Khong cho chinh sua neu  hoan tat
 			if (flightTemp->info.status == 3) {
-				reset();
+				resetSearchEdittext();
+				resetAddEdittext();
+				currentMenu = MAIN_MENU;
 				drawAnounce(ADJUST_ERROR);
 				return;
 			}
 			//Neu luc save da lo qua 30 phut tu dong out ma ko cho luu
 			if (!checkTimeBeforeMinute(flightTemp->info.date, 30)) {
-				reset();
+				resetSearchEdittext();
+				resetAddEdittext();
+				currentMenu = MAIN_MENU;
 				drawAnounce(THIRTY_MINUTE);
 				return;
 
@@ -972,7 +978,9 @@ public:
 			{
 				Date date = getDate();
 				adjustFlight(flightTemp, date);
-				reset();
+				resetSearchEdittext();
+				resetAddEdittext();
+				currentMenu = MAIN_MENU;
 				drawAnounce(SUCCESS);
 
 
@@ -981,7 +989,7 @@ public:
 
 	}
 	void drawFindPlane() {
-
+		typing = true;
 		int s = manage.drawPlaneData(d->planeList, indexID);
 		if (s == 1) {
 			addEdittext[ID_PLANE].customInitChar(d->planeList.data[indexID]->idPlane);

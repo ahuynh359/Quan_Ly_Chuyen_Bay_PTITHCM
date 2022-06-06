@@ -409,7 +409,7 @@ public:
 
 	//-------------------------UI--------------------------
 	void drawUI() {
-
+		typing = false;
 		FunctionTab::drawBackground();
 		switch (currentMenu) {
 		case MAIN_MENU: {
@@ -435,7 +435,7 @@ public:
 		}
 	}
 	void drawMainMenu() {
-
+		typing = false;
 		edittext[ID_FLIGHT].onAction(edittextPointer);
 		edittext[DAY].onAction(edittextPointer);
 		edittext[MONTH].onAction(edittextPointer);
@@ -474,7 +474,7 @@ public:
 	}
 	void drawCancelTicketMenu() {
 
-
+		typing = true;
 
 		char s[50] = "CHECK INFO PASSENGER";
 		drawTitle(s);
@@ -629,7 +629,7 @@ public:
 		drawText(left, top, left + textwidth(a), a);
 	}
 	void drawAddMenu() {
-
+		typing = true;
 		char s[50] = "ADD PASSENGER";
 		drawTitle(s);
 

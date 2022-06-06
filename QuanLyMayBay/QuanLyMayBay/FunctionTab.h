@@ -24,6 +24,7 @@ protected:
 	EditText edittext[MAX_EDITTEXT];
 
 	EditText* buttonPointer, * edittextPointer;
+	bool typing;
 	
 
 public:
@@ -31,7 +32,7 @@ public:
 	FunctionTab() {
 		currentMenu = 0;
 		currentPage = startPage = currentFilterPage =  endPage = 1;
-
+		typing = false;
 		
 		initButton();
 
@@ -289,14 +290,24 @@ public:
 		case PREVIOUS: {
 			msgboxID = MessageBox(
 				GetForegroundWindow(),
-				(LPCWSTR)L"Do you want to go back?",
+				(LPCWSTR)L"Do you want to go back",
 				(LPCWSTR)L"Warning",
 				MB_ICONEXCLAMATION | MB_OKCANCEL
 			);
 
 			break;
 		}
+		case TAB: {
+			msgboxID = MessageBox(
+				GetForegroundWindow(),
+				(LPCWSTR)L"Do you want switch to other tab?",
+				(LPCWSTR)L"Warning",
+				MB_ICONEXCLAMATION | MB_OKCANCEL
+			);
 
+			break;
+		}
+		
 
 		case CANCLE_FLIGHT_ERROR: {
 			msgboxID = MessageBox(
@@ -603,7 +614,9 @@ public:
 
 	void virtual drawUI() = 0;
 	void virtual reset() = 0;
-
+	bool virtual isTyping() {
+		return typing;
+	}
 
 };
 

@@ -28,7 +28,7 @@ int main()
 		clearmouseclick(VK_RBUTTON);
 
 		
-		delay(20);
+		
 	}
 
 	
