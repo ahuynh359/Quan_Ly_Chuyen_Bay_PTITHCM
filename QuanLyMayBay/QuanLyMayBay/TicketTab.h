@@ -231,7 +231,7 @@ public:
 			int s = checkDupIDOnFlight(flightTemp, edittext[ID_PASS].getCharData());
 			if (s != -1) {
 				char mess[200] = "Duplicate ID in seat number ";
-				char a[3];
+				char a[5];
 				sprintf_s(a, "%d", s);
 				strcat_s(mess, a);
 				MessageBox(GetForegroundWindow(), (LPCWSTR)convertCharArrayToLPCWSTR(mess), (LPCWSTR)convertCharArrayToLPCWSTR("WARNING"), MB_ICONWARNING | MB_OK);

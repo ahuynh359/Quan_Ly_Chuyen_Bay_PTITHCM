@@ -291,7 +291,7 @@ void readFileFlight(PTR& first) {
 			flight.ticketList[i] = new char[MAX_ID_PASS + 1];
 		}
 		for (int i = 0; i < flight.totalTicket; i++) {
-			inp.read(reinterpret_cast<char*>(&*(flight.ticketList[i])), sizeof(char[MAX_ID_PASS + 1]));
+			inp.read(reinterpret_cast<char*>(&(*flight.ticketList[i])), sizeof(char[MAX_ID_PASS + 1]));
 		}
 
 		insertAfter(first, flight);

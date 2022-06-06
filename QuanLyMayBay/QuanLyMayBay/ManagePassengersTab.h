@@ -176,8 +176,8 @@ public:
 		int cnt = 1;
 		int seats[31];
 		int pageSize = 0;
-
-
+		seats[currentPage] = flightList->info.totalTicket;
+		
 		for (int i = 0; i < flightList->info.totalTicket; i++) {
 			if (strcmp(flightList->info.ticketList[i], "0") != 0) {
 
@@ -207,9 +207,10 @@ public:
 
 		
 		int t = startPage;
-		int i = seats[currentPage];
+		int i = seats[this->currentPage];
+	
 		while (t < (startPage + 10) && i < flightList->info.totalTicket) {
-
+			printf( flightList->info.ticketList[i]);
 			if (strcmp(flightList->info.ticketList[i], "0") != 0) {
 				AVLTree p = findPassenger(d->passengerList, flightList->info.ticketList[i]);
 				setcolor(BLACK);
