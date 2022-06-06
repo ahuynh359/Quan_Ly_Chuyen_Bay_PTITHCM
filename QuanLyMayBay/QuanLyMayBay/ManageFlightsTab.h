@@ -480,8 +480,6 @@ public:
 		
 		//CHeck co chuyen bay nao khac cung ID PLANE TRONG 12 tieng
 		for (PTR k = d->flightList; k != NULL; k = k->next) {
-			printf(k->info.idFlight);
-			printf(addEdittext[ID_FLIGHT].getCharData());
 			if (!in12Hour(date, k->info.date) &&
 				strcmp(k->info.idFlight, addEdittext[ID_FLIGHT].getCharData()) != 0
 				&& strcmp(k->info.idPlane, addEdittext[ID_PLANE].getCharData()) == 0 &&
@@ -498,7 +496,6 @@ public:
 		}
 		//Kiem tra co cung hanh khach nao dat 2 chuyen ma cho sua hay khong
 		if (isAdjust) {
-			printf("ajojo");
 			PTR a = canEditTime(d->flightList, flightTemp, date);
 			if (a != NULL) {
 				char mess[300] = "Unable to edit time flight\n Because there is passenger on other flight\n ID: ";
@@ -1157,7 +1154,7 @@ public:
 	//Ve data khi loc
 	int drawFilterData(PTR& flightTemp, PTR& flightList, bool haveTicket = false) {
 
-		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 23;
+		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20;
 		int preY = TOP_BORDER + 60;
 		beginPage = new PTR[size(flightList) + 2];
 		beginPage[1] = NULL;

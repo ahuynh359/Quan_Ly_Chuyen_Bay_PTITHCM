@@ -496,8 +496,14 @@ public:
 		if (button[BACK].isClicked()) {
 			clearEditext();
 			ticketPointer = NULL;
+			int s = drawAnounce(PREVIOUS);
+			if(s == IDOK){
+				reset();
+				currentMenu = TICKET_MENU;
+			}
 			delay(50);
-			currentMenu = TICKET_MENU;
+
+			
 			return;
 		}
 		if (button[CANCLE].isClicked()) {
@@ -608,11 +614,14 @@ public:
 		button[BACK].onAction();
 
 		if (button[BACK].isClicked()) {
-
-			reset();
-			ticketPointer = NULL;
-			delay(50);
-			currentMenu = MAIN_MENU;
+			int s = drawAnounce(PREVIOUS);
+			if (s == IDOK) {
+				reset();
+				ticketPointer = NULL;
+				delay(50);
+				currentMenu = MAIN_MENU;
+			}
+			
 			return;
 		}
 
@@ -650,6 +659,7 @@ public:
 		if (button[BACK].isClicked()) {
 			ticketPointer = NULL;
 			clearEditext();
+			drawAnounce(PREVIOUS);
 			delay(50);
 			currentMenu = TICKET_MENU;
 
@@ -750,7 +760,7 @@ public:
 		clearSearchEdittextCursor();
 		Date date = getDateFromSearch();
 		beginPage = new PTR[size(flightList)];
-		beginPage[1] = NULL;
+		beginPage[currentPage] = NULL;
 		int size = 0;
 		int cnt = 1;
 		int t = 1;

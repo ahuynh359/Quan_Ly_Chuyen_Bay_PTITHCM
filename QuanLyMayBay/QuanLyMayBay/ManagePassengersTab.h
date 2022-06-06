@@ -120,7 +120,7 @@ public:
 
 		//VE STT
 		char temp[40];
-		sprintf_s(temp, "%d", cnt);
+		sprintf_s(temp, "%d", cnt + 1);
 		int x = preX + 100;
 		drawText(preX, preY, x, temp);
 		preX = x;
@@ -168,13 +168,33 @@ public:
 	}
 	void drawPassengerData(PTR& flightList) {
 
-		int cnt = 0;
-		for (int i = 0; i < flightList->info.totalTicket; i++)
-			if (strcmp(flightList->info.ticketList[i], "0") != 0)
-				cnt++;
-
 		
-		onButtonPage(cnt, this->currentPage);
+
+		//Bien luu so ghe
+		
+		int size = 0;
+		int cnt = 1;
+		int seats[31];
+		int pageSize = 0;
+
+
+		for (int i = 0; i < flightList->info.totalTicket; i++) {
+			if (strcmp(flightList->info.ticketList[i], "0") != 0) {
+
+				if (cnt % 10 == 1) {
+					pageSize++;
+					seats[pageSize] = i;
+					cnt = 1;
+				}
+				cnt++;
+				size++;
+
+
+
+			}
+		}
+
+		onButtonPage(size, this->currentPage);
 		showPage(currentPage);
 
 
@@ -185,19 +205,19 @@ public:
 
 		setbkcolor(SUBWINDOW_BACKGROUND);
 
-		//Bien luu so ghe
-		cnt = startPage;
-
-		for (int i = startPage; i < (startPage + 10) && i < flightList->info.totalTicket; i++) {
+		
+		int t = startPage;
+		int i = seats[currentPage];
+		while (t < (startPage + 10) && i < flightList->info.totalTicket) {
 
 			if (strcmp(flightList->info.ticketList[i], "0") != 0) {
 				AVLTree p = findPassenger(d->passengerList, flightList->info.ticketList[i]);
 				setcolor(BLACK);
-				drawOnePassenger(cnt+1, preY, i, p);
+				drawOnePassenger(t, preY, i, p);
 				preY += spaceY;
-				cnt++;
+				t++;
 			}
-
+			i++;
 		}
 
 
