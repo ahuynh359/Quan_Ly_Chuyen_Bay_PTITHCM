@@ -108,7 +108,7 @@ public:
 
 	}
 
-	
+
 	//Xoa  het du lieu 3 edittext
 	void resetEdittext() {
 
@@ -380,20 +380,23 @@ public:
 		int s = drawPlaneData(d->planeList, indexID);
 
 		if (s == 1) {
-			int s = drawAnounce(REMOVE_CONFIRM);
+			if (!d->planeList.data[indexID]->isAvai) {
+				drawAnounce(REMOVE_ERROR);
 
-			switch (s) {
-			case IDOK: {
-				//Chi remove khi chua thanh lap chuyen bay
-				if (d->planeList.data[indexID]->isAvai)
+			}
+			else {
+				int s = drawAnounce(REMOVE_CONFIRM);
+				switch (s) {
+				case IDOK: {
 					removePlane(d->planeList, indexID);
-				else
-					drawAnounce(REMOVE_ERROR);
-				break;
+					drawAnounce(SUCCESS);
+					break;
+				}
+				default:
+					break;
+				}
 			}
-			default:
-				break;
-			}
+
 		}
 		else if (s == 2) {
 
@@ -492,7 +495,7 @@ public:
 		if (!d->planeList.data[indexID]->isAvai) {
 			char ss[30] = "Must >= current seats";
 			drawText(edittext[SEATS].getLeft(),
-				edittext[SEATS].getTop() -textheight(ss) - 10, ss, RED);
+				edittext[SEATS].getTop() - textheight(ss) - 10, ss, RED);
 
 		}
 
@@ -517,14 +520,15 @@ public:
 
 			}
 			else {
-				
+
 				Plane* p = d->planeList.data[indexID];
 				p->seats = edittext[SEATS].getIntData();
 				//Neu da thanh lap chuyen bay thi cap nhat luon total ticket
 				if (!p->isAvai) {
 					adjustTicketList(d->flightList, edittext[SEATS].getIntData(), edittext[ID_PLANE].getCharData());
 
-				} else 
+				}
+				else
 					strcpy_s(p->type, edittext[TYPE].getCharData());
 
 				drawAnounce(SUCCESS);

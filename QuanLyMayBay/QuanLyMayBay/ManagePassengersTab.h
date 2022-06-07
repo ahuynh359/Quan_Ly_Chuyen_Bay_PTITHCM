@@ -168,9 +168,7 @@ public:
 	}
 	void drawPassengerData(PTR& flightList) {
 
-		
-
-		//Bien luu so ghe
+	
 		
 		int size = 0;
 		int cnt = 1;
@@ -201,7 +199,7 @@ public:
 		int spaceY = (TOP_BORDER + BOTTOM_BORDER) / 20;
 		int preY = TOP_BORDER + 60;
 
-		drawBorder(6, 2, cnt == 0);
+		drawBorder(6, 2, size == 0);
 
 		setbkcolor(SUBWINDOW_BACKGROUND);
 
