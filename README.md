@@ -139,5 +139,5 @@ Thống kê số lượt thực hiện máy bay
   - Cho một danh sách gồm 30000 phần tử trong đó chứa dữ liệu từ [1-32000] hỏi làm sao để load vào bộ nhớ tối ưu nhất và sắp xếp nhanh nhất
  
  ## CÀI THƯ VIỆN <a name="5"></a>
- Tham khảo thêm link https://github.com/ahuynh359/Graphics
- Demo https://www.youtube.com/watch?v=rGFWxpukt2s
+ - Tham khảo thêm link https://github.com/ahuynh359/Graphics
+ - Demo https://www.youtube.com/watch?v=rGFWxpukt2s
