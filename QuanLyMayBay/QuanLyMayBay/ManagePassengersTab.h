@@ -1,4 +1,4 @@
-﻿#pragma once
+#pragma once
 
 #include"Planes.h"
 #include"Flights.h"
@@ -129,7 +129,7 @@ public:
 
 
 		x = preX + spaceX;
-		sprintf_s(temp, "%d", i+1);
+		sprintf_s(temp, "%d", i + 1);
 		drawText(preX, preY, x, temp);
 		preX = x;
 
@@ -168,20 +168,20 @@ public:
 	}
 	void drawPassengerData(PTR& flightList) {
 
-	
-		
+
+
 		int size = 0;
 		int cnt = 1;
 		int seats[31];
 		int pageSize = 0;
-		seats[currentPage] = flightList->info.totalTicket;
-		
+
+
 		for (int i = 0; i < flightList->info.totalTicket; i++) {
 			if (strcmp(flightList->info.ticketList[i], "0") != 0) {
 
 				if (cnt % 10 == 1) {
-					pageSize++;
 					seats[pageSize] = i;
+					pageSize++;
 					cnt = 1;
 				}
 				cnt++;
@@ -191,7 +191,7 @@ public:
 
 			}
 		}
-
+		
 		onButtonPage(size, this->currentPage);
 		showPage(currentPage);
 
@@ -203,10 +203,14 @@ public:
 
 		setbkcolor(SUBWINDOW_BACKGROUND);
 
-		
+
 		int t = startPage;
-		int i = seats[this->currentPage];
+		int i = seats[this->currentPage-1 ];
 	
+		if (i < 0)
+			i = flightList->info.totalTicket;
+
+		
 		while (t < (startPage + 10) && i < flightList->info.totalTicket) {
 			if (strcmp(flightList->info.ticketList[i], "0") != 0) {
 				AVLTree p = findPassenger(d->passengerList, flightList->info.ticketList[i]);
@@ -217,13 +221,6 @@ public:
 			}
 			i++;
 		}
-
-
-
-
-
-
-
 
 
 	}
