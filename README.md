@@ -141,3 +141,9 @@ Thống kê số lượt thực hiện máy bay
  ## CÀI THƯ VIỆN <a name="5"></a>
  - Tham khảo thêm link https://github.com/ahuynh359/Graphics
  - Demo https://www.youtube.com/watch?v=rGFWxpukt2s
+
+## ĐIỂM SỐ
+- Tui được 9 điểm
+- Bạn kia chung nhóm 7 điểm
+- Bạn còn lại rớt môn :>
+Quan trọng do quá trình các bạn vấn đáp với thầy thôi nhé :3. Good luck !
